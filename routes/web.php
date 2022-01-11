@@ -1,7 +1,6 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -18,3 +17,6 @@ Route::get('/', [App\Http\Controllers\MainController::class, 'index'])->name('ho
 Route::middleware(['auth:sanctum', 'verified'])->get('/dashboard', function () {
     return view('dashboard');
 })->name('dashboard');
+
+Route::resource('inbox', 'App\Http\Controllers\InboxController');
+Route::resource('folder', 'App\Http\Controllers\FolderController');

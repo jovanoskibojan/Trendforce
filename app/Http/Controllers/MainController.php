@@ -3,7 +3,10 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Inbox;
 use App\Models\Icon;
+use App\Models\User;
+use App\Models\Folder;
 
 class MainController extends Controller
 {
@@ -14,7 +17,8 @@ class MainController extends Controller
      */
     public function __construct()
     {
-        $this->middleware(['auth', 'verified']);
+        //$this->middleware(['auth', 'verified']);
+        $this->middleware(['auth']);
     }
 
     /**
@@ -26,6 +30,26 @@ class MainController extends Controller
     {
 //        $icons = Icon::get();
 //        return view('home')->with(['icons' => $icons]);
-        return view('dashboard');
+        $user = auth()->user();
+        if(!$user->inbox->isNotEmpty()) {
+            $inbox = new inbox;
+            $inbox->user_id = $user->id;
+            $inbox->title = 'Untitled';
+            $inbox->save();
+
+            $folder = new folder;
+            $folder->inbox_id = $inbox->id;
+            $folder->title = $inbox->title;
+            $folder->child_of = 0;
+            $folder->save();
+
+        }
+        $user = User::where('id', $user->id)->first();
+        $folderTree = '[';
+        foreach ($user->inbox[0]->folder as $folder) {
+            $folderTree .= '  { text: "' . $folder->title . '", id: "folder-' . $folder->id . '", icon: "bi bi-folder", class: \'selectableFolder\' },';
+        }
+        $folderTree .= ']';
+        return view('dashboard')->with('inboxes', $user->inbox)->with('folders', $folderTree);
     }
 }

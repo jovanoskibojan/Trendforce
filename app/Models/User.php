@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Jobs\ConfirmEmailJob;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -58,5 +59,14 @@ class User extends Authenticatable implements MustVerifyEmail
     protected $appends = [
         'profile_photo_url',
     ];
+
+    public function sendEmailVerificationNotification()
+    {
+        //$this->notify(new ConfirmEmailJob(''));
+    }
+
+    public function inbox() {
+        return $this->hasMany(Inbox::class);
+    }
 }
 
