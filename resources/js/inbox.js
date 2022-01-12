@@ -41,7 +41,8 @@ $(document).ready(function () {
             },
             success: function (data) {
                 data = JSON.parse(data);
-
+                console.log(data);
+                console.log("test");
                 // https://github.com/chniter/bstreeview/issues/21
                 $('#folderTree').bstreeview({
                     data: data

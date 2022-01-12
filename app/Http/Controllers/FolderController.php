@@ -14,7 +14,7 @@ class FolderController extends Controller
      */
     public function index()
     {
-        $folderData = [ [
+        $folderData3 = [ [
             'text' => "Root1",
             'id' => "folder-1",
             'icon' => "bi bi-folder",
@@ -54,41 +54,32 @@ class FolderController extends Controller
                 ],
             ],
         ]];
-/*
-        global $data;
-        global $folderData;
-        global $counter;
+
         $data = Folder::where('inbox_id', '1')->orderBy('child_of')->get()->toArray();
-        $folderData = [];
-        $folderData[0]['id'] = $data[0]['id'];
-        $folderData[0]['text'] = $data[0]['title'];
-        $counter = 0;
-
-
-        function createFolderTree($index = 0) {
-            global $data;
-            global $folderData;
-            global $counter;
-            for($i = $index; $i < count($data); $i++) {
-//                if($counter == 0) {
-//                    $folderData[$counter]['id'] = $data[$i]['id'];
-//                    $folderData[$counter]['text'] = $data[$i]['title'];
-//                }
-//                else {
-                    if($data[$counter]['id'] == $data[$i]['child_of']) {
-                        $folderData[$counter]['nodes']['id'] = $data[$i]['id'];
-                        $folderData[$counter]['nodes']['text'] = $data[$i]['title'];
-                        createFolderTree($counter);
-                    }
-                    if($counter < count($data)) {
-                        $counter++;
-                    }
-                //}
+        function getFolderData($data, $current_id = 0) {
+            $folderData = [];
+            $folderData[$current_id]['id'] = $data[$current_id]['id'];
+            $folderData[$current_id]['text'] = $data[$current_id]['title'];
+            for ($i = 0; $i < (count($data)); $i++) {
+                if($data[$current_id]['id'] == $data[$i]['child_of']) {
+                    $tmp = getFolderData($data, $i);
+                    $folderData[$current_id]['nodes'][] = $tmp;
+                }
             }
+            $newEmpty = [];
+            foreach ($folderData as $element) {
+                foreach ($element as $key => $value) {
+                    $newEmpty[$key] = $value;
+                }
+            }
+            //dd($newEmpty);
+            return $newEmpty;
+            return $folderData;
         }
-
-        createFolderTree(0);*/
-          return json_encode($folderData);
+        $ee = getFolderData($data);
+        //dd($ee, $folderData3);
+        $test[] = $ee;
+        return json_encode($test);
     }
 
     /**

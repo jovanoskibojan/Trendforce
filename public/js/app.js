@@ -8784,7 +8784,9 @@ jquery__WEBPACK_IMPORTED_MODULE_0___default()(document).ready(function () {
         'X-CSRF-TOKEN': jquery__WEBPACK_IMPORTED_MODULE_0___default()('meta[name="csrf-token"]').attr('content')
       },
       success: function success(data) {
-        data = JSON.parse(data); // https://github.com/chniter/bstreeview/issues/21
+        data = JSON.parse(data);
+        console.log(data);
+        console.log("test"); // https://github.com/chniter/bstreeview/issues/21
 
         jquery__WEBPACK_IMPORTED_MODULE_0___default()('#folderTree').bstreeview({
           data: data
