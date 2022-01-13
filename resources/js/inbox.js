@@ -1,5 +1,5 @@
 import $ from "jquery";
-
+import {Dropzone} from "dropzone";
 
 $(document).ready(function () {
 
@@ -35,57 +35,27 @@ $(document).ready(function () {
     });
 
     let folderData;
-    $('.nav-link').click(function () {
+    $('body').on('click', '.nav-link', function() {
         $('.nav-link.active').removeClass('active');
         $(this).addClass('active');
         $('#folderWrapper').html('');
         $('#folderWrapper').append('<div id="folderTree"></div>');
         getFolders();
-        let inboxID = $('.nav-link.active').data('inbox-id')
-        $.ajax({
-            type: "POST",
-            url: "/inbox",
-            data: {'title' : inboxName},
-            dataType: "json",
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            },
-            success: function(data) {
-                $('#inboxNavigation').append(`
-                <li class="nav-item">
-                    <a class="nav-link @once active @endonce update-inbox" href="#" data-inbox-id="${data.inboxId}">${data.inboxTitle}</a>
-                </li>
-                `);
-                // TODO: fix this
-                $('#newInbox').Modal('hide');
-            },
-            error: function(data) {
-            }
-        });
     });
 
-    $('#renameFolderSave').click(function () {
+    $('body').on('click', '#renameFolderSave', function() {
         let folderId = $(this).data('folder-ID');
         let newName = $('#renameFolderNewName').val();
-        console.log(newName, folderId);
-        $.ajax({
-            type: "PUT",
-            url: "/folder/" + folderId,
-            data: {'title' : newName},
-            dataType: "json",
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            },
-            success: function(data) {
-                getFolders();
-            },
-            error: function(data) {
-            }
-        });
+        updateFolder(folderId, newName, 'title');
+    });
+
+    $('body').on('click', '#updateColorSave', function() {
+        let folderId = $(this).data('folder-ID');
+        let newColor = $('#updateColorNewName').val();
+        updateFolder(folderId, newColor, 'color');
     });
 
     $('body').on('click', '.folder-node', function() {
-        console.log('test');
         $('.folder-node.active').removeClass('active');
         $(this).addClass('active');
     });
@@ -130,6 +100,26 @@ $(document).ready(function () {
             console.log("pullMode: " + evt.pullMode);  // when item is in another sortable: `"clone"` if cloning, `true` if moving
         },
     });
+
+    function updateFolder(folderId, value, update) {
+        $.ajax({
+            type: "PUT",
+            url: "/folder/" + folderId,
+            data: {
+                'update' : update,
+                'value' : value,
+            },
+            dataType: "json",
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            success: function(data) {
+                getFolders();
+            },
+            error: function(data) {
+            }
+        });
+    }
 
     $("#ppt").click(function () {
         $('.previewArea').hide();

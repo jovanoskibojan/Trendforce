@@ -54,10 +54,24 @@ $(".custom-menu li").click(function(){
             $("#renameFolderNameTitle").html(currentTitle);
             modalRename.show();
             break;
+        case "color":
+            let modalColor = new bootstrap.Modal(document.getElementById('updateColor'));
+            let currentTitleColor = $("#" + id).html();
+            let selectedColor = $('#updateColorNewName');
+            $('#updateColorNameTitle').html(currentTitleColor);
+            $('#updateColorSave').data('folder-ID', id);
+            modalColor.show();
+            break;
     }
 
     // Hide it AFTER the action was triggered
     $(".custom-menu").hide(100);
+    $('#updateColorNewName').change(function () {
+        let selectedColor = $(this).val();
+        $('#colorExample').removeClass();
+        $('#colorExample').addClass('p-2 my-2 d-block rounded-3 text-center');
+        $('#colorExample').addClass(selectedColor);
+    });
 });
 
 function addNewFolder(id) {

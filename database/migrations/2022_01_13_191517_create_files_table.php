@@ -21,6 +21,7 @@ class CreateFilesTable extends Migration
             $table->integer('order');
             $table->string('type');
             $table->longText('content');
+            $table->string('size');
             $table->timestamps();
         });
     }

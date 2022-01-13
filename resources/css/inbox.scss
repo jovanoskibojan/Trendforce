@@ -5,10 +5,12 @@
 #folderTree {
     .list-group-item {
         border: none !important;
+        border-radius: 0 !important;
     }
 }
 .list-group-item.folder-node.active {
-    background-color: #cacfd3 !important;
+    text-decoration: underline;
+    font-weight: 700;
 }
 .list-group-item:hover {
     border-radius: 0 !important;
@@ -68,4 +70,20 @@ nav {
 }
 #documentPreviewWrapper {
 
+}
+#uploadField {
+    min-width: 170px;
+    max-width: 170px;
+    min-height: 150px;
+    max-height: 150px;
+    margin-top: 5px;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-content: center;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    border: dotted 1px;
+    border-radius: 5px;
 }

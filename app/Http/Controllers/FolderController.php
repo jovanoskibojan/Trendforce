@@ -59,7 +59,7 @@ class FolderController extends Controller
                 $folderData = [];
                 $folderData[$current_id]['id'] = $data[$current_id]['id'];
                 $folderData[$current_id]['text'] = $data[$current_id]['title'];
-                $folderData[$current_id]['class'] = 'folder-node';
+                $folderData[$current_id]['class'] = 'folder-node ' . $data[$current_id]['color'];
                 for ($i = 0; $i < (count($data)); $i++) {
                     if($data[$current_id]['id'] == $data[$i]['child_of']) {
                         $tmp = getFolderData($data, $i);
@@ -104,7 +104,10 @@ class FolderController extends Controller
      */
     public function update(Request $request, Folder $folder)
     {
-        Folder::where('id', $folder->id)->update(['title'=>$request->title]);
+        if($request->update == 'title')
+            Folder::where('id', $folder->id)->update(['title'=>$request->value]);
+        if($request->update == 'color')
+            Folder::where('id', $folder->id)->update(['color'=>$request->value]);
     }
 
     /**
