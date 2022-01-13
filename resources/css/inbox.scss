@@ -58,7 +58,7 @@ nav {
     background: white;
     padding-top: 10px;
     #folderTree {
-        border: none !important;;
+        border: none !important;
         border-radius: 0 !important;
     }
 }
@@ -86,4 +86,9 @@ nav {
     text-align: center;
     border: dotted 1px;
     border-radius: 5px;
+}
+.card-header {
+    i {
+        cursor: grabbing;
+    }
 }

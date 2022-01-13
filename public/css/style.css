@@ -13796,3 +13796,8 @@ nav a {
   border: dotted 1px;
   border-radius: 5px;
 }
+
+.card-header i {
+  cursor: -webkit-grabbing;
+  cursor: grabbing;
+}

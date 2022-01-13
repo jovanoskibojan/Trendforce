@@ -98,7 +98,8 @@ class InboxController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+            Inbox::where('id', $id)->update(['title' => $request->value]);
+            Folder::where('inbox_id', $id)->where('child_of', 0)->update(['title' => $request->value]);
     }
 
     /**

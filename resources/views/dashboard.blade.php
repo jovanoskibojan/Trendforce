@@ -103,6 +103,24 @@
             </div>
         </div>
     </div>
+    <!-- Rename inbox -->
+    <div class="modal fade" id="renameInbox" tabindex="-1" aria-labelledby="renameInbox" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="renameTitle">Rename <span id="renameInboxNameTitle"></span></h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <input id="renameInboxNewName" type="text" class="form-control">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" id="renameInboxSave" data-inbox-ID="">Save changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
     <!-- Update folder color -->
     <div class="modal fade" id="updateColor" tabindex="-1" aria-labelledby="updateColor" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
@@ -152,10 +170,14 @@
             </div>
         </div>
     </div>
-    <ul class='custom-menu' style="z-index: 99999999;">
+    <ul id="custom-menu-folder" class='custom-menu' style="z-index: 99999999;">
         <li data-action="new"><i class="bi bi-folder-plus"></i> New</li>
         <li data-action="rename"><i class="bi bi-pencil"></i> Rename</li>
-        <li data-action="color"><i class="bi bi-trash"></i> Color</li>
+        <li data-action="color"><i class="bi bi-palette"></i> Color</li>
+        <li data-action="delete"><i class="bi bi-trash"></i> Delete</li>
+    </ul>
+    <ul id='custom-menu-inbox' class="custom-menu" style="z-index: 99999999;">
+        <li data-action="rename"><i class="bi bi-pencil"></i> Rename</li>
         <li data-action="delete"><i class="bi bi-trash"></i> Delete</li>
     </ul>
 

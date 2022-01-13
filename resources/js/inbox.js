@@ -60,6 +60,27 @@ $(document).ready(function () {
         $(this).addClass('active');
     });
 
+    $('body').on('click', '#renameInboxSave', function() {
+        let inboxId = $(this).data('inbox-ID');
+        let newName = $('#renameInboxNewName').val();
+        $.ajax({
+            type: "PUT",
+            url: "/inbox/" + inboxId,
+            data: {
+                'value' : newName,
+            },
+            dataType: "json",
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            success: function(data) {
+                getFolders();
+            },
+            error: function(data) {
+            }
+        });
+    });
+
     getFolders();
     function getFolders() {
         let inboxID = $('.nav-link.active').data('inbox-id')

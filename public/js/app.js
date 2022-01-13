@@ -8809,6 +8809,25 @@ jquery__WEBPACK_IMPORTED_MODULE_0___default()(document).ready(function () {
     jquery__WEBPACK_IMPORTED_MODULE_0___default()('.folder-node.active').removeClass('active');
     jquery__WEBPACK_IMPORTED_MODULE_0___default()(this).addClass('active');
   });
+  jquery__WEBPACK_IMPORTED_MODULE_0___default()('body').on('click', '#renameInboxSave', function () {
+    var inboxId = jquery__WEBPACK_IMPORTED_MODULE_0___default()(this).data('inbox-ID');
+    var newName = jquery__WEBPACK_IMPORTED_MODULE_0___default()('#renameInboxNewName').val();
+    jquery__WEBPACK_IMPORTED_MODULE_0___default().ajax({
+      type: "PUT",
+      url: "/inbox/" + inboxId,
+      data: {
+        'value': newName
+      },
+      dataType: "json",
+      headers: {
+        'X-CSRF-TOKEN': jquery__WEBPACK_IMPORTED_MODULE_0___default()('meta[name="csrf-token"]').attr('content')
+      },
+      success: function success(data) {
+        getFolders();
+      },
+      error: function error(data) {}
+    });
+  });
   getFolders();
 
   function getFolders() {
@@ -8980,12 +8999,22 @@ jquery__WEBPACK_IMPORTED_MODULE_0___default()('body').on('contextmenu', '.folder
   event.preventDefault(); // Show contextmenu
 
   if (menuOrder == 1) {
-    jquery__WEBPACK_IMPORTED_MODULE_0___default()(".custom-menu li:not(:first)").addClass('disabled');
+    jquery__WEBPACK_IMPORTED_MODULE_0___default()(".custom-menu li:odd").addClass('disabled');
   } else {
-    jquery__WEBPACK_IMPORTED_MODULE_0___default()(".custom-menu li:not(:first)").removeClass('disabled');
+    jquery__WEBPACK_IMPORTED_MODULE_0___default()(".custom-menu li:odd").removeClass('disabled');
   }
 
-  jquery__WEBPACK_IMPORTED_MODULE_0___default()(".custom-menu").finish().toggle(100). // In the right position (the mouse)
+  jquery__WEBPACK_IMPORTED_MODULE_0___default()("#custom-menu-folder").finish().toggle(100). // In the right position (the mouse)
+  css({
+    top: event.pageY + "px",
+    left: event.pageX + "px"
+  });
+});
+jquery__WEBPACK_IMPORTED_MODULE_0___default()('body').on('contextmenu', '.update-inbox', function (event) {
+  id = jquery__WEBPACK_IMPORTED_MODULE_0___default()(this).data('inbox-id'); // Avoid the real one
+
+  event.preventDefault();
+  jquery__WEBPACK_IMPORTED_MODULE_0___default()("#custom-menu-inbox").finish().toggle(100). // In the right position (the mouse)
   css({
     top: event.pageY + "px",
     left: event.pageX + "px"
@@ -9000,10 +9029,14 @@ jquery__WEBPACK_IMPORTED_MODULE_0___default()(document).bind("mousedown", functi
   }
 }); // If the menu element is clicked
 
-jquery__WEBPACK_IMPORTED_MODULE_0___default()(".custom-menu li").click(function () {
+jquery__WEBPACK_IMPORTED_MODULE_0___default()("#custom-menu-folder li").click(function () {
   // This is the triggered action name
   switch (jquery__WEBPACK_IMPORTED_MODULE_0___default()(this).attr('data-action')) {
     // A case for each action. Your actions here
+    case 'delete':
+      alert('Option not yet active');
+      break;
+
     case 'new':
       addNewFolder(id);
       break;
@@ -9036,6 +9069,28 @@ jquery__WEBPACK_IMPORTED_MODULE_0___default()(".custom-menu li").click(function 
     jquery__WEBPACK_IMPORTED_MODULE_0___default()('#colorExample').addClass('p-2 my-2 d-block rounded-3 text-center');
     jquery__WEBPACK_IMPORTED_MODULE_0___default()('#colorExample').addClass(selectedColor);
   });
+}); // If the menu element is clicked
+
+jquery__WEBPACK_IMPORTED_MODULE_0___default()("#custom-menu-inbox li").click(function () {
+  // This is the triggered action name
+  switch (jquery__WEBPACK_IMPORTED_MODULE_0___default()(this).attr('data-action')) {
+    // A case for each action. Your actions here
+    case 'delete':
+      alert('Option not yet active');
+      break;
+
+    case "rename":
+      var inboxRename = new bootstrap.Modal(document.getElementById('renameInbox'));
+      var currentTitle = jquery__WEBPACK_IMPORTED_MODULE_0___default()('.update-inbox[data-inbox-id="' + id + '"]').html();
+      jquery__WEBPACK_IMPORTED_MODULE_0___default()('#renameInboxSave').data('inbox-ID', id);
+      jquery__WEBPACK_IMPORTED_MODULE_0___default()("#renameInboxNameTitle").html(currentTitle);
+      jquery__WEBPACK_IMPORTED_MODULE_0___default()("#renameInboxNewName").val(currentTitle);
+      inboxRename.show();
+      break;
+  } // Hide it AFTER the action was triggered
+
+
+  jquery__WEBPACK_IMPORTED_MODULE_0___default()(".custom-menu").hide(100);
 });
 
 function addNewFolder(id) {
