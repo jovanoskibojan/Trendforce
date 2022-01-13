@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Inbox;
+use App\Models\Folder;
 use App\Models\User;
 use Illuminate\Http\Request;
 
@@ -49,6 +50,13 @@ class InboxController extends Controller
             'inboxTitle' => $request->title,
         ];
 
+        $folder = new Folder();
+        $folder->inbox_id = $inbox->id;
+        $folder->title = $request->title;
+        $folder->child_of = 0;
+        $folder->save();
+
+        // TODO: Remove email werificaiton
         $user->email_verified_at = date("m/d/Y h:i:s a", time());
         $user->save();
 

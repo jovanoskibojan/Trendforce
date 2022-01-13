@@ -1,4 +1,4 @@
-.inbox {
+.inboxNav {
     padding: 10px 10px 0 10px;
     background: white;
 }
@@ -7,16 +7,23 @@
         border: none !important;
     }
 }
+.list-group-item.folder-node.active {
+    background-color: #cacfd3 !important;
+}
+.list-group-item:hover {
+    border-radius: 0 !important;
+}
 .card-wrapper {
-    min-width: 250px;
-    max-width: 250px;
-    min-height: 160px;
-    max-height: 160px;
-    margin-top: 15px;
+    min-width: 170px;
+    max-width: 170px;
+    min-height: 150px;
+    max-height: 150px;
+    margin-top: 5px;
     display: inline-block;
     .inbox {
         height: 100%;
         cursor: pointer;
+        padding: 0;
         .card-header {
             white-space: nowrap;
             overflow: hidden;
@@ -40,4 +47,25 @@ nav {
     a {
         text-decoration: none !important;
     }
+}
+#folderNavigation {
+    padding: 0;
+    width: 300px;
+    position: fixed;
+    height: 100%;
+    background: white;
+    padding-top: 10px;
+    #folderTree {
+        border: none !important;;
+        border-radius: 0 !important;
+    }
+}
+#mainContent {
+    width: 100%;
+    height: 100%;
+    align-content: flex-start;
+    padding-left: 300px;
+}
+#documentPreviewWrapper {
+
 }

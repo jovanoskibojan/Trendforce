@@ -1,5 +1,6 @@
 import $ from "jquery";
 
+
 $(document).ready(function () {
 
     $('#newInboxSave').click(function () {
@@ -22,34 +23,93 @@ $(document).ready(function () {
                 $('#newInbox').Modal('hide');
             },
             error: function(data) {
-                console.log(100);
             }
         });
 
     });
-    // $.when(loadFolders()).done(function(returnData){
-        //console.log(returnData);
-    // });
-    loadFolders();
-    function loadFolders() {
+
+    $('.inbox').click(function (){
+        var myOffcanvas = document.getElementById('documentPreview2');
+        var bsOffcanvas = new bootstrap.Offcanvas(myOffcanvas);
+        bsOffcanvas.show();
+    });
+
+    let folderData;
+    $('.nav-link').click(function () {
+        $('.nav-link.active').removeClass('active');
+        $(this).addClass('active');
+        $('#folderWrapper').html('');
+        $('#folderWrapper').append('<div id="folderTree"></div>');
+        getFolders();
+        let inboxID = $('.nav-link.active').data('inbox-id')
+        $.ajax({
+            type: "POST",
+            url: "/inbox",
+            data: {'title' : inboxName},
+            dataType: "json",
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            success: function(data) {
+                $('#inboxNavigation').append(`
+                <li class="nav-item">
+                    <a class="nav-link @once active @endonce update-inbox" href="#" data-inbox-id="${data.inboxId}">${data.inboxTitle}</a>
+                </li>
+                `);
+                // TODO: fix this
+                $('#newInbox').Modal('hide');
+            },
+            error: function(data) {
+            }
+        });
+    });
+
+    $('#renameFolderSave').click(function () {
+        let folderId = $(this).data('folder-ID');
+        let newName = $('#renameFolderNewName').val();
+        console.log(newName, folderId);
+        $.ajax({
+            type: "PUT",
+            url: "/folder/" + folderId,
+            data: {'title' : newName},
+            dataType: "json",
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            success: function(data) {
+                getFolders();
+            },
+            error: function(data) {
+            }
+        });
+    });
+
+    $('body').on('click', '.folder-node', function() {
+        console.log('test');
+        $('.folder-node.active').removeClass('active');
+        $(this).addClass('active');
+    });
+
+    getFolders();
+    function getFolders() {
+        let inboxID = $('.nav-link.active').data('inbox-id')
         $.ajax({
             type: "GET",
-            url: "/folder",
-            data: {'title' : 'test'},
+            url: "/folder/" + inboxID,
+            //data: {'title' : 'test'},
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             },
             success: function (data) {
                 data = JSON.parse(data);
-                console.log(data);
-                console.log("test");
+                folderData = data;
                 // https://github.com/chniter/bstreeview/issues/21
                 $('#folderTree').bstreeview({
-                    data: data
+                    data: data,
+                    openNodeLinkOnNewTab: true
                 });
             },
             error: function (data) {
-                console.log(data);
             }
         });
     }
@@ -87,4 +147,5 @@ $(document).ready(function () {
         $('.previewArea').hide();
         $('#imagePreview').show();
     });
+
 });

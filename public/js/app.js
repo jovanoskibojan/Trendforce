@@ -8679,6 +8679,8 @@ __webpack_require__(/*! ./inboxTree */ "./resources/js/inboxTree.js");
 
 __webpack_require__(/*! ./inbox */ "./resources/js/inbox.js");
 
+__webpack_require__(/*! ./rightMenu */ "./resources/js/rightMenu.js");
+
 
 window.Alpine = alpinejs__WEBPACK_IMPORTED_MODULE_3__["default"];
 alpinejs__WEBPACK_IMPORTED_MODULE_3__["default"].start();
@@ -8763,38 +8765,86 @@ jquery__WEBPACK_IMPORTED_MODULE_0___default()(document).ready(function () {
 
         jquery__WEBPACK_IMPORTED_MODULE_0___default()('#newInbox').Modal('hide');
       },
-      error: function error(data) {
-        console.log(100);
-      }
+      error: function error(data) {}
     });
-  }); // $.when(loadFolders()).done(function(returnData){
-  //console.log(returnData);
-  // });
+  });
+  jquery__WEBPACK_IMPORTED_MODULE_0___default()('.inbox').click(function () {
+    var myOffcanvas = document.getElementById('documentPreview2');
+    var bsOffcanvas = new bootstrap.Offcanvas(myOffcanvas);
+    bsOffcanvas.show();
+  });
+  var folderData;
+  jquery__WEBPACK_IMPORTED_MODULE_0___default()('.nav-link').click(function () {
+    jquery__WEBPACK_IMPORTED_MODULE_0___default()('.nav-link.active').removeClass('active');
+    jquery__WEBPACK_IMPORTED_MODULE_0___default()(this).addClass('active');
+    jquery__WEBPACK_IMPORTED_MODULE_0___default()('#folderWrapper').html('');
+    jquery__WEBPACK_IMPORTED_MODULE_0___default()('#folderWrapper').append('<div id="folderTree"></div>');
+    getFolders();
+    var inboxID = jquery__WEBPACK_IMPORTED_MODULE_0___default()('.nav-link.active').data('inbox-id');
+    jquery__WEBPACK_IMPORTED_MODULE_0___default().ajax({
+      type: "POST",
+      url: "/inbox",
+      data: {
+        'title': inboxName
+      },
+      dataType: "json",
+      headers: {
+        'X-CSRF-TOKEN': jquery__WEBPACK_IMPORTED_MODULE_0___default()('meta[name="csrf-token"]').attr('content')
+      },
+      success: function success(data) {
+        jquery__WEBPACK_IMPORTED_MODULE_0___default()('#inboxNavigation').append("\n                <li class=\"nav-item\">\n                    <a class=\"nav-link @once active @endonce update-inbox\" href=\"#\" data-inbox-id=\"".concat(data.inboxId, "\">").concat(data.inboxTitle, "</a>\n                </li>\n                ")); // TODO: fix this
 
-  loadFolders();
+        jquery__WEBPACK_IMPORTED_MODULE_0___default()('#newInbox').Modal('hide');
+      },
+      error: function error(data) {}
+    });
+  });
+  jquery__WEBPACK_IMPORTED_MODULE_0___default()('#renameFolderSave').click(function () {
+    var folderId = jquery__WEBPACK_IMPORTED_MODULE_0___default()(this).data('folder-ID');
+    var newName = jquery__WEBPACK_IMPORTED_MODULE_0___default()('#renameFolderNewName').val();
+    console.log(newName, folderId);
+    jquery__WEBPACK_IMPORTED_MODULE_0___default().ajax({
+      type: "PUT",
+      url: "/folder/" + folderId,
+      data: {
+        'title': newName
+      },
+      dataType: "json",
+      headers: {
+        'X-CSRF-TOKEN': jquery__WEBPACK_IMPORTED_MODULE_0___default()('meta[name="csrf-token"]').attr('content')
+      },
+      success: function success(data) {
+        getFolders();
+      },
+      error: function error(data) {}
+    });
+  });
+  jquery__WEBPACK_IMPORTED_MODULE_0___default()('body').on('click', '.folder-node', function () {
+    console.log('test');
+    jquery__WEBPACK_IMPORTED_MODULE_0___default()('.folder-node.active').removeClass('active');
+    jquery__WEBPACK_IMPORTED_MODULE_0___default()(this).addClass('active');
+  });
+  getFolders();
 
-  function loadFolders() {
+  function getFolders() {
+    var inboxID = jquery__WEBPACK_IMPORTED_MODULE_0___default()('.nav-link.active').data('inbox-id');
     jquery__WEBPACK_IMPORTED_MODULE_0___default().ajax({
       type: "GET",
-      url: "/folder",
-      data: {
-        'title': 'test'
-      },
+      url: "/folder/" + inboxID,
+      //data: {'title' : 'test'},
       headers: {
         'X-CSRF-TOKEN': jquery__WEBPACK_IMPORTED_MODULE_0___default()('meta[name="csrf-token"]').attr('content')
       },
       success: function success(data) {
         data = JSON.parse(data);
-        console.log(data);
-        console.log("test"); // https://github.com/chniter/bstreeview/issues/21
+        folderData = data; // https://github.com/chniter/bstreeview/issues/21
 
         jquery__WEBPACK_IMPORTED_MODULE_0___default()('#folderTree').bstreeview({
-          data: data
+          data: data,
+          openNodeLinkOnNewTab: true
         });
       },
-      error: function error(data) {
-        console.log(data);
-      }
+      error: function error(data) {}
     });
   }
 
@@ -8901,6 +8951,114 @@ jquery__WEBPACK_IMPORTED_MODULE_0___default()(document).ready(function () {// va
   // $('#folderTree').bstreeview({
   //     data: tree });
 });
+
+/***/ }),
+
+/***/ "./resources/js/rightMenu.js":
+/*!***********************************!*\
+  !*** ./resources/js/rightMenu.js ***!
+  \***********************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var jquery__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! jquery */ "./node_modules/jquery/dist/jquery.js");
+/* harmony import */ var jquery__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(jquery__WEBPACK_IMPORTED_MODULE_0__);
+ // Trigger action when the contexmenu is about to be shown
+
+var id;
+var menuOrder;
+jquery__WEBPACK_IMPORTED_MODULE_0___default()('body').on('contextmenu', '.folder-node', function (event) {
+  id = jquery__WEBPACK_IMPORTED_MODULE_0___default()(this).attr('id');
+  menuOrder = jquery__WEBPACK_IMPORTED_MODULE_0___default()(this).attr('aria-level'); // Avoid the real one
+
+  event.preventDefault(); // Show contextmenu
+
+  if (menuOrder == 1) {
+    jquery__WEBPACK_IMPORTED_MODULE_0___default()(".custom-menu li:not(:first)").addClass('disabled');
+  } else {
+    jquery__WEBPACK_IMPORTED_MODULE_0___default()(".custom-menu li:not(:first)").removeClass('disabled');
+  }
+
+  jquery__WEBPACK_IMPORTED_MODULE_0___default()(".custom-menu").finish().toggle(100). // In the right position (the mouse)
+  css({
+    top: event.pageY + "px",
+    left: event.pageX + "px"
+  });
+}); // If the document is clicked somewhere
+
+jquery__WEBPACK_IMPORTED_MODULE_0___default()(document).bind("mousedown", function (e) {
+  // If the clicked element is not the menu
+  if (!jquery__WEBPACK_IMPORTED_MODULE_0___default()(e.target).parents(".custom-menu").length > 0) {
+    // Hide it
+    jquery__WEBPACK_IMPORTED_MODULE_0___default()(".custom-menu").hide(100);
+  }
+}); // If the menu element is clicked
+
+jquery__WEBPACK_IMPORTED_MODULE_0___default()(".custom-menu li").click(function () {
+  // This is the triggered action name
+  switch (jquery__WEBPACK_IMPORTED_MODULE_0___default()(this).attr('data-action')) {
+    // A case for each action. Your actions here
+    case 'new':
+      addNewFolder(id);
+      break;
+
+    case "rename":
+      var modalRename = new bootstrap.Modal(document.getElementById('renameFolder'));
+      var currentTitle = jquery__WEBPACK_IMPORTED_MODULE_0___default()("#" + id).html();
+      console.log(currentTitle);
+      jquery__WEBPACK_IMPORTED_MODULE_0___default()('#renameFolderSave').data('folder-ID', id);
+      jquery__WEBPACK_IMPORTED_MODULE_0___default()("#renameFolderNewName").val(currentTitle);
+      jquery__WEBPACK_IMPORTED_MODULE_0___default()("#renameFolderNameTitle").html(currentTitle);
+      modalRename.show();
+      break;
+  } // Hide it AFTER the action was triggered
+
+
+  jquery__WEBPACK_IMPORTED_MODULE_0___default()(".custom-menu").hide(100);
+});
+
+function addNewFolder(id) {
+  var inboxID = jquery__WEBPACK_IMPORTED_MODULE_0___default()('.nav-link.active').data('inbox-id');
+  jquery__WEBPACK_IMPORTED_MODULE_0___default().ajax({
+    type: "POST",
+    url: "/folder",
+    data: {
+      'id': id,
+      'inbox_id': inboxID
+    },
+    dataType: "json",
+    headers: {
+      'X-CSRF-TOKEN': jquery__WEBPACK_IMPORTED_MODULE_0___default()('meta[name="csrf-token"]').attr('content')
+    },
+    success: function success(data) {
+      loadFolders();
+    },
+    error: function error(data) {}
+  });
+}
+
+function loadFolders() {
+  var inboxID = jquery__WEBPACK_IMPORTED_MODULE_0___default()('.nav-link.active').data('inbox-id');
+  jquery__WEBPACK_IMPORTED_MODULE_0___default().ajax({
+    type: "GET",
+    url: "/folder/" + inboxID,
+    //data: {'title' : 'test'},
+    headers: {
+      'X-CSRF-TOKEN': jquery__WEBPACK_IMPORTED_MODULE_0___default()('meta[name="csrf-token"]').attr('content')
+    },
+    success: function success(data) {
+      data = JSON.parse(data);
+      jquery__WEBPACK_IMPORTED_MODULE_0___default()('#folderWrapper').html('');
+      jquery__WEBPACK_IMPORTED_MODULE_0___default()('#folderWrapper').append('<div id="folderTree"></div>'); // https://github.com/chniter/bstreeview/issues/21
+
+      jquery__WEBPACK_IMPORTED_MODULE_0___default()('#folderTree').bstreeview({
+        data: data
+      });
+    },
+    error: function error(data) {}
+  });
+}
 
 /***/ }),
 

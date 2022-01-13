@@ -16,7 +16,7 @@ require('bstreeview/src/js/bstreeview');
 require('select2');
 require('./inboxTree');
 require('./inbox');
-
+require('./rightMenu');
 import Alpine from 'alpinejs';
 
 window.Alpine = Alpine;
