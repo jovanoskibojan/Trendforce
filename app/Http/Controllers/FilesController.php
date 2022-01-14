@@ -42,11 +42,11 @@ class FilesController extends Controller
         $size = $request->file->getSize();
 
         $request->file->move(public_path('files'), $fileName);
-
+dd(12);
         File::create([
             'folder_id' => $request->folder_id,
             'title' => $fileName,
-            'file_name' => $type,
+            'file_name' => $originalName,
             'order' => 0,
             'type' => $type,
             'content' => '',

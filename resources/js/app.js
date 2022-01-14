@@ -13,16 +13,15 @@ import $ from "jquery";
 import 'suneditor/dist/css/suneditor.min.css';
 import suneditor from 'suneditor';
 import plugins from 'suneditor/src/plugins';
-require('dropzone/dist/dropzone-min');
 require('bstreeview/src/js/bstreeview');
 require('select2');
 require('./inboxTree');
 require('./inbox');
 require('./rightMenu');
 import Dropzone from "dropzone";
+window.Dropzone = Dropzone;
 import Alpine from 'alpinejs';
 window.Alpine = Alpine;
-window.dropzone = Dropzone;
 
 Alpine.start();
 
@@ -48,7 +47,7 @@ suneditor.create('sample', {
  });
 
 $(document).ready(function () {
-    //$("#uploadField").dropzone({ url: "/files/" });
+    //let myDropzone = new Dropzone("div#uploadField", { url: "/files"});
 });
 // // You can also load what you want
 // suneditor.create('sample', {

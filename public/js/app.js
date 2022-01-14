@@ -8674,8 +8674,6 @@ window.Sortable = sortablejs_modular_sortable_complete_esm_js__WEBPACK_IMPORTED_
 
 
 
-__webpack_require__(/*! dropzone/dist/dropzone-min */ "./node_modules/dropzone/dist/dropzone-min.js");
-
 __webpack_require__(/*! bstreeview/src/js/bstreeview */ "./node_modules/bstreeview/src/js/bstreeview.js");
 
 __webpack_require__(/*! select2 */ "./node_modules/select2/dist/js/select2.js");
@@ -8687,9 +8685,9 @@ __webpack_require__(/*! ./inbox */ "./resources/js/inbox.js");
 __webpack_require__(/*! ./rightMenu */ "./resources/js/rightMenu.js");
 
 
+window.Dropzone = dropzone__WEBPACK_IMPORTED_MODULE_3__["default"];
 
 window.Alpine = alpinejs__WEBPACK_IMPORTED_MODULE_4__["default"];
-window.dropzone = dropzone__WEBPACK_IMPORTED_MODULE_3__["default"];
 alpinejs__WEBPACK_IMPORTED_MODULE_4__["default"].start();
 suneditor__WEBPACK_IMPORTED_MODULE_5__["default"].create('sample', {
   plugins: suneditor_src_plugins__WEBPACK_IMPORTED_MODULE_6__["default"],
@@ -8702,7 +8700,7 @@ suneditor__WEBPACK_IMPORTED_MODULE_5__["default"].create('sample', {
   // You must add the "imageGalleryUrl".
   ['fullScreen', 'showBlocks', 'codeView'], ['print'], ['save', 'template']]
 });
-jquery__WEBPACK_IMPORTED_MODULE_2___default()(document).ready(function () {//$("#uploadField").dropzone({ url: "/files/" });
+jquery__WEBPACK_IMPORTED_MODULE_2___default()(document).ready(function () {//let myDropzone = new Dropzone("div#uploadField", { url: "/files"});
 }); // // You can also load what you want
 // suneditor.create('sample', {
 //     plugins: [plugins.font],
@@ -8913,6 +8911,18 @@ jquery__WEBPACK_IMPORTED_MODULE_0___default()(document).ready(function () {
   jquery__WEBPACK_IMPORTED_MODULE_0___default()("#img").click(function () {
     jquery__WEBPACK_IMPORTED_MODULE_0___default()('.previewArea').hide();
     jquery__WEBPACK_IMPORTED_MODULE_0___default()('#imagePreview').show();
+  });
+  var myDropzone = new dropzone__WEBPACK_IMPORTED_MODULE_1__.Dropzone("div#uploadField", {
+    url: "/fileUpload",
+    method: "post",
+    headers: {
+      'X-CSRF-TOKEN': jquery__WEBPACK_IMPORTED_MODULE_0___default()('meta[name="csrf-token"]').attr('content')
+    }
+  });
+  myDropzone.on("sending", function (file, xhr, formData) {
+    // Will sendthe filesize along with the file as POST data.
+    var folderId = jquery__WEBPACK_IMPORTED_MODULE_0___default()('.folder-node.active').attr('id');
+    formData.append("folder_id", folderId);
   });
 });
 

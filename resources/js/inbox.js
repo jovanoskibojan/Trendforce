@@ -158,5 +158,18 @@ $(document).ready(function () {
         $('.previewArea').hide();
         $('#imagePreview').show();
     });
+    let myDropzone = new Dropzone("div#uploadField", {
+        url: "/fileUpload",
+        method:"post",
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        },
+    });
+    myDropzone.on("sending", function(file, xhr, formData) {
 
+// Will sendthe filesize along with the file as POST data.
+        let folderId = $('.folder-node.active').attr('id');
+        formData.append("folder_id", folderId);
+
+    });
 });

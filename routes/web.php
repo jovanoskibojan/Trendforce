@@ -20,4 +20,4 @@ Route::middleware(['auth:sanctum', 'verified'])->get('/dashboard', function () {
 
 Route::resource('inbox', 'App\Http\Controllers\InboxController');
 Route::resource('folder', 'App\Http\Controllers\FolderController');
-Route::resource('files', 'App\Http\Controllers\FilesController');
+Route::resource('fileUpload', 'App\Http\Controllers\FilesController');
