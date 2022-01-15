@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\FilesController;
 use Illuminate\Support\Facades\Route;
 /*
 |--------------------------------------------------------------------------
@@ -20,4 +21,7 @@ Route::middleware(['auth:sanctum', 'verified'])->get('/dashboard', function () {
 
 Route::resource('inbox', 'App\Http\Controllers\InboxController');
 Route::resource('folder', 'App\Http\Controllers\FolderController');
+Route::get('fileUpload/getAll', [FilesController::class, 'getAll']);
+Route::get('fileUpload/get', [FilesController::class, 'get']);
+Route::post('fileUpload/reorder', [FilesController::class, 'folderReorder']);
 Route::resource('fileUpload', 'App\Http\Controllers\FilesController');

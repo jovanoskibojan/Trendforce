@@ -12,14 +12,15 @@ import $ from "jquery";
 //$("[data-toggle=tooltip]").tooltip();
 import 'suneditor/dist/css/suneditor.min.css';
 import suneditor from 'suneditor';
-import plugins from 'suneditor/src/plugins';
+import plugins from 'suneditor/src/plugins'
+import Dropzone from "dropzone";
+import ('dropzone/dist/dropzone.css');
+window.Dropzone = Dropzone;
 require('bstreeview/src/js/bstreeview');
 require('select2');
 require('./inboxTree');
 require('./inbox');
 require('./rightMenu');
-import Dropzone from "dropzone";
-window.Dropzone = Dropzone;
 import Alpine from 'alpinejs';
 window.Alpine = Alpine;
 

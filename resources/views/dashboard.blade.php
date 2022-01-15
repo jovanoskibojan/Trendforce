@@ -21,47 +21,16 @@
                 </div>
             </div>
             <div id="mainContent" class="">
-                <div id="test" class="row justify-content-center">
+                <div id="test" class="row justify-content-center" style="display: none>
                     @if (session('status'))
                         <div class="alert alert-success" role="alert">
                             {{ session('status') }}
                         </div>
                     @endif
-                    <div id="uploadField">
-                        Click or drag to upload
-                    </div>
-                    <div class="card-wrapper" draggable="false">
-                        <div class="card inbox" id="ppt">
-                            <div class="card-header tooltipSelector" style="background-color: #f7f7f7"><i class="bi bi-arrows-move my-handle"></i> <span>Powerpoint</span></div>
-                            <div class="card-body" data-current-icon="file-earmark-bar-graph-fill">
-                                <i class="bi bi-file-earmark-ppt-fill"></i>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="card-wrapper" draggable="false">
-                        <div class="card inbox" id="pdf">
-                            <div class="card-header" style="background-color: #f7f7f7"><i class="bi bi-arrows-move my-handle"></i> <span>PDF Document</span></div>
-                            <div class="card-body" data-current-icon="file-earmark-bar-graph-fill">
-                                <i class="bi bi-file-earmark-pdf"></i>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="card-wrapper" draggable="false">
-                        <div class="card inbox" id="txt">
-                            <div class="card-header" style="background-color: #f7f7f7"><i class="bi bi-arrows-move my-handle"></i> <span>Text file</span></div>
-                            <div class="card-body" data-current-icon="file-earmark-bar-graph-fill">
-                                <i class="bi bi-file-richtext-fill"></i>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="card-wrapper" draggable="false">
-                        <div class="card inbox" id="img">
-                            <div class="card-header" style="background-color: #f7f7f7"><i class="bi bi-arrows-move my-handle"></i> <span>Imaged</span></div>
-                            <div class="card-body" data-current-icon="file-earmark-bar-graph-fill">
-                                <i class="bi bi-card-image"></i>
-                            </div>
-                        </div>
-                    </div>
+                        <form action="/fileUpload"
+                              class="dropzone"
+                              id="uploadField"></form>
+                    <div id="allFiles"></div>
                 </div>
             </div>
         </div>
@@ -152,6 +121,7 @@
     <!-- File preview -->
     <div class="offcanvas offcanvas-start" data-bs-scroll="true" data-bs-backdrop="false" tabindex="-1" id="documentPreview2" aria-labelledby="documentPreviewLabel" style="min-width: 850px">
         <div class="offcanvas-header">
+            <a id="downloadDocument" href="#" class="btn btn-success" download="">Download</a>
             <h5 class="offcanvas-title" id="documentPreviewLabel">Colored with scrolling</h5>
             <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
         </div>
@@ -167,6 +137,9 @@
             </div>
             <div style="display: none" class="previewArea" id="documentPreview">
                 <textarea id="sample"></textarea>
+            </div>
+            <div style="display: none" class="previewArea" id="noPreview">
+                <p>No preview</p>
             </div>
         </div>
     </div>

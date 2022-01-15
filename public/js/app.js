@@ -8674,6 +8674,9 @@ window.Sortable = sortablejs_modular_sortable_complete_esm_js__WEBPACK_IMPORTED_
 
 
 
+__webpack_require__.e(/*! import() */ "node_modules_dropzone_dist_dropzone_css").then(__webpack_require__.bind(__webpack_require__, /*! dropzone/dist/dropzone.css */ "./node_modules/dropzone/dist/dropzone.css"));
+window.Dropzone = dropzone__WEBPACK_IMPORTED_MODULE_3__["default"];
+
 __webpack_require__(/*! bstreeview/src/js/bstreeview */ "./node_modules/bstreeview/src/js/bstreeview.js");
 
 __webpack_require__(/*! select2 */ "./node_modules/select2/dist/js/select2.js");
@@ -8684,8 +8687,6 @@ __webpack_require__(/*! ./inbox */ "./resources/js/inbox.js");
 
 __webpack_require__(/*! ./rightMenu */ "./resources/js/rightMenu.js");
 
-
-window.Dropzone = dropzone__WEBPACK_IMPORTED_MODULE_3__["default"];
 
 window.Alpine = alpinejs__WEBPACK_IMPORTED_MODULE_4__["default"];
 alpinejs__WEBPACK_IMPORTED_MODULE_4__["default"].start();
@@ -8804,8 +8805,32 @@ jquery__WEBPACK_IMPORTED_MODULE_0___default()(document).ready(function () {
     updateFolder(folderId, newColor, 'color');
   });
   jquery__WEBPACK_IMPORTED_MODULE_0___default()('body').on('click', '.folder-node', function () {
+    jquery__WEBPACK_IMPORTED_MODULE_0___default()('#test').show();
     jquery__WEBPACK_IMPORTED_MODULE_0___default()('.folder-node.active').removeClass('active');
     jquery__WEBPACK_IMPORTED_MODULE_0___default()(this).addClass('active');
+    var folderId = jquery__WEBPACK_IMPORTED_MODULE_0___default()(this).attr('id');
+    jquery__WEBPACK_IMPORTED_MODULE_0___default().ajax({
+      type: "GET",
+      url: 'fileUpload/getAll',
+      data: {
+        'folder_id': folderId
+      },
+      dataType: "json",
+      headers: {
+        'X-CSRF-TOKEN': jquery__WEBPACK_IMPORTED_MODULE_0___default()('meta[name="csrf-token"]').attr('content')
+      },
+      success: function success(data) {
+        var allFilesWrapper = jquery__WEBPACK_IMPORTED_MODULE_0___default()('#allFiles');
+        var fileIcon;
+        allFilesWrapper.html('');
+        jquery__WEBPACK_IMPORTED_MODULE_0___default().each(data, function (key, value) {
+          fileIcon = getFileIcon(value.type);
+          console.log(value.file_name);
+          allFilesWrapper.append("\n                        <div class=\"card-wrapper\" draggable=\"false\" id=\"".concat(value.id, "\" data-file-name=\"").concat(value.title, "\" data-file-type=\"").concat(value.type, "\">\n                            <div class=\"card inbox\" id=\"\">\n                                <div class=\"card-header tooltipSelector\" style=\"background-color: #f7f7f7\"><i class=\"bi bi-arrows-move my-handle\"></i> <span class=\"file-name\">").concat(value.file_name, "</span></div>\n                                <div class=\"card-body\" data-current-icon=\"file-earmark-bar-graph-fill\">\n                                    <i class=\"bi bi-").concat(fileIcon, "\"></i>\n                                </div>\n                            </div>\n                        </div>\n                    "));
+        });
+      },
+      error: function error(data) {}
+    });
   });
   jquery__WEBPACK_IMPORTED_MODULE_0___default()('body').on('click', '#renameInboxSave', function () {
     var inboxId = jquery__WEBPACK_IMPORTED_MODULE_0___default()(this).data('inbox-ID');
@@ -8850,30 +8875,52 @@ jquery__WEBPACK_IMPORTED_MODULE_0___default()(document).ready(function () {
     });
   }
 
-  var listWithHandle = document.getElementById('test');
+  var listWithHandle = document.getElementById('allFiles');
   Sortable.create(listWithHandle, {
     handle: '.my-handle',
     animation: 150,
     onEnd: function onEnd(
     /**Event*/
     evt) {
-      var itemEl = evt.item; // dragged HTMLElement
+      var movedId = jquery__WEBPACK_IMPORTED_MODULE_0___default()('.card-wrapper').eq(evt.newDraggableIndex).attr('id');
+      var folderId = jquery__WEBPACK_IMPORTED_MODULE_0___default()('.active.folder-node').attr('id');
+      var prevElement;
 
-      console.log(evt.to); // target list
+      if (evt.newDraggableIndex == 0) {
+        prevElement = jquery__WEBPACK_IMPORTED_MODULE_0___default()('.card-wrapper').eq(evt.newDraggableIndex).next().attr('id');
+      } else {
+        prevElement = jquery__WEBPACK_IMPORTED_MODULE_0___default()('.card-wrapper').eq(evt.newDraggableIndex).prev().attr('id');
+      }
 
-      console.log(evt.from); // previous list
+      console.log(prevElement);
+      jquery__WEBPACK_IMPORTED_MODULE_0___default().ajax({
+        type: 'POST',
+        url: '/fileUpload/reorder',
+        data: {
+          'movedId': movedId,
+          'folderId': folderId,
+          'prevElement': prevElement,
+          'newIndex': evt.newDraggableIndex
+        },
+        dataType: "json",
+        headers: {
+          'X-CSRF-TOKEN': jquery__WEBPACK_IMPORTED_MODULE_0___default()('meta[name="csrf-token"]').attr('content')
+        },
+        success: function success(data) {},
+        error: function error(data) {}
+        /*
+        console.log(draggedElement, replacedElement);
+        console.log(evt.to);    // target list
+        console.log(evt.from);  // previous list
+        console.log("old index:" + evt.oldIndex);  // element's old index within old parent
+        console.log("new index: " + evt.newIndex);  // element's new index within new parent
+        console.log("old draggable index: " + evt.oldDraggableIndex); // element's old index within old parent, only counting draggable elements
+        console.log("new draggable index: " + evt.newDraggableIndex); // element's new index within new parent, only counting draggable elements
+        console.log(evt.clone); // the clone element
+        console.log("pullMode: " + evt.pullMode);  // when item is in another sortable: `"clone"` if cloning, `true` if moving
+         */
 
-      console.log("old index:" + evt.oldIndex); // element's old index within old parent
-
-      console.log("new index: " + evt.newIndex); // element's new index within new parent
-
-      console.log("old draggable index: " + evt.oldDraggableIndex); // element's old index within old parent, only counting draggable elements
-
-      console.log("new draggable index: " + evt.newDraggableIndex); // element's new index within new parent, only counting draggable elements
-
-      console.log(evt.clone); // the clone element
-
-      console.log("pullMode: " + evt.pullMode); // when item is in another sortable: `"clone"` if cloning, `true` if moving
+      });
     }
   });
 
@@ -8912,17 +8959,70 @@ jquery__WEBPACK_IMPORTED_MODULE_0___default()(document).ready(function () {
     jquery__WEBPACK_IMPORTED_MODULE_0___default()('.previewArea').hide();
     jquery__WEBPACK_IMPORTED_MODULE_0___default()('#imagePreview').show();
   });
-  var myDropzone = new dropzone__WEBPACK_IMPORTED_MODULE_1__.Dropzone("div#uploadField", {
+  var myDropzone = new dropzone__WEBPACK_IMPORTED_MODULE_1__.Dropzone("#uploadField", {
     url: "/fileUpload",
     method: "post",
     headers: {
       'X-CSRF-TOKEN': jquery__WEBPACK_IMPORTED_MODULE_0___default()('meta[name="csrf-token"]').attr('content')
+    },
+    complete: function complete(file) {
+      var _this = this;
+
+      setTimeout(function () {
+        _this.removeFile(file); // right here after 3 seconds you can clear
+
+      }, 3000);
+      jquery__WEBPACK_IMPORTED_MODULE_0___default()('.folder-node.active').click();
     }
   });
   myDropzone.on("sending", function (file, xhr, formData) {
-    // Will sendthe filesize along with the file as POST data.
     var folderId = jquery__WEBPACK_IMPORTED_MODULE_0___default()('.folder-node.active').attr('id');
     formData.append("folder_id", folderId);
+  });
+
+  function getFileIcon(fileType) {
+    if (fileType.indexOf('presentation') >= 0) {
+      return 'file-earmark-ppt-fill';
+    } else if (fileType.indexOf('pdf') >= 0) {
+      return 'file-earmark-pdf';
+    } else if (fileType.indexOf('customText') >= 0) {
+      return 'file-richtext-fill';
+    } else if (fileType.indexOf('image') >= 0) {
+      return 'card-image';
+    } else {
+      return 'file-binary-fill';
+    }
+  }
+
+  jquery__WEBPACK_IMPORTED_MODULE_0___default()('body').on('click', '.card-wrapper', function () {
+    var docTitle = jquery__WEBPACK_IMPORTED_MODULE_0___default()(this).find('.file-name').first().html();
+    var fileType = jquery__WEBPACK_IMPORTED_MODULE_0___default()(this).data('file-type');
+    console.log(fileType);
+    var fileName = jquery__WEBPACK_IMPORTED_MODULE_0___default()(this).data('file-name');
+    var myOffcanvas = document.getElementById('documentPreview2');
+    var bsOffcanvas = new bootstrap.Offcanvas(myOffcanvas);
+    jquery__WEBPACK_IMPORTED_MODULE_0___default()('#documentPreviewLabel').html(docTitle);
+    jquery__WEBPACK_IMPORTED_MODULE_0___default()('.previewArea').hide();
+
+    if (fileType.indexOf('presentation') >= 0) {
+      jquery__WEBPACK_IMPORTED_MODULE_0___default()('#powerpointPreview iframe').attr('src', 'https://view.officeapps.live.com/op/view.aspx?src=http://trendforce.io/files/' + fileName);
+      jquery__WEBPACK_IMPORTED_MODULE_0___default()('#powerpointPreview').show();
+    } else if (fileType.indexOf('pdf') >= 0) {
+      jquery__WEBPACK_IMPORTED_MODULE_0___default()('#pdfPreview embed').attr('src', 'http://trendforce.io/files/' + fileName);
+      jquery__WEBPACK_IMPORTED_MODULE_0___default()('#pdfPreview').show();
+    } else if (fileType.indexOf('customText') >= 0) {
+      jquery__WEBPACK_IMPORTED_MODULE_0___default()('#documentPreview #sample').html('test');
+      jquery__WEBPACK_IMPORTED_MODULE_0___default()('#documentPreview').show();
+    } else if (fileType.indexOf('image') >= 0) {
+      jquery__WEBPACK_IMPORTED_MODULE_0___default()('#imagePreview img').attr('src', 'http://trendforce.io/files/' + fileName);
+      jquery__WEBPACK_IMPORTED_MODULE_0___default()('#imagePreview').show();
+    } else {
+      jquery__WEBPACK_IMPORTED_MODULE_0___default()('#noPreview').show();
+    }
+
+    jquery__WEBPACK_IMPORTED_MODULE_0___default()('#downloadDocument').attr('href', 'http://trendforce.io/files/' + fileName);
+    jquery__WEBPACK_IMPORTED_MODULE_0___default()('#downloadDocument').attr('download', docTitle);
+    bsOffcanvas.show();
   });
 });
 
@@ -83857,6 +83957,39 @@ module.exports = JSON.parse('{"_from":"axios@^0.21","_id":"axios@0.21.4","_inBun
 /******/ 		};
 /******/ 	})();
 /******/ 	
+/******/ 	/* webpack/runtime/ensure chunk */
+/******/ 	(() => {
+/******/ 		__webpack_require__.f = {};
+/******/ 		// This file contains only the entry chunk.
+/******/ 		// The chunk loading function for additional chunks
+/******/ 		__webpack_require__.e = (chunkId) => {
+/******/ 			return Promise.all(Object.keys(__webpack_require__.f).reduce((promises, key) => {
+/******/ 				__webpack_require__.f[key](chunkId, promises);
+/******/ 				return promises;
+/******/ 			}, []));
+/******/ 		};
+/******/ 	})();
+/******/ 	
+/******/ 	/* webpack/runtime/get javascript chunk filename */
+/******/ 	(() => {
+/******/ 		// This function allow to reference async chunks
+/******/ 		__webpack_require__.u = (chunkId) => {
+/******/ 			// return url for filenames not based on template
+/******/ 			if (chunkId === "node_modules_dropzone_dist_dropzone_css") return "js/" + chunkId + ".js";
+/******/ 			// return url for filenames based on template
+/******/ 			return undefined;
+/******/ 		};
+/******/ 	})();
+/******/ 	
+/******/ 	/* webpack/runtime/get mini-css chunk filename */
+/******/ 	(() => {
+/******/ 		// This function allow to reference all chunks
+/******/ 		__webpack_require__.miniCssF = (chunkId) => {
+/******/ 			// return url for filenames based on template
+/******/ 			return "" + chunkId + ".css";
+/******/ 		};
+/******/ 	})();
+/******/ 	
 /******/ 	/* webpack/runtime/global */
 /******/ 	(() => {
 /******/ 		__webpack_require__.g = (function() {
@@ -83872,6 +84005,52 @@ module.exports = JSON.parse('{"_from":"axios@^0.21","_id":"axios@0.21.4","_inBun
 /******/ 	/* webpack/runtime/hasOwnProperty shorthand */
 /******/ 	(() => {
 /******/ 		__webpack_require__.o = (obj, prop) => (Object.prototype.hasOwnProperty.call(obj, prop))
+/******/ 	})();
+/******/ 	
+/******/ 	/* webpack/runtime/load script */
+/******/ 	(() => {
+/******/ 		var inProgress = {};
+/******/ 		// data-webpack is not used as build has no uniqueName
+/******/ 		// loadScript function to load a script via script tag
+/******/ 		__webpack_require__.l = (url, done, key, chunkId) => {
+/******/ 			if(inProgress[url]) { inProgress[url].push(done); return; }
+/******/ 			var script, needAttach;
+/******/ 			if(key !== undefined) {
+/******/ 				var scripts = document.getElementsByTagName("script");
+/******/ 				for(var i = 0; i < scripts.length; i++) {
+/******/ 					var s = scripts[i];
+/******/ 					if(s.getAttribute("src") == url) { script = s; break; }
+/******/ 				}
+/******/ 			}
+/******/ 			if(!script) {
+/******/ 				needAttach = true;
+/******/ 				script = document.createElement('script');
+/******/ 		
+/******/ 				script.charset = 'utf-8';
+/******/ 				script.timeout = 120;
+/******/ 				if (__webpack_require__.nc) {
+/******/ 					script.setAttribute("nonce", __webpack_require__.nc);
+/******/ 				}
+/******/ 		
+/******/ 				script.src = url;
+/******/ 			}
+/******/ 			inProgress[url] = [done];
+/******/ 			var onScriptComplete = (prev, event) => {
+/******/ 				// avoid mem leaks in IE.
+/******/ 				script.onerror = script.onload = null;
+/******/ 				clearTimeout(timeout);
+/******/ 				var doneFns = inProgress[url];
+/******/ 				delete inProgress[url];
+/******/ 				script.parentNode && script.parentNode.removeChild(script);
+/******/ 				doneFns && doneFns.forEach((fn) => (fn(event)));
+/******/ 				if(prev) return prev(event);
+/******/ 			}
+/******/ 			;
+/******/ 			var timeout = setTimeout(onScriptComplete.bind(null, undefined, { type: 'timeout', target: script }), 120000);
+/******/ 			script.onerror = onScriptComplete.bind(null, script.onerror);
+/******/ 			script.onload = onScriptComplete.bind(null, script.onload);
+/******/ 			needAttach && document.head.appendChild(script);
+/******/ 		};
 /******/ 	})();
 /******/ 	
 /******/ 	/* webpack/runtime/make namespace object */
@@ -83894,6 +84073,11 @@ module.exports = JSON.parse('{"_from":"axios@^0.21","_id":"axios@0.21.4","_inBun
 /******/ 		};
 /******/ 	})();
 /******/ 	
+/******/ 	/* webpack/runtime/publicPath */
+/******/ 	(() => {
+/******/ 		__webpack_require__.p = "/";
+/******/ 	})();
+/******/ 	
 /******/ 	/* webpack/runtime/jsonp chunk loading */
 /******/ 	(() => {
 /******/ 		// no baseURI
@@ -83907,7 +84091,44 @@ module.exports = JSON.parse('{"_from":"axios@^0.21","_id":"axios@0.21.4","_inBun
 /******/ 			"css/app": 0
 /******/ 		};
 /******/ 		
-/******/ 		// no chunk on demand loading
+/******/ 		__webpack_require__.f.j = (chunkId, promises) => {
+/******/ 				// JSONP chunk loading for javascript
+/******/ 				var installedChunkData = __webpack_require__.o(installedChunks, chunkId) ? installedChunks[chunkId] : undefined;
+/******/ 				if(installedChunkData !== 0) { // 0 means "already installed".
+/******/ 		
+/******/ 					// a Promise means "currently loading".
+/******/ 					if(installedChunkData) {
+/******/ 						promises.push(installedChunkData[2]);
+/******/ 					} else {
+/******/ 						if(!/^css\/(app|style)$/.test(chunkId)) {
+/******/ 							// setup Promise in chunk cache
+/******/ 							var promise = new Promise((resolve, reject) => (installedChunkData = installedChunks[chunkId] = [resolve, reject]));
+/******/ 							promises.push(installedChunkData[2] = promise);
+/******/ 		
+/******/ 							// start chunk loading
+/******/ 							var url = __webpack_require__.p + __webpack_require__.u(chunkId);
+/******/ 							// create error before stack unwound to get useful stacktrace later
+/******/ 							var error = new Error();
+/******/ 							var loadingEnded = (event) => {
+/******/ 								if(__webpack_require__.o(installedChunks, chunkId)) {
+/******/ 									installedChunkData = installedChunks[chunkId];
+/******/ 									if(installedChunkData !== 0) installedChunks[chunkId] = undefined;
+/******/ 									if(installedChunkData) {
+/******/ 										var errorType = event && (event.type === 'load' ? 'missing' : event.type);
+/******/ 										var realSrc = event && event.target && event.target.src;
+/******/ 										error.message = 'Loading chunk ' + chunkId + ' failed.\n(' + errorType + ': ' + realSrc + ')';
+/******/ 										error.name = 'ChunkLoadError';
+/******/ 										error.type = errorType;
+/******/ 										error.request = realSrc;
+/******/ 										installedChunkData[1](error);
+/******/ 									}
+/******/ 								}
+/******/ 							};
+/******/ 							__webpack_require__.l(url, loadingEnded, "chunk-" + chunkId, chunkId);
+/******/ 						} else installedChunks[chunkId] = 0;
+/******/ 					}
+/******/ 				}
+/******/ 		};
 /******/ 		
 /******/ 		// no prefetching
 /******/ 		

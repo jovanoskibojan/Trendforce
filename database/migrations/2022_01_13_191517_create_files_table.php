@@ -18,7 +18,7 @@ class CreateFilesTable extends Migration
             $table->unsignedBigInteger('folder_id');
             $table->string('title');
             $table->string('file_name');
-            $table->integer('order');
+            $table->float('order');
             $table->string('type');
             $table->longText('content');
             $table->string('size');
