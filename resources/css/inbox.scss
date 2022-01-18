@@ -40,9 +40,13 @@
         flex-direction: row;
         flex-wrap: nowrap;
         align-content: center;
-        justify-content: center;
-        align-items: center;
-        font-size: 55px;
+        justify-content: left;
+        align-items: baseline;
+        font-size: 12px !important;
+        text-overflow: ellipsis;
+        padding: 2px;
+        overflow: hidden;
+        text-align: justify;
     }
 }
 nav {
@@ -55,7 +59,7 @@ nav {
     width: 300px;
     position: fixed;
     height: 100%;
-    background: white;
+    background: #f8f9fa;
     padding-top: 10px;
     #folderTree {
         border: none !important;
@@ -64,9 +68,12 @@ nav {
 }
 #mainContent {
     width: 100%;
-    height: 100%;
     align-content: flex-start;
     padding-left: 300px;
+    overflow: hidden;
+    overflow-y: scroll;
+    height: 595px;
+
 }
 #documentPreviewWrapper {
 
@@ -91,4 +98,31 @@ nav {
     i {
         cursor: grabbing;
     }
+}
+.listWrapper {
+    background: #f8f9fa;
+    width: 210px;
+    margin: 10px;
+    padding-top: 15px;
+    .list {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        height: 100%;
+    }
+
+    p {
+        width: 100%;
+        padding-left: 15px;
+        text-align: left;
+        font-weight: 700;
+        font-size: 1.25rem
+    }
+    input {
+        margin: 5px;
+        width: 95%;
+    }
+}
+#allLists {
+    display: flex;
 }

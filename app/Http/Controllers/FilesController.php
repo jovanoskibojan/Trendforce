@@ -77,19 +77,6 @@ class FilesController extends Controller
      */
     public function store(Request $request)
     {
-        if(!is_numeric($request->folder_id)) {
-            return response('Folder not selected, file not uploaded', 500)
-                ->header('Content-Type', 'text/plain');
-        }
-
-        $previousFile = $files = File::where('folder_id', $request->folder_id)->orderBy('order', 'DESC')->first(['id', 'order']);
-        if(is_null($previousFile)) {
-            $lastInsert = 0;
-        }
-        else {
-            $lastInsert = $previousFile->order;
-            $lastInsert++;
-        }
         $fileName = hash('sha256', microtime()) . '.'. $request->file->extension();
         $originalName = $request->file->getClientOriginalName();
 
@@ -99,12 +86,10 @@ class FilesController extends Controller
         $request->file->move(public_path('files'), $fileName);
 
         return File::create([
-            'folder_id' => $request->folder_id,
+            'item_id' => $request->item_id,
             'title' => $fileName,
             'file_name' => $originalName,
-            'order' => $lastInsert,
             'type' => $type,
-            'content' => '',
             'size' => $size,
         ]);
     }

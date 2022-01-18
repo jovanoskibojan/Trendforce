@@ -21,16 +21,19 @@
                 </div>
             </div>
             <div id="mainContent" class="">
-                <div id="test" class="row justify-content-center" style="display: none>
+                <div id="test" class="row justify-content-center" style="">
                     @if (session('status'))
                         <div class="alert alert-success" role="alert">
                             {{ session('status') }}
                         </div>
                     @endif
-                        <form action="/fileUpload"
-                              class="dropzone"
-                              id="uploadField"></form>
-                    <div id="allFiles"></div>
+                        <div class="row mt-3">
+                            <div class="col-3">
+                                <button id="newList" type="button" class="btn btn-primary">New list</button>
+                            </div>
+                        </div>
+                    <div id="allLists">
+                    </div>
                 </div>
             </div>
         </div>
@@ -119,28 +122,16 @@
         </div>
     </div>
     <!-- File preview -->
-    <div class="offcanvas offcanvas-start" data-bs-scroll="true" data-bs-backdrop="false" tabindex="-1" id="documentPreview2" aria-labelledby="documentPreviewLabel" style="min-width: 850px">
+    <div class="offcanvas offcanvas-start" data-bs-scroll="true" data-bs-backdrop="false" tabindex="-1" id="newListItem" aria-labelledby="documentPreviewLabel" style="min-width: 850px">
         <div class="offcanvas-header">
-            <a id="downloadDocument" href="#" class="btn btn-success" download="">Download</a>
+            <a id="updateItem" href="#" class="btn btn-success" download="">Save changes</a>
+            <input type="hidden" id="selectedList">
             <h5 class="offcanvas-title" id="documentPreviewLabel">Colored with scrolling</h5>
             <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
         </div>
         <div class="offcanvas-body mt-0">
-            <div style="display: none" class="previewArea" id="imagePreview">
-                <img src="{{ url('/', 'files').'/image.jpg' }}">
-            </div>
-            <div style="display: none" class="previewArea" id="powerpointPreview">
-                <iframe src='https://view.officeapps.live.com/op/view.aspx?src={{ url('/', 'files').'/Presentation.pptx' }}' width='100%' height='600px' frameborder='0'></iframe>
-            </div>
-            <div style="display: none; height: 100% !important;" class="previewArea" id="pdfPreview" >
-                <embed src="{{ url('/', 'files').'/document.pdf' }}" style="" width="100%" height="100%" type="application/pdf">
-            </div>
-            <div style="display: none" class="previewArea" id="documentPreview">
-                <textarea id="sample"></textarea>
-            </div>
-            <div style="display: none" class="previewArea" id="noPreview">
-                <p>No preview</p>
-            </div>
+            <form action="/fileUpload" class="dropzone" id="uploadField"></form>
+            <textarea id="itemEditor" style="width: 100%"></textarea>
         </div>
     </div>
     <ul id="custom-menu-folder" class='custom-menu' style="z-index: 99999999;">

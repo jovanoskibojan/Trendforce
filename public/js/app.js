@@ -8647,8 +8647,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var sortablejs_modular_sortable_complete_esm_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! sortablejs/modular/sortable.complete.esm.js */ "./node_modules/sortablejs/modular/sortable.complete.esm.js");
 /* harmony import */ var jquery__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! jquery */ "./node_modules/jquery/dist/jquery.js");
 /* harmony import */ var jquery__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(jquery__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var suneditor__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! suneditor */ "./node_modules/suneditor/src/suneditor.js");
-/* harmony import */ var suneditor_src_plugins__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! suneditor/src/plugins */ "./node_modules/suneditor/src/plugins/index.js");
 /* harmony import */ var dropzone__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! dropzone */ "./node_modules/dropzone/dist/dropzone.mjs");
 /* harmony import */ var alpinejs__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! alpinejs */ "./node_modules/alpinejs/dist/module.esm.js");
 __webpack_require__(/*! @popperjs/core */ "./node_modules/@popperjs/core/lib/index.js");
@@ -8690,17 +8688,6 @@ __webpack_require__(/*! ./rightMenu */ "./resources/js/rightMenu.js");
 
 window.Alpine = alpinejs__WEBPACK_IMPORTED_MODULE_4__["default"];
 alpinejs__WEBPACK_IMPORTED_MODULE_4__["default"].start();
-suneditor__WEBPACK_IMPORTED_MODULE_5__["default"].create('sample', {
-  plugins: suneditor_src_plugins__WEBPACK_IMPORTED_MODULE_6__["default"],
-  buttonList: [['undo', 'redo'], ['font', 'fontSize', 'formatBlock'], ['paragraphStyle', 'blockquote'], ['bold', 'underline', 'italic', 'strike', 'subscript', 'superscript'], ['fontColor', 'hiliteColor', 'textStyle'], ['removeFormat'], '/', // Line break
-  ['outdent', 'indent'], ['align', 'horizontalRule', 'list', 'lineHeight'], ['table', 'link', 'image', 'video', 'audio'
-  /** ,'math' */
-  ], // You must add the 'katex' library at options to use the 'math' plugin.
-
-  /** ['imageGallery'] */
-  // You must add the "imageGalleryUrl".
-  ['fullScreen', 'showBlocks', 'codeView'], ['print'], ['save', 'template']]
-});
 jquery__WEBPACK_IMPORTED_MODULE_2___default()(document).ready(function () {//let myDropzone = new Dropzone("div#uploadField", { url: "/files"});
 }); // // You can also load what you want
 // suneditor.create('sample', {
@@ -8758,9 +8745,27 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var jquery__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! jquery */ "./node_modules/jquery/dist/jquery.js");
 /* harmony import */ var jquery__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(jquery__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var dropzone__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! dropzone */ "./node_modules/dropzone/dist/dropzone.mjs");
+/* harmony import */ var suneditor__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! suneditor */ "./node_modules/suneditor/src/suneditor.js");
+/* harmony import */ var suneditor_src_plugins__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! suneditor/src/plugins */ "./node_modules/suneditor/src/plugins/index.js");
+
+
 
 
 jquery__WEBPACK_IMPORTED_MODULE_0___default()(document).ready(function () {
+  var itemEditor = document.getElementById('itemEditor');
+  suneditor__WEBPACK_IMPORTED_MODULE_2__["default"].create(itemEditor, {
+    plugins: suneditor_src_plugins__WEBPACK_IMPORTED_MODULE_3__["default"],
+    buttonList: [['undo', 'redo'], ['font', 'fontSize', 'formatBlock'], ['paragraphStyle', 'blockquote'], ['bold', 'underline', 'italic', 'strike', 'subscript', 'superscript'], ['fontColor', 'hiliteColor', 'textStyle'], ['removeFormat'], '/', // Line break
+    ['outdent', 'indent'], ['align', 'horizontalRule', 'list', 'lineHeight'], ['table', 'link', 'image', 'video'
+    /** ,'math' */
+    ], // You must add the 'katex' library at options to use the 'math' plugin.
+
+    /** ['imageGallery'] */
+    // You must add the "imageGalleryUrl".
+    ['fullScreen', 'showBlocks', 'codeView'], ['preview', 'print']
+    /*['save', 'template']*/
+    ]
+  });
   jquery__WEBPACK_IMPORTED_MODULE_0___default()('#newInboxSave').click(function () {
     var inboxName = jquery__WEBPACK_IMPORTED_MODULE_0___default()('#newInboxName').val();
     jquery__WEBPACK_IMPORTED_MODULE_0___default().ajax({
@@ -8774,18 +8779,19 @@ jquery__WEBPACK_IMPORTED_MODULE_0___default()(document).ready(function () {
         'X-CSRF-TOKEN': jquery__WEBPACK_IMPORTED_MODULE_0___default()('meta[name="csrf-token"]').attr('content')
       },
       success: function success(data) {
-        jquery__WEBPACK_IMPORTED_MODULE_0___default()('#inboxNavigation').append("\n                <li class=\"nav-item\">\n                    <a class=\"nav-link @once active @endonce update-inbox\" href=\"#\" data-inbox-id=\"".concat(data.inboxId, "\">").concat(data.inboxTitle, "</a>\n                </li>\n                ")); // TODO: fix this
+        jquery__WEBPACK_IMPORTED_MODULE_0___default()('#inboxNavigation').append("\n                <li class=\"nav-item\">\n                    <a class=\"nav-link update-inbox\" href=\"#\" data-inbox-id=\"".concat(data.inboxId, "\">").concat(data.inboxTitle, "</a>\n                </li>\n                ")); // TODO: fix this
 
         jquery__WEBPACK_IMPORTED_MODULE_0___default()('#newInbox').Modal('hide');
       },
       error: function error(data) {}
     });
-  });
-  jquery__WEBPACK_IMPORTED_MODULE_0___default()('.inbox').click(function () {
-    var myOffcanvas = document.getElementById('documentPreview2');
-    var bsOffcanvas = new bootstrap.Offcanvas(myOffcanvas);
-    bsOffcanvas.show();
-  });
+  }); // Opens offcanvas modal, should be deleted
+  // $('.inbox').click(function (){
+  //     var myOffcanvas = document.getElementById('documentPreview2');
+  //     var bsOffcanvas = new bootstrap.Offcanvas(myOffcanvas);
+  //     bsOffcanvas.show();
+  // });
+
   var folderData;
   jquery__WEBPACK_IMPORTED_MODULE_0___default()('body').on('click', '.nav-link', function () {
     jquery__WEBPACK_IMPORTED_MODULE_0___default()('.nav-link.active').removeClass('active');
@@ -8805,29 +8811,26 @@ jquery__WEBPACK_IMPORTED_MODULE_0___default()(document).ready(function () {
     updateFolder(folderId, newColor, 'color');
   });
   jquery__WEBPACK_IMPORTED_MODULE_0___default()('body').on('click', '.folder-node', function () {
-    jquery__WEBPACK_IMPORTED_MODULE_0___default()('#test').show();
+    jquery__WEBPACK_IMPORTED_MODULE_0___default()('.add-list-item').show();
     jquery__WEBPACK_IMPORTED_MODULE_0___default()('.folder-node.active').removeClass('active');
     jquery__WEBPACK_IMPORTED_MODULE_0___default()(this).addClass('active');
-    var folderId = jquery__WEBPACK_IMPORTED_MODULE_0___default()(this).attr('id');
+    var selectedFolderId = jquery__WEBPACK_IMPORTED_MODULE_0___default()(this).attr('id');
+    console.log('test');
     jquery__WEBPACK_IMPORTED_MODULE_0___default().ajax({
       type: "GET",
-      url: 'fileUpload/getAll',
-      data: {
-        'folder_id': folderId
-      },
+      url: "/items/" + selectedFolderId,
+      data: {},
       dataType: "json",
       headers: {
         'X-CSRF-TOKEN': jquery__WEBPACK_IMPORTED_MODULE_0___default()('meta[name="csrf-token"]').attr('content')
       },
       success: function success(data) {
-        var allFilesWrapper = jquery__WEBPACK_IMPORTED_MODULE_0___default()('#allFiles');
-        var fileIcon;
-        allFilesWrapper.html('');
-        jquery__WEBPACK_IMPORTED_MODULE_0___default().each(data, function (key, value) {
-          fileIcon = getFileIcon(value.type);
-          console.log(value.file_name);
-          allFilesWrapper.append("\n                        <div class=\"card-wrapper\" draggable=\"false\" id=\"".concat(value.id, "\" data-file-name=\"").concat(value.title, "\" data-file-type=\"").concat(value.type, "\">\n                            <div class=\"card inbox\" id=\"\">\n                                <div class=\"card-header tooltipSelector\" style=\"background-color: #f7f7f7\"><i class=\"bi bi-arrows-move my-handle\"></i> <span class=\"file-name\">").concat(value.file_name, "</span></div>\n                                <div class=\"card-body\" data-current-icon=\"file-earmark-bar-graph-fill\">\n                                    <i class=\"bi bi-").concat(fileIcon, "\"></i>\n                                </div>\n                            </div>\n                        </div>\n                    "));
+        jquery__WEBPACK_IMPORTED_MODULE_0___default()('.list').empty();
+        jquery__WEBPACK_IMPORTED_MODULE_0___default().each(data, function (i, val) {
+          console.log(val.list_id);
+          jquery__WEBPACK_IMPORTED_MODULE_0___default()("div").find("[data-list-id='".concat(val.list_id, "']")).find('div.list').append("\n                        <div class=\"card-wrapper\" draggable=\"false\" data-item-id=\"".concat(val.id, "\">\n                            <div class=\"card inbox\">\n                                <div class=\"card-body\" data-current-icon=\"file-earmark-bar-graph-fill\">\n                                    ").concat(val.content, "\n                                </div>\n                            </div>\n                        </div>\n                    "));
         });
+        updateSortable();
       },
       error: function error(data) {}
     });
@@ -8873,56 +8876,77 @@ jquery__WEBPACK_IMPORTED_MODULE_0___default()(document).ready(function () {
       },
       error: function error(data) {}
     });
-  }
+  } // let listWithHandle1 = document.getElementById('listOne');
+  // let listWithHandle2 = document.getElementById('listTwo');
+  // new Sortable(listWithHandle1, {
+  //     group: {
+  //         name: 'list',
+  //     },
+  //     animation: 150
+  // });
+  //
+  // new Sortable(listWithHandle2, {
+  //     group: {
+  //         name: 'list',
+  //     },
+  //     onEnd: function (/**Event*/evt) {
+  //         console.log(evt.to);    // target list
+  //         console.log(evt.from);  // previous list
+  //         console.log("old index:" + evt.oldIndex);  // element's old index within old parent
+  //         console.log("new index: " + evt.newIndex);  // element's new index within new parent
+  //         console.log("old draggable index: " + evt.oldDraggableIndex); // element's old index within old parent, only counting draggable elements
+  //         console.log("new draggable index: " + evt.newDraggableIndex); // element's new index within new parent, only counting draggable elements
+  //         console.log(evt.clone); // the clone element
+  //         console.log("pullMode: " + evt.pullMode);
+  //     },
+  //     animation: 150
+  // });
+  // Sortable.create(listWithHandle, {
+  //     handle: '.my-handle',
+  //     animation: 150,
+  //     onEnd: function (/**Event*/evt) {
+  //         let movedId = $('.card-wrapper').eq(evt.newDraggableIndex).attr('id');
+  //         let folderId = $('.active.folder-node').attr('id');
+  //         let prevElement;
+  //         if(evt.newDraggableIndex == 0) {
+  //             prevElement = $('.card-wrapper').eq(evt.newDraggableIndex).next().attr('id');
+  //         }
+  //         else {
+  //             prevElement = $('.card-wrapper').eq(evt.newDraggableIndex).prev().attr('id');
+  //         }
+  //         console.log(prevElement);
+  //         $.ajax({
+  //             type: 'POST',
+  //             url: '/fileUpload/reorder',
+  //             data: {
+  //                 'movedId' : movedId,
+  //                 'folderId' : folderId,
+  //                 'prevElement' : prevElement,
+  //                 'newIndex' : evt.newDraggableIndex,
+  //             },
+  //             dataType: "json",
+  //             headers: {
+  //                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+  //             },
+  //             success: function(data) {
+  //             },
+  //             error: function(data) {
+  //             }
+  //             /*
+  //             console.log(draggedElement, replacedElement);
+  //         console.log(evt.to);    // target list
+  //         console.log(evt.from);  // previous list
+  //         console.log("old index:" + evt.oldIndex);  // element's old index within old parent
+  //         console.log("new index: " + evt.newIndex);  // element's new index within new parent
+  //         console.log("old draggable index: " + evt.oldDraggableIndex); // element's old index within old parent, only counting draggable elements
+  //         console.log("new draggable index: " + evt.newDraggableIndex); // element's new index within new parent, only counting draggable elements
+  //         console.log(evt.clone); // the clone element
+  //         console.log("pullMode: " + evt.pullMode);  // when item is in another sortable: `"clone"` if cloning, `true` if moving
+  //              */
+  //         });
+  //     },
+  // });
 
-  var listWithHandle = document.getElementById('allFiles');
-  Sortable.create(listWithHandle, {
-    handle: '.my-handle',
-    animation: 150,
-    onEnd: function onEnd(
-    /**Event*/
-    evt) {
-      var movedId = jquery__WEBPACK_IMPORTED_MODULE_0___default()('.card-wrapper').eq(evt.newDraggableIndex).attr('id');
-      var folderId = jquery__WEBPACK_IMPORTED_MODULE_0___default()('.active.folder-node').attr('id');
-      var prevElement;
-
-      if (evt.newDraggableIndex == 0) {
-        prevElement = jquery__WEBPACK_IMPORTED_MODULE_0___default()('.card-wrapper').eq(evt.newDraggableIndex).next().attr('id');
-      } else {
-        prevElement = jquery__WEBPACK_IMPORTED_MODULE_0___default()('.card-wrapper').eq(evt.newDraggableIndex).prev().attr('id');
-      }
-
-      console.log(prevElement);
-      jquery__WEBPACK_IMPORTED_MODULE_0___default().ajax({
-        type: 'POST',
-        url: '/fileUpload/reorder',
-        data: {
-          'movedId': movedId,
-          'folderId': folderId,
-          'prevElement': prevElement,
-          'newIndex': evt.newDraggableIndex
-        },
-        dataType: "json",
-        headers: {
-          'X-CSRF-TOKEN': jquery__WEBPACK_IMPORTED_MODULE_0___default()('meta[name="csrf-token"]').attr('content')
-        },
-        success: function success(data) {},
-        error: function error(data) {}
-        /*
-        console.log(draggedElement, replacedElement);
-        console.log(evt.to);    // target list
-        console.log(evt.from);  // previous list
-        console.log("old index:" + evt.oldIndex);  // element's old index within old parent
-        console.log("new index: " + evt.newIndex);  // element's new index within new parent
-        console.log("old draggable index: " + evt.oldDraggableIndex); // element's old index within old parent, only counting draggable elements
-        console.log("new draggable index: " + evt.newDraggableIndex); // element's new index within new parent, only counting draggable elements
-        console.log(evt.clone); // the clone element
-        console.log("pullMode: " + evt.pullMode);  // when item is in another sortable: `"clone"` if cloning, `true` if moving
-         */
-
-      });
-    }
-  });
 
   function updateFolder(folderId, value, update) {
     jquery__WEBPACK_IMPORTED_MODULE_0___default().ajax({
@@ -8976,8 +9000,8 @@ jquery__WEBPACK_IMPORTED_MODULE_0___default()(document).ready(function () {
     }
   });
   myDropzone.on("sending", function (file, xhr, formData) {
-    var folderId = jquery__WEBPACK_IMPORTED_MODULE_0___default()('.folder-node.active').attr('id');
-    formData.append("folder_id", folderId);
+    var itemId = jquery__WEBPACK_IMPORTED_MODULE_0___default()('#selectedList').val();
+    formData.append("item_id", itemId);
   });
 
   function getFileIcon(fileType) {
@@ -8992,37 +9016,210 @@ jquery__WEBPACK_IMPORTED_MODULE_0___default()(document).ready(function () {
     } else {
       return 'file-binary-fill';
     }
+  } // Old file preview, should be removed
+  // $('body').on('click', '.card-wrapper', function() {
+  //     let docTitle = $(this).find('.file-name').first().html();
+  //     let fileType = $(this).data('file-type');
+  //     console.log(fileType);
+  //     let fileName = $(this).data('file-name');
+  //     let myOffcanvas = document.getElementById('documentPreview2')
+  //     let bsOffcanvas = new bootstrap.Offcanvas(myOffcanvas);
+  //     $('#documentPreviewLabel').html(docTitle);
+  //     $('.previewArea').hide();
+  //     if (fileType.indexOf('presentation') >= 0) {
+  //         $('#powerpointPreview iframe').attr('src', 'https://view.officeapps.live.com/op/view.aspx?src=' + websiteURL + '/files/' + fileName);
+  //         $('#powerpointPreview').show();
+  //     }
+  //     else if (fileType.indexOf('pdf') >= 0) {
+  //         $('#pdfPreview embed').attr('src', websiteURL + '/files/' + fileName);
+  //         $('#pdfPreview').show();
+  //     }
+  //     else if (fileType.indexOf('customText') >= 0) {
+  //         $('#documentPreview #sample').html('test');
+  //         $('#documentPreview').show();
+  //     }
+  //     else if (fileType.indexOf('image') >= 0) {
+  //         $('#imagePreview img').attr('src', websiteURL + '/files/' + fileName);
+  //         $('#imagePreview').show();
+  //     }
+  //     else {
+  //         $('#noPreview').show();
+  //     }
+  //     $('#downloadDocument').attr('href', websiteURL + '/files/' + fileName);
+  //     $('#downloadDocument').attr('download', docTitle);
+  //     bsOffcanvas.show();
+  // });
+  // Creates a new list in the selected Inbox
+
+
+  jquery__WEBPACK_IMPORTED_MODULE_0___default()('#newList').click(function () {
+    var selectedInbox = jquery__WEBPACK_IMPORTED_MODULE_0___default()('.active.update-inbox').data('inbox-id');
+    var allLists = jquery__WEBPACK_IMPORTED_MODULE_0___default()('#allLists');
+    jquery__WEBPACK_IMPORTED_MODULE_0___default().ajax({
+      type: "POST",
+      url: "/lists",
+      data: {
+        'inbox_id': selectedInbox
+      },
+      dataType: "json",
+      headers: {
+        'X-CSRF-TOKEN': jquery__WEBPACK_IMPORTED_MODULE_0___default()('meta[name="csrf-token"]').attr('content')
+      },
+      success: function success(data) {
+        allLists.append("\n                    <div class=\"listWrapper\" data-list-id=\"".concat(data.id, "\">\n                        <div class=\"list-title\">\n                                <button type=\"button\" class=\"btn btn-success btn-sm add-list-item\" style=\"display: none\"><i class=\"bi bi-file-earmark-plus\"></i></button>\n                            <p class=\"update-list-name\">Untitled list</p>\n                            <input style=\"display: none;\" type=\"text\" class=\"form-control new-list-title-input\">\n                        </div>\n                        <div class=\"list\">\n                        </div>\n                    </div>\n                "));
+        updateSortable();
+      },
+      error: function error(data) {}
+    });
+  }); // Shows a field to rename a list. It hides a paragraph and shows the input field
+
+  jquery__WEBPACK_IMPORTED_MODULE_0___default()('body').on('dblclick', '.update-list-name', function () {
+    var currentTitleElement = jquery__WEBPACK_IMPORTED_MODULE_0___default()(this);
+    var updateTitleElement = jquery__WEBPACK_IMPORTED_MODULE_0___default()(this).next();
+    var currentTitle = currentTitleElement.html();
+    updateTitleElement.val(currentTitle);
+    currentTitleElement.hide();
+    updateTitleElement.show();
+    updateTitleElement.focus();
+    updateTitleElement.select();
+  }); // Save changes on the new list name
+
+  jquery__WEBPACK_IMPORTED_MODULE_0___default()('body').on('blur', '.new-list-title-input', function () {
+    var currentTitleElement = jquery__WEBPACK_IMPORTED_MODULE_0___default()(this);
+    var oldTitleElement = jquery__WEBPACK_IMPORTED_MODULE_0___default()(this).prev();
+    var currentTitle = currentTitleElement.val();
+    var listId = currentTitleElement.parent().parent().data('list-id');
+    console.log(listId);
+    jquery__WEBPACK_IMPORTED_MODULE_0___default().ajax({
+      type: "PUT",
+      url: "/lists/" + listId,
+      data: {
+        'title': currentTitle
+      },
+      dataType: "json",
+      headers: {
+        'X-CSRF-TOKEN': jquery__WEBPACK_IMPORTED_MODULE_0___default()('meta[name="csrf-token"]').attr('content')
+      },
+      success: function success(data) {
+        oldTitleElement.html(currentTitle);
+        currentTitleElement.hide();
+        oldTitleElement.show();
+      },
+      error: function error(data) {}
+    });
+  }); // Initializes sortable lists
+
+  function updateSortable() {
+    jquery__WEBPACK_IMPORTED_MODULE_0___default().each(jquery__WEBPACK_IMPORTED_MODULE_0___default()('.list'), function (i, val) {
+      new Sortable(val, {
+        group: {
+          name: 'list',
+          filter: '.list-title'
+        },
+        animation: 150
+      });
+    });
   }
 
-  jquery__WEBPACK_IMPORTED_MODULE_0___default()('body').on('click', '.card-wrapper', function () {
-    var docTitle = jquery__WEBPACK_IMPORTED_MODULE_0___default()(this).find('.file-name').first().html();
-    var fileType = jquery__WEBPACK_IMPORTED_MODULE_0___default()(this).data('file-type');
-    console.log(fileType);
-    var fileName = jquery__WEBPACK_IMPORTED_MODULE_0___default()(this).data('file-name');
-    var myOffcanvas = document.getElementById('documentPreview2');
-    var bsOffcanvas = new bootstrap.Offcanvas(myOffcanvas);
-    jquery__WEBPACK_IMPORTED_MODULE_0___default()('#documentPreviewLabel').html(docTitle);
-    jquery__WEBPACK_IMPORTED_MODULE_0___default()('.previewArea').hide();
+  updateSortable(); // Load lists
 
-    if (fileType.indexOf('presentation') >= 0) {
-      jquery__WEBPACK_IMPORTED_MODULE_0___default()('#powerpointPreview iframe').attr('src', 'https://view.officeapps.live.com/op/view.aspx?src=http://trendforce.io/files/' + fileName);
-      jquery__WEBPACK_IMPORTED_MODULE_0___default()('#powerpointPreview').show();
-    } else if (fileType.indexOf('pdf') >= 0) {
-      jquery__WEBPACK_IMPORTED_MODULE_0___default()('#pdfPreview embed').attr('src', 'http://trendforce.io/files/' + fileName);
-      jquery__WEBPACK_IMPORTED_MODULE_0___default()('#pdfPreview').show();
-    } else if (fileType.indexOf('customText') >= 0) {
-      jquery__WEBPACK_IMPORTED_MODULE_0___default()('#documentPreview #sample').html('test');
-      jquery__WEBPACK_IMPORTED_MODULE_0___default()('#documentPreview').show();
-    } else if (fileType.indexOf('image') >= 0) {
-      jquery__WEBPACK_IMPORTED_MODULE_0___default()('#imagePreview img').attr('src', 'http://trendforce.io/files/' + fileName);
-      jquery__WEBPACK_IMPORTED_MODULE_0___default()('#imagePreview').show();
-    } else {
-      jquery__WEBPACK_IMPORTED_MODULE_0___default()('#noPreview').show();
+  function loadLists() {
+    var selectedInbox = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 0;
+
+    if (selectedInbox === 0) {
+      selectedInbox = jquery__WEBPACK_IMPORTED_MODULE_0___default()('.update-inbox.active').data('inbox-id');
+      console.log('selectedInbox');
     }
 
-    jquery__WEBPACK_IMPORTED_MODULE_0___default()('#downloadDocument').attr('href', 'http://trendforce.io/files/' + fileName);
-    jquery__WEBPACK_IMPORTED_MODULE_0___default()('#downloadDocument').attr('download', docTitle);
+    var allLists = jquery__WEBPACK_IMPORTED_MODULE_0___default()('#allLists');
+    allLists.empty();
+    jquery__WEBPACK_IMPORTED_MODULE_0___default().ajax({
+      type: "GET",
+      url: "/lists/" + selectedInbox,
+      data: {},
+      dataType: "json",
+      headers: {
+        'X-CSRF-TOKEN': jquery__WEBPACK_IMPORTED_MODULE_0___default()('meta[name="csrf-token"]').attr('content')
+      },
+      success: function success(data) {
+        jquery__WEBPACK_IMPORTED_MODULE_0___default().each(data, function (key, value) {
+          allLists.append("\n                        <div class=\"listWrapper\" data-list-id=\"".concat(value.id, "\">\n                            <div class=\"list-title\">\n                                <button type=\"button\" class=\"btn btn-success btn-sm add-list-item\" style=\"display: none\"><i class=\"bi bi-file-earmark-plus\"></i></button>\n                                <p class=\"update-list-name\">").concat(value.title, "</p>\n                                <input style=\"display: none;\" type=\"text\" class=\"form-control new-list-title-input\">\n                            </div>\n                            <div class=\"list\">\n                            </div>\n                        </div>\n                    "));
+        });
+      },
+      error: function error(data) {}
+    });
+  }
+
+  jquery__WEBPACK_IMPORTED_MODULE_0___default()('body').on('click', '.add-list-item', function () {
+    var selectedList = jquery__WEBPACK_IMPORTED_MODULE_0___default()(this).parent().parent().data('list-id');
+    var selectedFolder = jquery__WEBPACK_IMPORTED_MODULE_0___default()('.folder-node.active').attr('id');
+    var myOffcanvas = document.getElementById('newListItem');
+    var bsOffcanvas = new bootstrap.Offcanvas(myOffcanvas);
+    jquery__WEBPACK_IMPORTED_MODULE_0___default()('#selectedList').val(selectedList);
+    jquery__WEBPACK_IMPORTED_MODULE_0___default().ajax({
+      type: "POST",
+      url: "/items",
+      data: {
+        'listId': selectedList,
+        'folderId': selectedFolder
+      },
+      dataType: "json",
+      headers: {
+        'X-CSRF-TOKEN': jquery__WEBPACK_IMPORTED_MODULE_0___default()('meta[name="csrf-token"]').attr('content')
+      },
+      success: function success(data) {
+        jquery__WEBPACK_IMPORTED_MODULE_0___default()("div").find("[data-list-id='".concat(data.list_id, "']")).find('div.list').append("\n                    <div class=\"card-wrapper\" draggable=\"false\" data-item-id=\"".concat(val.id, "\">\n                        <div class=\"card inbox\">\n                            <div class=\"card-body\" data-current-icon=\"file-earmark-bar-graph-fill\">\n                            </div>\n                        </div>\n                    </div>\n                "));
+      },
+      error: function error(data) {}
+    });
     bsOffcanvas.show();
+  });
+  jquery__WEBPACK_IMPORTED_MODULE_0___default()('body').on('click', '.card-wrapper', function () {
+    var myOffcanvas = document.getElementById('newListItem');
+    var bsOffcanvas = new bootstrap.Offcanvas(myOffcanvas);
+    var itemId = jquery__WEBPACK_IMPORTED_MODULE_0___default()(this).data('item-id');
+    jquery__WEBPACK_IMPORTED_MODULE_0___default()('#selectedList').val(itemId);
+    jquery__WEBPACK_IMPORTED_MODULE_0___default().ajax({
+      type: "GET",
+      url: "/items/" + itemId + "/edit",
+      data: {},
+      dataType: "json",
+      headers: {
+        'X-CSRF-TOKEN': jquery__WEBPACK_IMPORTED_MODULE_0___default()('meta[name="csrf-token"]').attr('content')
+      },
+      success: function success(data) {
+        jquery__WEBPACK_IMPORTED_MODULE_0___default()('.sun-editor-editable').html(data.content); //document.getElementById('description').value = description.getContents();
+
+        document.getElementById('itemEditor').value = data.content;
+      },
+      error: function error(data) {}
+    });
+    bsOffcanvas.show();
+  });
+  jquery__WEBPACK_IMPORTED_MODULE_0___default()('body').on('click', '.update-inbox', function () {
+    var selectedInbox = jquery__WEBPACK_IMPORTED_MODULE_0___default()(this).data('inbox-id');
+    console.log(selectedInbox);
+    loadLists(selectedInbox);
+  });
+  loadLists();
+  jquery__WEBPACK_IMPORTED_MODULE_0___default()('#updateItem').click(function () {
+    var itemValue = jquery__WEBPACK_IMPORTED_MODULE_0___default()('.sun-editor-editable').html();
+    console.log(itemValue);
+    var itemID = jquery__WEBPACK_IMPORTED_MODULE_0___default()('#selectedList').val();
+    console.log(itemID);
+    jquery__WEBPACK_IMPORTED_MODULE_0___default().ajax({
+      type: "PUT",
+      url: "/items/" + itemID,
+      data: {
+        'value': itemValue
+      },
+      dataType: "json",
+      headers: {
+        'X-CSRF-TOKEN': jquery__WEBPACK_IMPORTED_MODULE_0___default()('meta[name="csrf-token"]').attr('content')
+      },
+      success: function success(data) {},
+      error: function error(data) {}
+    });
   });
 });
 

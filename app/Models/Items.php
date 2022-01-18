@@ -5,15 +5,13 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Files extends Model
+class Items extends Model
 {
     use HasFactory;
 
     protected $fillable = [
-        'item_id',
-        'title',
-        'file_name',
-        'type',
-        'size',
+        'folder_id',
+        'list_id',
+        'content',
     ];
 }

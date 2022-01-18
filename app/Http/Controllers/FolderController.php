@@ -40,7 +40,6 @@ class FolderController extends Controller
         $folder->inbox_id = $request->inbox_id;
         $folder->child_of = $request->id;
         $folder->save();
-        echo 123;
     }
 
     /**

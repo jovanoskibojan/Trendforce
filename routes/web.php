@@ -25,3 +25,5 @@ Route::get('fileUpload/getAll', [FilesController::class, 'getAll']);
 Route::get('fileUpload/get', [FilesController::class, 'get']);
 Route::post('fileUpload/reorder', [FilesController::class, 'folderReorder']);
 Route::resource('fileUpload', 'App\Http\Controllers\FilesController');
+Route::resource('lists', 'App\Http\Controllers\ListsController');
+Route::resource('items', 'App\Http\Controllers\ItemsController');

@@ -10,13 +10,11 @@ class File extends Model
     use HasFactory;
 
     protected $fillable = [
-        'folder_id',
+        'item_id',
         'title',
         'file_name',
-        'order',
         'type',
-        'content',
-        'size'
+        'size',
     ];
 
 }
