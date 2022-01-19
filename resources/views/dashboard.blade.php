@@ -121,18 +121,35 @@
             </div>
         </div>
     </div>
-    <!-- File preview -->
+    <!-- Item preview -->
     <div class="offcanvas offcanvas-start" data-bs-scroll="true" data-bs-backdrop="false" tabindex="-1" id="newListItem" aria-labelledby="documentPreviewLabel" style="min-width: 850px">
         <div class="offcanvas-header">
-            <a id="updateItem" href="#" class="btn btn-success" download="">Save changes</a>
+            <button id="updateItem" class="btn btn-success" >Save changes</button>
             <input type="hidden" id="selectedList">
             <h5 class="offcanvas-title" id="documentPreviewLabel">Colored with scrolling</h5>
             <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
         </div>
         <div class="offcanvas-body mt-0">
             <form action="/fileUpload" class="dropzone" id="uploadField"></form>
+            <div id="filesPreview"></div>
             <textarea id="itemEditor" style="width: 100%"></textarea>
         </div>
+    </div>
+
+    <!-- File preview-->
+    <div id="filePreview" class="modal">
+
+        <!-- Modal content -->
+        <div class="modal-content">
+            <div class="modal-header">
+                <span id="filePrevewTitle"></span>
+                <span id="closeFilePreview">&times;</span>
+            </div>
+            <div id="fileModalPreview"></div>
+            <a id="downloadFileButton" class="btn btn-success" href="#" role="button">Download</a>
+            <button id="closeFilePreviewButton" type="button" class="btn btn-primary">Close</button>
+        </div>
+
     </div>
     <ul id="custom-menu-folder" class='custom-menu' style="z-index: 99999999;">
         <li data-action="new"><i class="bi bi-folder-plus"></i> New</li>

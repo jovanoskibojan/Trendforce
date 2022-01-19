@@ -126,3 +126,74 @@ nav {
 #allLists {
     display: flex;
 }
+#filesPreview {
+    display: flex;
+    //overflow-x: scroll;
+    .itemFile {
+        cursor: pointer;
+        height: 60px;
+        width: 70px;
+        border: solid 1px #6a6a6a;
+        margin: 6px;
+        border-radius: 10px;
+        display: flex;
+        padding: 5px;
+        align-content: center;
+        justify-content: center;
+        align-items: center;
+        min-width: 70px;
+        img {
+            width: 100%;
+            height: auto;
+        }
+
+        p {
+            margin: 0;
+            font-size: 32px;
+        }
+    }
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 9999;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgb(0,0,0);
+    background-color: rgba(0,0,0,0.4);
+    .modal-content {
+        background-color: #fefefe;
+        margin: 15% auto;
+        padding: 20px;
+        border: 1px solid #888;
+        width: 80%;
+        align-items: center;
+        .modal-header {
+            width: 100%;
+        }
+        #fileModalPreview {
+            width: 100%;
+            height: 470px;
+        }
+        #closeFilePreview {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            width: 25px;
+            position: absolute;
+            right: 11px;
+            &:hover,
+            &:focus {
+                color: black;
+                text-decoration: none;
+                cursor: pointer;
+            }
+        }
+    }
+}
+

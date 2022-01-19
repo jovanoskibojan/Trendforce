@@ -14,4 +14,9 @@ class Items extends Model
         'list_id',
         'content',
     ];
+
+
+    public function file() {
+        return $this->hasMany(File::class, 'item_id');
+    }
 }

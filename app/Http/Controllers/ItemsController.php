@@ -66,7 +66,9 @@ class ItemsController extends Controller
      */
     public function edit($id)
     {
-        return Items::where('id', $id)->first();
+        $items = Items::where('id', $id)->first();
+        $p = $items->file;
+        return $items->toArray();
     }
 
     /**

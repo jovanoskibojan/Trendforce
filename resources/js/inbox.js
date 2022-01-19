@@ -82,7 +82,6 @@ $(document).ready(function () {
         $('.folder-node.active').removeClass('active');
         $(this).addClass('active');
         let selectedFolderId = $(this).attr('id');
-        console.log('test');
         $.ajax({
             type: "GET",
             url: "/items/" + selectedFolderId,
@@ -94,7 +93,6 @@ $(document).ready(function () {
             success: function(data) {
                 $('.list').empty();
                 $.each(data, function (i, val) {
-                    console.log(val.list_id);
                     $("div").find(`[data-list-id='${val.list_id}']`).find('div.list').append(`
                         <div class="card-wrapper" draggable="false" data-item-id="${val.id}">
                             <div class="card inbox">
@@ -274,11 +272,10 @@ $(document).ready(function () {
         headers: {
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
         },
-        complete: function(file) {
+        complete: function(file, response) {
             setTimeout(() => {
                 this.removeFile(file); // right here after 3 seconds you can clear
             }, 3000);
-            $('.folder-node.active').click();
         },
     });
 
@@ -286,6 +283,13 @@ $(document).ready(function () {
         let itemId = $('#selectedList').val();
         formData.append("item_id", itemId);
     });
+
+    myDropzone.on("success", function(file, response) {
+        let filesPreview = $('#filesPreview');
+        showItemFiles(filesPreview, response)
+        console.log(response);
+    });
+
 
     function getFileIcon(fileType) {
         if (fileType.indexOf('presentation') >= 0) {
@@ -387,7 +391,6 @@ $(document).ready(function () {
         let oldTitleElement = $(this).prev();
         let currentTitle = currentTitleElement.val();
         let listId = currentTitleElement.parent().parent().data('list-id');
-        console.log(listId);
         $.ajax({
             type: "PUT",
             url: "/lists/" + listId,
@@ -423,7 +426,6 @@ $(document).ready(function () {
     function loadLists(selectedInbox = 0) {
         if(selectedInbox === 0) {
             selectedInbox = $('.update-inbox.active').data('inbox-id');
-            console.log('selectedInbox');
         }
         let allLists = $('#allLists');
         allLists.empty();
@@ -460,7 +462,6 @@ $(document).ready(function () {
         let selectedFolder = $('.folder-node.active').attr('id');
         let myOffcanvas = document.getElementById('newListItem');
         let bsOffcanvas = new bootstrap.Offcanvas(myOffcanvas);
-        $('#selectedList').val(selectedList);
         $.ajax({
             type: "POST",
             url: "/items",
@@ -474,13 +475,14 @@ $(document).ready(function () {
             },
             success: function(data) {
                 $("div").find(`[data-list-id='${data.list_id}']`).find('div.list').append(`
-                    <div class="card-wrapper" draggable="false" data-item-id="${val.id}">
+                    <div class="card-wrapper" draggable="false" data-item-id="${data.id}">
                         <div class="card inbox">
                             <div class="card-body" data-current-icon="file-earmark-bar-graph-fill">
                             </div>
                         </div>
                     </div>
                 `);
+                $('#selectedList').val(data.id);
             },
             error: function(data) {}
         })
@@ -505,6 +507,13 @@ $(document).ready(function () {
                 $('.sun-editor-editable').html(data.content);
                 //document.getElementById('description').value = description.getContents();
                 document.getElementById('itemEditor').value = data.content;
+                console.log(data.file);
+                let filesPreview = $('#filesPreview');
+                filesPreview.empty();
+                $.each(data.file, function (i, val) {
+                    console.log(val.file_name);
+                    showItemFiles(filesPreview, val);
+                });
             },
             error: function(data) {}
         })
@@ -512,18 +521,84 @@ $(document).ready(function () {
         bsOffcanvas.show();
     });
 
+    $('body').on('click', '.itemFile', function() {
+        let modal = document.getElementById("filePreview");
+        let fileModalPreview = $('#fileModalPreview');
+        let fileType = $(this).data('file-type');
+        let fileName = $(this).data('file-name');
+        let fileTitle = $(this).data('file-title');
+        let downloadButton = $('#downloadFileButton');
+        downloadButton.attr('download', fileName);
+        downloadButton.attr('href', 'files/' + fileTitle);
+        $('#filePrevewTitle').html(fileName);
+        if(fileType == 'img') {
+            fileModalPreview.html(`
+                <img src="files/${fileTitle}">
+            `);
+        }
+        else if(fileType == 'pdf') {
+            fileModalPreview.html(`
+                <embed src="files/${fileTitle}" style="" width="100%" height="100%" type="application/pdf">
+            `);
+        }
+        else if (fileType == 'ppt') {
+            fileModalPreview.html(`
+                <iframe src='https://view.officeapps.live.com/op/view.aspx?src=files/${fileTitle}' width='100%' height='600px' frameborder='0'></iframe>
+            `);
+        }
+        else {
+            fileModalPreview.html(`
+                <p>No preview available</p>
+            `);
+        }
+        modal.style.display = "block";
+    });
+
+    $('body').on('click', '#closeFilePreview, #closeFilePreviewButton', function() {
+        var modal = document.getElementById("filePreview");
+        modal.style.display = "none";
+    });
+
+    function showItemFiles(filesPreview, val) {
+        if (val.type.toLowerCase().indexOf("image") >= 0) {
+            filesPreview.append(`
+                <div class="itemFile" data-file-type="img" data-file-name="${val.file_name}" data-file-title="${val.title}" >
+                    <img src="files/${val.title}">
+                </div>
+            `);
+        }
+        else if (val.type.toLowerCase().indexOf("pdf") >= 0) {
+            filesPreview.append(`
+                <div class="itemFile" data-file-type="pdf" data-file-name="${val.file_name}" data-file-title="${val.title}">
+                    <p><i class="bi bi-file-earmark-pdf"></i></p>
+                </div>
+            `);
+        }
+        else if (val.type.toLowerCase().indexOf("presentation") >= 0) {
+            filesPreview.append(`
+                <div class="itemFile" data-file-type="ppt" data-file-name="${val.file_name}" data-file-title="${val.title}">
+                    <p><i class="bi bi-file-earmark-ppt"></i></p>
+                </div>
+            `);
+        }
+        else {
+            filesPreview.append(`
+                <div class="itemFile" data-file-type="other" data-file-name="${val.file_name}" data-file-title="${val.title}">
+                    <p><i class="bi bi-file-binary"></i></p>
+                </div>
+            `);
+        }
+    }
+
     $('body').on('click', '.update-inbox', function() {
         let selectedInbox = $(this).data('inbox-id');
-        console.log(selectedInbox);
         loadLists(selectedInbox);
     });
     loadLists();
 
     $('#updateItem').click(function () {
         let itemValue = $('.sun-editor-editable').html();
-        console.log(itemValue);
         let itemID = $('#selectedList').val();
-        console.log(itemID);
         $.ajax({
             type: "PUT",
             url: "/items/" + itemID,
@@ -539,4 +614,12 @@ $(document).ready(function () {
         })
 
     });
+
+    // When the user clicks anywhere outside of the modal, close it
+        window.onclick = function(event) {
+            if (event.target == modal) {
+                var modal = document.getElementById("filePreview");
+                modal.style.display = "none";
+            }
+        }
 });

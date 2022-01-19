@@ -8815,7 +8815,6 @@ jquery__WEBPACK_IMPORTED_MODULE_0___default()(document).ready(function () {
     jquery__WEBPACK_IMPORTED_MODULE_0___default()('.folder-node.active').removeClass('active');
     jquery__WEBPACK_IMPORTED_MODULE_0___default()(this).addClass('active');
     var selectedFolderId = jquery__WEBPACK_IMPORTED_MODULE_0___default()(this).attr('id');
-    console.log('test');
     jquery__WEBPACK_IMPORTED_MODULE_0___default().ajax({
       type: "GET",
       url: "/items/" + selectedFolderId,
@@ -8827,7 +8826,6 @@ jquery__WEBPACK_IMPORTED_MODULE_0___default()(document).ready(function () {
       success: function success(data) {
         jquery__WEBPACK_IMPORTED_MODULE_0___default()('.list').empty();
         jquery__WEBPACK_IMPORTED_MODULE_0___default().each(data, function (i, val) {
-          console.log(val.list_id);
           jquery__WEBPACK_IMPORTED_MODULE_0___default()("div").find("[data-list-id='".concat(val.list_id, "']")).find('div.list').append("\n                        <div class=\"card-wrapper\" draggable=\"false\" data-item-id=\"".concat(val.id, "\">\n                            <div class=\"card inbox\">\n                                <div class=\"card-body\" data-current-icon=\"file-earmark-bar-graph-fill\">\n                                    ").concat(val.content, "\n                                </div>\n                            </div>\n                        </div>\n                    "));
         });
         updateSortable();
@@ -8989,19 +8987,23 @@ jquery__WEBPACK_IMPORTED_MODULE_0___default()(document).ready(function () {
     headers: {
       'X-CSRF-TOKEN': jquery__WEBPACK_IMPORTED_MODULE_0___default()('meta[name="csrf-token"]').attr('content')
     },
-    complete: function complete(file) {
+    complete: function complete(file, response) {
       var _this = this;
 
       setTimeout(function () {
         _this.removeFile(file); // right here after 3 seconds you can clear
 
       }, 3000);
-      jquery__WEBPACK_IMPORTED_MODULE_0___default()('.folder-node.active').click();
     }
   });
   myDropzone.on("sending", function (file, xhr, formData) {
     var itemId = jquery__WEBPACK_IMPORTED_MODULE_0___default()('#selectedList').val();
     formData.append("item_id", itemId);
+  });
+  myDropzone.on("success", function (file, response) {
+    var filesPreview = jquery__WEBPACK_IMPORTED_MODULE_0___default()('#filesPreview');
+    showItemFiles(filesPreview, response);
+    console.log(response);
   });
 
   function getFileIcon(fileType) {
@@ -9089,7 +9091,6 @@ jquery__WEBPACK_IMPORTED_MODULE_0___default()(document).ready(function () {
     var oldTitleElement = jquery__WEBPACK_IMPORTED_MODULE_0___default()(this).prev();
     var currentTitle = currentTitleElement.val();
     var listId = currentTitleElement.parent().parent().data('list-id');
-    console.log(listId);
     jquery__WEBPACK_IMPORTED_MODULE_0___default().ajax({
       type: "PUT",
       url: "/lists/" + listId,
@@ -9128,7 +9129,6 @@ jquery__WEBPACK_IMPORTED_MODULE_0___default()(document).ready(function () {
 
     if (selectedInbox === 0) {
       selectedInbox = jquery__WEBPACK_IMPORTED_MODULE_0___default()('.update-inbox.active').data('inbox-id');
-      console.log('selectedInbox');
     }
 
     var allLists = jquery__WEBPACK_IMPORTED_MODULE_0___default()('#allLists');
@@ -9155,7 +9155,6 @@ jquery__WEBPACK_IMPORTED_MODULE_0___default()(document).ready(function () {
     var selectedFolder = jquery__WEBPACK_IMPORTED_MODULE_0___default()('.folder-node.active').attr('id');
     var myOffcanvas = document.getElementById('newListItem');
     var bsOffcanvas = new bootstrap.Offcanvas(myOffcanvas);
-    jquery__WEBPACK_IMPORTED_MODULE_0___default()('#selectedList').val(selectedList);
     jquery__WEBPACK_IMPORTED_MODULE_0___default().ajax({
       type: "POST",
       url: "/items",
@@ -9168,7 +9167,8 @@ jquery__WEBPACK_IMPORTED_MODULE_0___default()(document).ready(function () {
         'X-CSRF-TOKEN': jquery__WEBPACK_IMPORTED_MODULE_0___default()('meta[name="csrf-token"]').attr('content')
       },
       success: function success(data) {
-        jquery__WEBPACK_IMPORTED_MODULE_0___default()("div").find("[data-list-id='".concat(data.list_id, "']")).find('div.list').append("\n                    <div class=\"card-wrapper\" draggable=\"false\" data-item-id=\"".concat(val.id, "\">\n                        <div class=\"card inbox\">\n                            <div class=\"card-body\" data-current-icon=\"file-earmark-bar-graph-fill\">\n                            </div>\n                        </div>\n                    </div>\n                "));
+        jquery__WEBPACK_IMPORTED_MODULE_0___default()("div").find("[data-list-id='".concat(data.list_id, "']")).find('div.list').append("\n                    <div class=\"card-wrapper\" draggable=\"false\" data-item-id=\"".concat(data.id, "\">\n                        <div class=\"card inbox\">\n                            <div class=\"card-body\" data-current-icon=\"file-earmark-bar-graph-fill\">\n                            </div>\n                        </div>\n                    </div>\n                "));
+        jquery__WEBPACK_IMPORTED_MODULE_0___default()('#selectedList').val(data.id);
       },
       error: function error(data) {}
     });
@@ -9191,22 +9191,66 @@ jquery__WEBPACK_IMPORTED_MODULE_0___default()(document).ready(function () {
         jquery__WEBPACK_IMPORTED_MODULE_0___default()('.sun-editor-editable').html(data.content); //document.getElementById('description').value = description.getContents();
 
         document.getElementById('itemEditor').value = data.content;
+        console.log(data.file);
+        var filesPreview = jquery__WEBPACK_IMPORTED_MODULE_0___default()('#filesPreview');
+        filesPreview.empty();
+        jquery__WEBPACK_IMPORTED_MODULE_0___default().each(data.file, function (i, val) {
+          console.log(val.file_name);
+          showItemFiles(filesPreview, val);
+        });
       },
       error: function error(data) {}
     });
     bsOffcanvas.show();
   });
+  jquery__WEBPACK_IMPORTED_MODULE_0___default()('body').on('click', '.itemFile', function () {
+    var modal = document.getElementById("filePreview");
+    var fileModalPreview = jquery__WEBPACK_IMPORTED_MODULE_0___default()('#fileModalPreview');
+    var fileType = jquery__WEBPACK_IMPORTED_MODULE_0___default()(this).data('file-type');
+    var fileName = jquery__WEBPACK_IMPORTED_MODULE_0___default()(this).data('file-name');
+    var fileTitle = jquery__WEBPACK_IMPORTED_MODULE_0___default()(this).data('file-title');
+    var downloadButton = jquery__WEBPACK_IMPORTED_MODULE_0___default()('#downloadFileButton');
+    downloadButton.attr('download', fileName);
+    downloadButton.attr('href', 'files/' + fileTitle);
+    jquery__WEBPACK_IMPORTED_MODULE_0___default()('#filePrevewTitle').html(fileName);
+
+    if (fileType == 'img') {
+      fileModalPreview.html("\n                <img src=\"files/".concat(fileTitle, "\">\n            "));
+    } else if (fileType == 'pdf') {
+      fileModalPreview.html("\n                <embed src=\"files/".concat(fileTitle, "\" style=\"\" width=\"100%\" height=\"100%\" type=\"application/pdf\">\n            "));
+    } else if (fileType == 'ppt') {
+      fileModalPreview.html("\n                <iframe src='https://view.officeapps.live.com/op/view.aspx?src=files/".concat(fileTitle, "' width='100%' height='600px' frameborder='0'></iframe>\n            "));
+    } else {
+      fileModalPreview.html("\n                <p>No preview available</p>\n            ");
+    }
+
+    modal.style.display = "block";
+  });
+  jquery__WEBPACK_IMPORTED_MODULE_0___default()('body').on('click', '#closeFilePreview, #closeFilePreviewButton', function () {
+    var modal = document.getElementById("filePreview");
+    modal.style.display = "none";
+  });
+
+  function showItemFiles(filesPreview, val) {
+    if (val.type.toLowerCase().indexOf("image") >= 0) {
+      filesPreview.append("\n                <div class=\"itemFile\" data-file-type=\"img\" data-file-name=\"".concat(val.file_name, "\" data-file-title=\"").concat(val.title, "\" >\n                    <img src=\"files/").concat(val.title, "\">\n                </div>\n            "));
+    } else if (val.type.toLowerCase().indexOf("pdf") >= 0) {
+      filesPreview.append("\n                <div class=\"itemFile\" data-file-type=\"pdf\" data-file-name=\"".concat(val.file_name, "\" data-file-title=\"").concat(val.title, "\">\n                    <p><i class=\"bi bi-file-earmark-pdf\"></i></p>\n                </div>\n            "));
+    } else if (val.type.toLowerCase().indexOf("presentation") >= 0) {
+      filesPreview.append("\n                <div class=\"itemFile\" data-file-type=\"ppt\" data-file-name=\"".concat(val.file_name, "\" data-file-title=\"").concat(val.title, "\">\n                    <p><i class=\"bi bi-file-earmark-ppt\"></i></p>\n                </div>\n            "));
+    } else {
+      filesPreview.append("\n                <div class=\"itemFile\" data-file-type=\"other\" data-file-name=\"".concat(val.file_name, "\" data-file-title=\"").concat(val.title, "\">\n                    <p><i class=\"bi bi-file-binary\"></i></p>\n                </div>\n            "));
+    }
+  }
+
   jquery__WEBPACK_IMPORTED_MODULE_0___default()('body').on('click', '.update-inbox', function () {
     var selectedInbox = jquery__WEBPACK_IMPORTED_MODULE_0___default()(this).data('inbox-id');
-    console.log(selectedInbox);
     loadLists(selectedInbox);
   });
   loadLists();
   jquery__WEBPACK_IMPORTED_MODULE_0___default()('#updateItem').click(function () {
     var itemValue = jquery__WEBPACK_IMPORTED_MODULE_0___default()('.sun-editor-editable').html();
-    console.log(itemValue);
     var itemID = jquery__WEBPACK_IMPORTED_MODULE_0___default()('#selectedList').val();
-    console.log(itemID);
     jquery__WEBPACK_IMPORTED_MODULE_0___default().ajax({
       type: "PUT",
       url: "/items/" + itemID,
@@ -9220,7 +9264,14 @@ jquery__WEBPACK_IMPORTED_MODULE_0___default()(document).ready(function () {
       success: function success(data) {},
       error: function error(data) {}
     });
-  });
+  }); // When the user clicks anywhere outside of the modal, close it
+
+  window.onclick = function (event) {
+    if (event.target == modal) {
+      var modal = document.getElementById("filePreview");
+      modal.style.display = "none";
+    }
+  };
 });
 
 /***/ }),

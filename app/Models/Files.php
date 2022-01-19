@@ -16,4 +16,8 @@ class Files extends Model
         'type',
         'size',
     ];
+
+    public function item() {
+        return $this->belongsTo(Item::class);
+    }
 }

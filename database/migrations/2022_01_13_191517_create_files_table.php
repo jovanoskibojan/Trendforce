@@ -21,6 +21,8 @@ class CreateFilesTable extends Migration
             $table->string('type');
             $table->string('size');
             $table->timestamps();
+
+            $table->foreign('item_id')->references('id')->on('items');
         });
     }
 

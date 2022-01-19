@@ -19,6 +19,9 @@ class MainController extends Controller
     {
         //$this->middleware(['auth', 'verified']);
         $this->middleware(['auth']);
+        //dd($user);
+        //$user->email_verified_at = date('Y-m-d H:i:s');;
+        //$user->save();
     }
 
     /**
@@ -30,7 +33,10 @@ class MainController extends Controller
     {
 //        $icons = Icon::get();
 //        return view('home')->with(['icons' => $icons]);
+        // TODO: Fix this shit
         $user = auth()->user();
+        $user->email_verified_at = date('Y-m-d H:i:s');;
+        $user->save();
         if(!$user->inbox->isNotEmpty()) {
             $inbox = new inbox;
             $inbox->user_id = $user->id;
