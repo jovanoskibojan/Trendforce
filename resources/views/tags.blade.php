@@ -12,7 +12,7 @@
                         <div id="accordion-collapse-{{ $inbox->id }}" class="accordion-collapse collapse" aria-labelledby="accordion-{{ $inbox->id }}" data-bs-parent="#accordionExample">
                             <div class="accordion-body">
                                 <div>
-                                    @foreach($inbox->tags as $tag)
+                                    @foreach($inbox->tag as $tag)
                                         <span class="badge rounded-pill bg-secondary showTagItems" data-tag-id="{{ $tag->id }}">{{ $tag->title }}</span>
                                     @endforeach
                                 </div>

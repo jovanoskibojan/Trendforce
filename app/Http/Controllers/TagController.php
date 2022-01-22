@@ -18,7 +18,6 @@ class TagController extends Controller
     {
         $user = auth()->user();
         $inboxes = Inbox::where('user_id', $user->id)->get();
-        dd($inboxes[0]->tag);
         return view('tags')->with('inboxes', $inboxes);
     }
 
