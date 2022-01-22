@@ -123,9 +123,12 @@ function addNewFolder(id) {
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
         },
         success: function(data) {
-            loadFolders()
+            loadFolders();
+            console.log('t3st');
         },
         error: function(data) {
+            loadFolders();
+            console.log('nana');
         }
     });
 }

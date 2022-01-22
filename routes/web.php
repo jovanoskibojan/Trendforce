@@ -27,3 +27,5 @@ Route::post('fileUpload/reorder', [FilesController::class, 'folderReorder']);
 Route::resource('fileUpload', 'App\Http\Controllers\FilesController');
 Route::resource('lists', 'App\Http\Controllers\ListsController');
 Route::resource('items', 'App\Http\Controllers\ItemsController');
+Route::get('tags/getItems', [\App\Http\Controllers\TagController::class, 'getItems']);
+Route::resource('tags', 'App\Http\Controllers\TagController');

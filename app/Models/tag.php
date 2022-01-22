@@ -5,19 +5,17 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Files extends Model
+class tag extends Model
 {
     use HasFactory;
 
     protected $fillable = [
-        'item_id',
+        'items_id',
+        'inbox_id',
         'title',
-        'file_name',
-        'type',
-        'size',
     ];
 
-    public function item() {
-        return $this->belongsTo(Items::class);
+    public function items() {
+        return $this->belongsToMany(Items::class)->withTimestamps();
     }
 }

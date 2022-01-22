@@ -197,3 +197,19 @@ nav {
     }
 }
 
+#itemInfo {
+    display: flex;
+    align-items: flex-end;
+    .select2-selection.select2-selection--multiple {
+        width: 635px;
+        margin-left: 10px;
+    }
+    #itemTags {
+        width: 635px;
+        height: 118px;
+        margin-left: 11px;
+        .badge {
+            cursor: pointer;
+        }
+    }
+}

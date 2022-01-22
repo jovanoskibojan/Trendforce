@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use App\Models\Inbox;
 use App\Models\Items;
+use App\Models\Tag;
+use Illuminate\Http\Request;
 
-class ItemsController extends Controller
+class TagController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -14,7 +16,10 @@ class ItemsController extends Controller
      */
     public function index()
     {
-
+        $user = auth()->user();
+        $inboxes = Inbox::where('user_id', $user->id)->get();
+        dd($inboxes[0]->tag);
+        return view('tags')->with('inboxes', $inboxes);
     }
 
     /**
@@ -35,11 +40,14 @@ class ItemsController extends Controller
      */
     public function store(Request $request)
     {
-        // TODO: Security check, if the user can save here
-        return Items::create([
-            'folder_id' => $request->folderId,
-            'list_id' => $request->listId,
+        $item = Items::where('id', $request->items_id)->first();
+        $createdTag = Tag::create([
+            'items_id' => $request->items_id,
+            'inbox_id' => $request->inbox_id,
+            'title' => $request->tag
         ]);
+        $item->tags()->syncWithoutDetaching($createdTag);
+        return $createdTag;
     }
 
     /**
@@ -50,12 +58,7 @@ class ItemsController extends Controller
      */
     public function show($id)
     {
-        // TODO: Check if user has option to view this
-        $items = Items::where('folder_id', $id)->get();
-        foreach ($items as $item) {
-            $item->content = strip_tags($item->content);
-        }
-        return $items;
+        //
     }
 
     /**
@@ -66,10 +69,7 @@ class ItemsController extends Controller
      */
     public function edit($id)
     {
-        $items = Items::where('id', $id)->first();
-        $d = $items->tags;
-        $p = $items->file;
-        return $items->toArray();
+        //
     }
 
     /**
@@ -81,9 +81,7 @@ class ItemsController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $item = Items::where('id', $id)->first();
-        $item->content = $request->value;
-        return $item->save();
+        //
     }
 
     /**
@@ -94,6 +92,13 @@ class ItemsController extends Controller
      */
     public function destroy($id)
     {
-        //
+        return Tags::where('id', $id)->delete();
+    }
+
+    public function getItems(Request $request) {
+        $t = Tags::where('id', $request->id)->get();
+        $t = Tags::with('item')->find($request->id);
+        dd($t->items);
+        return Tags::where('id', $request->id)->get();
     }
 }

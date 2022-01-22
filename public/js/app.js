@@ -8804,6 +8804,7 @@ jquery__WEBPACK_IMPORTED_MODULE_0___default()(document).ready(function () {
     var folderId = jquery__WEBPACK_IMPORTED_MODULE_0___default()(this).data('folder-ID');
     var newName = jquery__WEBPACK_IMPORTED_MODULE_0___default()('#renameFolderNewName').val();
     updateFolder(folderId, newName, 'title');
+    getFolders();
   });
   jquery__WEBPACK_IMPORTED_MODULE_0___default()('body').on('click', '#updateColorSave', function () {
     var folderId = jquery__WEBPACK_IMPORTED_MODULE_0___default()(this).data('folder-ID');
@@ -9195,9 +9196,14 @@ jquery__WEBPACK_IMPORTED_MODULE_0___default()(document).ready(function () {
         var filesPreview = jquery__WEBPACK_IMPORTED_MODULE_0___default()('#filesPreview');
         filesPreview.empty();
         jquery__WEBPACK_IMPORTED_MODULE_0___default().each(data.file, function (i, val) {
-          console.log(val.file_name);
           showItemFiles(filesPreview, val);
         });
+        var itemTags = jquery__WEBPACK_IMPORTED_MODULE_0___default()('#allTags');
+        itemTags.empty();
+        jquery__WEBPACK_IMPORTED_MODULE_0___default().each(data.tags, function (i, val) {
+          addNewTagToDom(itemTags, val.id, val.title);
+        });
+        console.log(data.tags);
       },
       error: function error(data) {}
     });
@@ -9264,7 +9270,8 @@ jquery__WEBPACK_IMPORTED_MODULE_0___default()(document).ready(function () {
       success: function success(data) {},
       error: function error(data) {}
     });
-  }); // When the user clicks anywhere outside of the modal, close it
+  });
+  jquery__WEBPACK_IMPORTED_MODULE_0___default()('#categorySelection').select2(); // When the user clicks anywhere outside of the modal, close it
 
   window.onclick = function (event) {
     if (event.target == modal) {
@@ -9272,6 +9279,73 @@ jquery__WEBPACK_IMPORTED_MODULE_0___default()(document).ready(function () {
       modal.style.display = "none";
     }
   };
+
+  jquery__WEBPACK_IMPORTED_MODULE_0___default()('#newTag').on('keydown', function (event) {
+    var element = jquery__WEBPACK_IMPORTED_MODULE_0___default()(this);
+    var value = element.val();
+    var item_id = jquery__WEBPACK_IMPORTED_MODULE_0___default()('#selectedList').val();
+    var inbox_id = jquery__WEBPACK_IMPORTED_MODULE_0___default()('.update-inbox.active').data('inbox-id');
+    if (event.which == 13) jquery__WEBPACK_IMPORTED_MODULE_0___default().ajax({
+      type: "POST",
+      url: '/tags',
+      data: {
+        'tag': value,
+        'items_id': item_id,
+        'inbox_id': inbox_id
+      },
+      dataType: "json",
+      headers: {
+        'X-CSRF-TOKEN': jquery__WEBPACK_IMPORTED_MODULE_0___default()('meta[name="csrf-token"]').attr('content')
+      },
+      success: function success(data) {
+        var itemTags = jquery__WEBPACK_IMPORTED_MODULE_0___default()('#allTags');
+        addNewTagToDom(itemTags, data.id, data.title);
+        element.val('');
+      },
+      error: function error(data) {}
+    });
+  });
+  jquery__WEBPACK_IMPORTED_MODULE_0___default()('body').on('click', '.remove-tag', function () {
+    var element = jquery__WEBPACK_IMPORTED_MODULE_0___default()(this);
+    var tagId = element.data('tag-id');
+    jquery__WEBPACK_IMPORTED_MODULE_0___default().ajax({
+      type: "DELETE",
+      url: '/tags/' + tagId,
+      data: {},
+      dataType: "json",
+      headers: {
+        'X-CSRF-TOKEN': jquery__WEBPACK_IMPORTED_MODULE_0___default()('meta[name="csrf-token"]').attr('content')
+      },
+      success: function success(data) {
+        element.remove();
+      },
+      error: function error(data) {}
+    });
+  });
+
+  function addNewTagToDom(element, id, title) {
+    element.append("\n            <span class=\"badge rounded-pill bg-secondary remove-tag\" data-tag-id=\"".concat(id, "\">").concat(title, "</span>\n        "));
+  }
+
+  jquery__WEBPACK_IMPORTED_MODULE_0___default()('body').on('click', '.showTagItems', function () {
+    var tagId = jquery__WEBPACK_IMPORTED_MODULE_0___default()(this).data('tag-id');
+    console.log(tagId);
+    jquery__WEBPACK_IMPORTED_MODULE_0___default().ajax({
+      type: "GET",
+      url: "/tags/getItems",
+      data: {
+        'id': tagId
+      },
+      dataType: "json",
+      headers: {
+        'X-CSRF-TOKEN': jquery__WEBPACK_IMPORTED_MODULE_0___default()('meta[name="csrf-token"]').attr('content')
+      },
+      success: function success(data) {
+        console.log(data);
+      },
+      error: function error(data) {}
+    });
+  });
 });
 
 /***/ }),
@@ -9466,8 +9540,12 @@ function addNewFolder(id) {
     },
     success: function success(data) {
       loadFolders();
+      console.log('t3st');
     },
-    error: function error(data) {}
+    error: function error(data) {
+      loadFolders();
+      console.log('nana');
+    }
   });
 }
 

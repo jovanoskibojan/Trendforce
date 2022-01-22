@@ -69,6 +69,7 @@ $(document).ready(function () {
         let folderId = $(this).data('folder-ID');
         let newName = $('#renameFolderNewName').val();
         updateFolder(folderId, newName, 'title');
+        getFolders();
     });
 
     $('body').on('click', '#updateColorSave', function() {
@@ -511,9 +512,14 @@ $(document).ready(function () {
                 let filesPreview = $('#filesPreview');
                 filesPreview.empty();
                 $.each(data.file, function (i, val) {
-                    console.log(val.file_name);
                     showItemFiles(filesPreview, val);
                 });
+                let itemTags = $('#allTags');
+                itemTags.empty();
+                $.each(data.tags, function (i, val) {
+                    addNewTagToDom(itemTags, val.id, val.title);
+                });
+                console.log(data.tags)
             },
             error: function(data) {}
         })
@@ -615,11 +621,87 @@ $(document).ready(function () {
 
     });
 
+    $('#categorySelection').select2();
+
     // When the user clicks anywhere outside of the modal, close it
-        window.onclick = function(event) {
-            if (event.target == modal) {
-                var modal = document.getElementById("filePreview");
-                modal.style.display = "none";
-            }
+    window.onclick = function(event) {
+        if (event.target == modal) {
+            var modal = document.getElementById("filePreview");
+            modal.style.display = "none";
         }
+    }
+
+    $('#newTag').on( 'keydown', function(event) {
+        let element = $(this);
+        let value = element.val()
+        let item_id = $('#selectedList').val()
+        let inbox_id = $('.update-inbox.active').data('inbox-id');
+        if(event.which == 13)
+            $.ajax({
+                type: "POST",
+                url: '/tags',
+                data: {
+                    'tag' : value,
+                    'items_id' : item_id,
+                    'inbox_id' : inbox_id
+                },
+                dataType: "json",
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                success: function(data) {
+                    let itemTags = $('#allTags');
+                    addNewTagToDom(itemTags, data.id, data.title);
+                    element.val('');
+                },
+                error: function(data) {}
+            })
+    });
+
+    $('body').on('click', '.remove-tag', function() {
+        let element = $(this);
+        let tagId = element.data('tag-id');
+        $.ajax({
+            type: "DELETE",
+            url: '/tags/' + tagId,
+            data: {},
+            dataType: "json",
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            success: function(data) {
+                element.remove();
+            },
+            error: function(data) {}
+        })
+
+    });
+
+    function addNewTagToDom(element, id, title) {
+        element.append(`
+            <span class="badge rounded-pill bg-secondary remove-tag" data-tag-id="${id}">${title}</span>
+        `);
+    }
+
+    $('body').on('click', '.showTagItems', function() {
+        let tagId = $(this).data('tag-id');
+        console.log(tagId);
+        $.ajax({
+            type: "GET",
+            url: "/tags/getItems",
+            data: {
+                'id' : tagId
+            },
+            dataType: "json",
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            success: function(data) {
+                console.log(data.items);
+            },
+            error: function(data) {
+            }
+        })
+    })
+
 });

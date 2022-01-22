@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use phpDocumentor\Reflection\DocBlock\Tag;
 
 class Inbox extends Model
 {
@@ -19,5 +20,8 @@ class Inbox extends Model
     }
     public function folder() {
         return $this->hasMany(Folder::class);
+    }
+    public function tags() {
+        return $this->hasMany(Tags::class);
     }
 }

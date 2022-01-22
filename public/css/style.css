@@ -13903,3 +13903,20 @@ nav a {
   text-decoration: none;
   cursor: pointer;
 }
+
+#itemInfo {
+  display: flex;
+  align-items: flex-end;
+}
+#itemInfo .select2-selection.select2-selection--multiple {
+  width: 635px;
+  margin-left: 10px;
+}
+#itemInfo #itemTags {
+  width: 635px;
+  height: 118px;
+  margin-left: 11px;
+}
+#itemInfo #itemTags .badge {
+  cursor: pointer;
+}

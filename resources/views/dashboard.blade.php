@@ -130,7 +130,22 @@
             <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
         </div>
         <div class="offcanvas-body mt-0">
-            <form action="/fileUpload" class="dropzone" id="uploadField"></form>
+            <div id="itemInfo">
+                <form action="/fileUpload" class="dropzone" id="uploadField"></form>
+                <div>
+                    <div id="itemTags">
+                        <input type="text" class="form-control" id="newTag" placeholder="New tag">
+                        <div id="allTags">
+                        </div>
+                    </div>
+                    <select id="categorySelection" class="" name="categories[]" multiple="multiple">
+                        <option value="AL" selected>Alabama</option>
+                        <option value="AL">Alabama</option>
+                        <option value="AL">Alabama</option>
+                        <option value="WY">Wyoming</option>
+                    </select>
+                </div>
+            </div>
             <div id="filesPreview"></div>
             <textarea id="itemEditor" style="width: 100%"></textarea>
         </div>
@@ -149,8 +164,8 @@
             <a id="downloadFileButton" class="btn btn-success" href="#" role="button">Download</a>
             <button id="closeFilePreviewButton" type="button" class="btn btn-primary">Close</button>
         </div>
-
     </div>
+
     <ul id="custom-menu-folder" class='custom-menu' style="z-index: 99999999;">
         <li data-action="new"><i class="bi bi-folder-plus"></i> New</li>
         <li data-action="rename"><i class="bi bi-pencil"></i> Rename</li>
