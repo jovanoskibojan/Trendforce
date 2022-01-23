@@ -13758,6 +13758,7 @@ textarea.form-control-lg {
   padding: 2px;
   overflow: hidden;
   text-align: justify;
+  height: 150px;
 }
 
 nav a {
@@ -13919,4 +13920,40 @@ nav a {
 }
 #itemInfo #itemTags .badge {
   cursor: pointer;
+}
+
+.showTagItems {
+  cursor: pointer;
+}
+
+#inboxSearch:hover #searchOptionWrapper {
+  display: block;
+}
+#inboxSearch #searchOptionWrapper {
+  display: none;
+  position: absolute;
+  width: 214px;
+  height: 48px;
+  top: 37px;
+  right: -35px;
+}
+#inboxSearch #searchOptionWrapper #searchOptions {
+  margin-top: 13px;
+  background: white;
+  padding: 10px;
+  border: 1px solid #7a7a7a;
+  border-radius: 10px;
+  width: 100%;
+}
+#inboxSearch #searchOptionWrapper #searchOptions::before {
+  content: "";
+  display: inline-block;
+  position: absolute;
+  top: 6px;
+  right: 95px;
+  width: 0;
+  height: 0;
+  border-left: 8px solid transparent;
+  border-right: 8px solid transparent;
+  border-bottom: 8px solid black;
 }

@@ -28,6 +28,22 @@
                         </div>
                     @endif
                         <div class="row mt-3">
+                            <div class="col-9">
+                                <div class="input-group mb-3">
+                                    <input type="text" class="form-control" placeholder="Type to search" aria-label="Type to search" aria-describedby="basic-addon2">
+                                    <span id="inboxSearch" class="input-group-text" >
+                                            Search options
+                                            <div id="searchOptionWrapper">
+                                                <div id="searchOptions">
+                                                    <form>
+                                                        <input id="searchInbox" type="radio" name="search"> <label for="searchInbox">Search complete inbox</label><br>
+                                                        <input id="searchFolder" type="radio" name="search"> <label for="searchFolder">Search selected folder</label>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                    </span>
+                                </div>
+                            </div>
                             <div class="col-3">
                                 <button id="newList" type="button" class="btn btn-primary">New list</button>
                             </div>

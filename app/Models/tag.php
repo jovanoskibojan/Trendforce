@@ -16,7 +16,7 @@ class tag extends Model
     ];
 
     public function items() {
-        return $this->belongsToMany(Items::class)->withTimestamps();
+        return $this->belongsToMany(Items::class, 'item_tag')->withTimestamps();
     }
     public function Inbox() {
         return $this->belongsTo(Inbox::class);

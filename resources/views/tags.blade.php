@@ -1,23 +1,27 @@
 <x-app-layout>
+    <x-slot name="header">
+        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+            Tags
+        </h2>
+    </x-slot>
     <div class="container" >
         <div class="row">
             <div class="accordion mt-5" id="accordionExample">
                 @foreach($inboxes as $inbox)
                     <div class="accordion-item">
                         <h2 class="accordion-header" id="accordion-{{ $inbox->id }}">
-                            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#accordion-collapse-{{ $inbox->id }}" aria-expanded="true" aria-controls="accordion-collapse-{{ $inbox->id }}">
-                                {{ $inbox->title }}
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#accordion-collapse-{{ $inbox->id }}" aria-expanded="false" aria-controls="accordion-collapse-{{ $inbox->id }}">
+                                {{ $inbox->title }} ({{ $inbox->tag->count() }} tags)
                             </button>
                         </h2>
                         <div id="accordion-collapse-{{ $inbox->id }}" class="accordion-collapse collapse" aria-labelledby="accordion-{{ $inbox->id }}" data-bs-parent="#accordionExample">
                             <div class="accordion-body">
                                 <div>
                                     @foreach($inbox->tag as $tag)
-                                        <span class="badge rounded-pill bg-secondary showTagItems" data-tag-id="{{ $tag->id }}">{{ $tag->title }}</span>
+                                        <span class="badge rounded-pill bg-secondary showTagItems" data-tag-id="{{ $tag->id }}">{{ $tag->title }} ({{ $tag->items->count() }} items)</span>
                                     @endforeach
                                 </div>
-                                <div id="itemTagsWrapper">
-
+                                <div class="itemTagsWrapper">
                                 </div>
                             </div>
                         </div>

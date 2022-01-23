@@ -9329,6 +9329,7 @@ jquery__WEBPACK_IMPORTED_MODULE_0___default()(document).ready(function () {
 
   jquery__WEBPACK_IMPORTED_MODULE_0___default()('body').on('click', '.showTagItems', function () {
     var tagId = jquery__WEBPACK_IMPORTED_MODULE_0___default()(this).data('tag-id');
+    var clickedButton = jquery__WEBPACK_IMPORTED_MODULE_0___default()(this);
     console.log(tagId);
     jquery__WEBPACK_IMPORTED_MODULE_0___default().ajax({
       type: "GET",
@@ -9341,7 +9342,12 @@ jquery__WEBPACK_IMPORTED_MODULE_0___default()(document).ready(function () {
         'X-CSRF-TOKEN': jquery__WEBPACK_IMPORTED_MODULE_0___default()('meta[name="csrf-token"]').attr('content')
       },
       success: function success(data) {
-        console.log(data);
+        var itemsWrapper = clickedButton.parent().next();
+        var content;
+        itemsWrapper.empty();
+        jquery__WEBPACK_IMPORTED_MODULE_0___default().each(data.items, function (i, val) {
+          itemsWrapper.append("\n                        <div class=\"card-wrapper\" draggable=\"false\" data-item-id=\"".concat(val.id, "\">\n                            <div class=\"card inbox\">\n                                <div class=\"card-body\" data-current-icon=\"file-earmark-bar-graph-fill\">\n                                    ").concat(val.content, "\n                                </div>\n                            </div>\n                        </div>\n                    "));
+        });
       },
       error: function error(data) {}
     });

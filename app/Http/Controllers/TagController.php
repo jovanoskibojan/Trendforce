@@ -40,13 +40,25 @@ class TagController extends Controller
     public function store(Request $request)
     {
         $item = Items::where('id', $request->items_id)->first();
-        $createdTag = Tag::create([
-            'items_id' => $request->items_id,
-            'inbox_id' => $request->inbox_id,
-            'title' => $request->tag
-        ]);
-        $item->tags()->syncWithoutDetaching($createdTag);
-        return $createdTag;
+        $newTag = Tag::where('title', $request->tag)->first();
+        if(is_null($newTag)) {
+            $newTag = Tag::create([
+                'items_id' => $request->items_id,
+                'inbox_id' => $request->inbox_id,
+                'title' => $request->tag
+            ]);
+        }
+        else {
+            if($newTag->inbox_id != $request->inbox_id) {
+                $newTag = Tag::create([
+                    'items_id' => $request->items_id,
+                    'inbox_id' => $request->inbox_id,
+                    'title' => $request->tag
+                ]);
+            }
+        }
+        $item->tags()->syncWithoutDetaching($newTag);
+        return $newTag;
     }
 
     /**
@@ -95,9 +107,10 @@ class TagController extends Controller
     }
 
     public function getItems(Request $request) {
-        $t = Tags::where('id', $request->id)->get();
-        $t = Tags::with('item')->find($request->id);
-        dd($t->items);
-        return Tags::where('id', $request->id)->get();
+        $t = Tag::with('items')->find($request->id);
+        for($i = 0; $i < count($t->items); $i++) {
+            $t->items[$i]->content = strip_tags($t->items[$i]->content);
+        }
+        return Tag::with('items')->find($request->id);
     }
 }

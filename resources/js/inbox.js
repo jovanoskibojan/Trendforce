@@ -685,6 +685,7 @@ $(document).ready(function () {
 
     $('body').on('click', '.showTagItems', function() {
         let tagId = $(this).data('tag-id');
+        let clickedButton = $(this);
         console.log(tagId);
         $.ajax({
             type: "GET",
@@ -697,11 +698,23 @@ $(document).ready(function () {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             },
             success: function(data) {
-                console.log(data.items);
+                let itemsWrapper = clickedButton.parent().next();
+                let content;
+                itemsWrapper.empty();
+                $.each(data.items, function (i, val) {
+                    itemsWrapper.append(`
+                        <div class="card-wrapper" draggable="false" data-item-id="${val.id}">
+                            <div class="card inbox">
+                                <div class="card-body" data-current-icon="file-earmark-bar-graph-fill">
+                                    ${val.content}
+                                </div>
+                            </div>
+                        </div>
+                    `);
+                });
             },
             error: function(data) {
             }
         })
     })
-
 });
