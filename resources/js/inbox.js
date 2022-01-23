@@ -24,6 +24,7 @@ $(document).ready(function () {
             /*['save', 'template']*/
         ]
     });
+
     $('#newInboxSave').click(function () {
         let inboxName = $('#newInboxName').val();
         $.ajax({
@@ -48,13 +49,6 @@ $(document).ready(function () {
         });
 
     });
-
-    // Opens offcanvas modal, should be deleted
-    // $('.inbox').click(function (){
-    //     var myOffcanvas = document.getElementById('documentPreview2');
-    //     var bsOffcanvas = new bootstrap.Offcanvas(myOffcanvas);
-    //     bsOffcanvas.show();
-    // });
 
     let folderData;
     $('body').on('click', '.nav-link', function() {
@@ -149,6 +143,29 @@ $(document).ready(function () {
                 $('#folderTree').bstreeview({
                     data: data,
                     openNodeLinkOnNewTab: true
+                });
+            },
+            error: function (data) {
+            }
+        });
+    }
+
+    updateCategories()
+    function updateCategories() {
+        let inboxID = $('.nav-link.active').data('inbox-id')
+        let categoriesWrapper = $('#categorySelection');
+        $.ajax({
+            type: "GET",
+            url: "/categories/" + inboxID,
+            //data: {'title' : 'test'},
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            success: function (data) {
+                $.each(data, function (i, val) {
+                    categoriesWrapper.append(`
+                        <option value="${val.id}">${val.title}</option>
+                    `);
                 });
             },
             error: function (data) {
@@ -621,7 +638,16 @@ $(document).ready(function () {
 
     });
 
-    $('#categorySelection').select2();
+    let categorySelection = $('#categorySelection');
+    categorySelection.select2();
+    categorySelection.on('select2:select', function (e) {
+        var data = e.params.data;
+        console.log('selected' + data);
+    });
+    categorySelection.on('select2:unselect', function (e) {
+        var data = e.params.data;
+        console.log('removed' + data);
+    });
 
     // When the user clicks anywhere outside of the modal, close it
     window.onclick = function(event) {

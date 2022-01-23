@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateItemsTagsTable extends Migration
+class CreateCategoriesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,14 +13,13 @@ class CreateItemsTagsTable extends Migration
      */
     public function up()
     {
-        Schema::create('item_tag', function (Blueprint $table) {
+        Schema::create('categories', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('items_id');
-            $table->foreignId('tag_id');
+            $table->foreignId('inbox_id');
+            $table->string('title');
             $table->timestamps();
 
-            $table->foreign('items_id')->references('id')->on('items');
-            $table->foreign('tag_id')->references('id')->on('tags');
+            $table->foreign('inbox_id')->references('id')->on('inboxes');
         });
     }
 
@@ -31,6 +30,6 @@ class CreateItemsTagsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('items_tags');
+        Schema::dropIfExists('categories');
     }
 }

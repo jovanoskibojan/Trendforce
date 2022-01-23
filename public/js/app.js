@@ -8785,13 +8785,7 @@ jquery__WEBPACK_IMPORTED_MODULE_0___default()(document).ready(function () {
       },
       error: function error(data) {}
     });
-  }); // Opens offcanvas modal, should be deleted
-  // $('.inbox').click(function (){
-  //     var myOffcanvas = document.getElementById('documentPreview2');
-  //     var bsOffcanvas = new bootstrap.Offcanvas(myOffcanvas);
-  //     bsOffcanvas.show();
-  // });
-
+  });
   var folderData;
   jquery__WEBPACK_IMPORTED_MODULE_0___default()('body').on('click', '.nav-link', function () {
     jquery__WEBPACK_IMPORTED_MODULE_0___default()('.nav-link.active').removeClass('active');
@@ -8871,6 +8865,27 @@ jquery__WEBPACK_IMPORTED_MODULE_0___default()(document).ready(function () {
         jquery__WEBPACK_IMPORTED_MODULE_0___default()('#folderTree').bstreeview({
           data: data,
           openNodeLinkOnNewTab: true
+        });
+      },
+      error: function error(data) {}
+    });
+  }
+
+  updateCategories();
+
+  function updateCategories() {
+    var inboxID = jquery__WEBPACK_IMPORTED_MODULE_0___default()('.nav-link.active').data('inbox-id');
+    var categoriesWrapper = jquery__WEBPACK_IMPORTED_MODULE_0___default()('#categorySelection');
+    jquery__WEBPACK_IMPORTED_MODULE_0___default().ajax({
+      type: "GET",
+      url: "/categories/" + inboxID,
+      //data: {'title' : 'test'},
+      headers: {
+        'X-CSRF-TOKEN': jquery__WEBPACK_IMPORTED_MODULE_0___default()('meta[name="csrf-token"]').attr('content')
+      },
+      success: function success(data) {
+        jquery__WEBPACK_IMPORTED_MODULE_0___default().each(data, function (i, val) {
+          categoriesWrapper.append("\n                        <option value=\"".concat(val.id, "\">").concat(val.title, "</option>\n                    "));
         });
       },
       error: function error(data) {}
@@ -9271,7 +9286,16 @@ jquery__WEBPACK_IMPORTED_MODULE_0___default()(document).ready(function () {
       error: function error(data) {}
     });
   });
-  jquery__WEBPACK_IMPORTED_MODULE_0___default()('#categorySelection').select2(); // When the user clicks anywhere outside of the modal, close it
+  var categorySelection = jquery__WEBPACK_IMPORTED_MODULE_0___default()('#categorySelection');
+  categorySelection.select2();
+  categorySelection.on('select2:select', function (e) {
+    var data = e.params.data;
+    console.log('selected' + data);
+  });
+  categorySelection.on('select2:unselect', function (e) {
+    var data = e.params.data;
+    console.log('removed' + data);
+  }); // When the user clicks anywhere outside of the modal, close it
 
   window.onclick = function (event) {
     if (event.target == modal) {

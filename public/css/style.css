@@ -13922,6 +13922,11 @@ nav a {
   cursor: pointer;
 }
 
+.select2-dropdown.select2-dropdown--below {
+  min-width: 635px;
+  margin-left: 10px;
+}
+
 .showTagItems {
   cursor: pointer;
 }

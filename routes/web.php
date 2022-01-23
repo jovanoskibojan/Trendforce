@@ -29,3 +29,4 @@ Route::resource('lists', 'App\Http\Controllers\ListsController');
 Route::resource('items', 'App\Http\Controllers\ItemsController');
 Route::get('tags/getItems', [\App\Http\Controllers\TagController::class, 'getItems']);
 Route::resource('tags', 'App\Http\Controllers\TagController');
+Route::resource('categories', 'App\Http\Controllers\CategoryController');

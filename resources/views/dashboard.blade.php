@@ -155,10 +155,6 @@
                         </div>
                     </div>
                     <select id="categorySelection" class="" name="categories[]" multiple="multiple">
-                        <option value="AL" selected>Alabama</option>
-                        <option value="AL">Alabama</option>
-                        <option value="AL">Alabama</option>
-                        <option value="WY">Wyoming</option>
                     </select>
                 </div>
             </div>
