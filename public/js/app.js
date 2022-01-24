@@ -8876,6 +8876,7 @@ jquery__WEBPACK_IMPORTED_MODULE_0___default()(document).ready(function () {
   function updateCategories() {
     var inboxID = jquery__WEBPACK_IMPORTED_MODULE_0___default()('.nav-link.active').data('inbox-id');
     var categoriesWrapper = jquery__WEBPACK_IMPORTED_MODULE_0___default()('#categorySelection');
+    categoriesWrapper.empty();
     jquery__WEBPACK_IMPORTED_MODULE_0___default().ajax({
       type: "GET",
       url: "/categories/" + inboxID,
@@ -9266,6 +9267,7 @@ jquery__WEBPACK_IMPORTED_MODULE_0___default()(document).ready(function () {
 
   jquery__WEBPACK_IMPORTED_MODULE_0___default()('body').on('click', '.update-inbox', function () {
     var selectedInbox = jquery__WEBPACK_IMPORTED_MODULE_0___default()(this).data('inbox-id');
+    updateCategories();
     loadLists(selectedInbox);
   });
   loadLists();

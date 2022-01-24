@@ -150,10 +150,11 @@ $(document).ready(function () {
         });
     }
 
-    updateCategories()
+    updateCategories();
     function updateCategories() {
         let inboxID = $('.nav-link.active').data('inbox-id')
         let categoriesWrapper = $('#categorySelection');
+        categoriesWrapper.empty();
         $.ajax({
             type: "GET",
             url: "/categories/" + inboxID,
@@ -615,6 +616,7 @@ $(document).ready(function () {
 
     $('body').on('click', '.update-inbox', function() {
         let selectedInbox = $(this).data('inbox-id');
+        updateCategories();
         loadLists(selectedInbox);
     });
     loadLists();
