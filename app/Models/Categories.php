@@ -17,4 +17,7 @@ class Categories extends Model
     public function inbox() {
         return $this->hasMany(Inbox::class);
     }
+    public function item() {
+        return $this->belongsToMany(Items::class, 'category_item')->withTimestamps();
+    }
 }

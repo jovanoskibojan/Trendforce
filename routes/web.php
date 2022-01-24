@@ -1,6 +1,8 @@
 <?php
 
+use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\FilesController;
+use App\Http\Controllers\TagController;
 use Illuminate\Support\Facades\Route;
 /*
 |--------------------------------------------------------------------------
@@ -27,6 +29,8 @@ Route::post('fileUpload/reorder', [FilesController::class, 'folderReorder']);
 Route::resource('fileUpload', 'App\Http\Controllers\FilesController');
 Route::resource('lists', 'App\Http\Controllers\ListsController');
 Route::resource('items', 'App\Http\Controllers\ItemsController');
-Route::get('tags/getItems', [\App\Http\Controllers\TagController::class, 'getItems']);
+Route::get('tags/getItems', [TagController::class, 'getItems']);
 Route::resource('tags', 'App\Http\Controllers\TagController');
+Route::post('categories/assign', [CategoryController::class, 'assign']);
+Route::post('categories/remove', [CategoryController::class, 'remove']);
 Route::resource('categories', 'App\Http\Controllers\CategoryController');

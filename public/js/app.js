@@ -9205,21 +9205,27 @@ jquery__WEBPACK_IMPORTED_MODULE_0___default()(document).ready(function () {
         'X-CSRF-TOKEN': jquery__WEBPACK_IMPORTED_MODULE_0___default()('meta[name="csrf-token"]').attr('content')
       },
       success: function success(data) {
-        jquery__WEBPACK_IMPORTED_MODULE_0___default()('.sun-editor-editable').html(data.content); //document.getElementById('description').value = description.getContents();
-
+        var categories = jquery__WEBPACK_IMPORTED_MODULE_0___default()('#categorySelection');
+        jquery__WEBPACK_IMPORTED_MODULE_0___default()('.sun-editor-editable').html(data.content);
         document.getElementById('itemEditor').value = data.content;
-        console.log(data.file);
         var filesPreview = jquery__WEBPACK_IMPORTED_MODULE_0___default()('#filesPreview');
         filesPreview.empty();
         jquery__WEBPACK_IMPORTED_MODULE_0___default().each(data.file, function (i, val) {
           showItemFiles(filesPreview, val);
         });
+        console.log(data.category);
+        var selectedCategories = [];
+        jquery__WEBPACK_IMPORTED_MODULE_0___default().each(data.category, function (i, val) {
+          selectedCategories.push(val.id);
+        });
+        categories.val(selectedCategories);
+        categories.trigger('change');
+        console.log(selectedCategories);
         var itemTags = jquery__WEBPACK_IMPORTED_MODULE_0___default()('#allTags');
         itemTags.empty();
         jquery__WEBPACK_IMPORTED_MODULE_0___default().each(data.tags, function (i, val) {
           addNewTagToDom(itemTags, val.id, val.title);
         });
-        console.log(data.tags);
       },
       error: function error(data) {}
     });
@@ -9292,11 +9298,41 @@ jquery__WEBPACK_IMPORTED_MODULE_0___default()(document).ready(function () {
   categorySelection.select2();
   categorySelection.on('select2:select', function (e) {
     var data = e.params.data;
-    console.log('selected' + data);
+    var categoryId = data.id;
+    var itemId = jquery__WEBPACK_IMPORTED_MODULE_0___default()('#selectedList').val();
+    jquery__WEBPACK_IMPORTED_MODULE_0___default().ajax({
+      type: "POST",
+      url: "/categories/assign",
+      data: {
+        category: categoryId,
+        item: itemId
+      },
+      dataType: "json",
+      headers: {
+        'X-CSRF-TOKEN': jquery__WEBPACK_IMPORTED_MODULE_0___default()('meta[name="csrf-token"]').attr('content')
+      },
+      success: function success(data) {},
+      error: function error(data) {}
+    });
   });
   categorySelection.on('select2:unselect', function (e) {
     var data = e.params.data;
-    console.log('removed' + data);
+    var categoryId = data.id;
+    var itemId = jquery__WEBPACK_IMPORTED_MODULE_0___default()('#selectedList').val();
+    jquery__WEBPACK_IMPORTED_MODULE_0___default().ajax({
+      type: "POST",
+      url: "/categories/remove",
+      data: {
+        category: categoryId,
+        item: itemId
+      },
+      dataType: "json",
+      headers: {
+        'X-CSRF-TOKEN': jquery__WEBPACK_IMPORTED_MODULE_0___default()('meta[name="csrf-token"]').attr('content')
+      },
+      success: function success(data) {},
+      error: function error(data) {}
+    });
   }); // When the user clicks anywhere outside of the modal, close it
 
   window.onclick = function (event) {

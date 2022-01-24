@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Categories;
+use App\Models\Items;
 use Illuminate\Http\Request;
 
 class CategoryController extends Controller
@@ -81,5 +82,18 @@ class CategoryController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    public function assign(Request $request)
+    {
+        $item = Items::where('id', $request->item)->first();
+        $category = Categories::where('id', $request->category)->first();
+        $item->category()->syncWithoutDetaching($category);
+    }
+
+    public function remove(Request $request)
+    {
+        $item = Items::where('id', $request->item)->first();
+        $t = $item->category()->detach($request->category);
     }
 }

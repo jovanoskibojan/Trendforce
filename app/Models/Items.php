@@ -23,4 +23,7 @@ class Items extends Model
     public function tags() {
         return $this->belongsToMany(Tag::class, 'item_tag')->withTimestamps();
     }
+    public function category() {
+        return $this->belongsToMany(Categories::class, 'category_item')->withTimestamps();
+    }
 }

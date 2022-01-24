@@ -523,21 +523,27 @@ $(document).ready(function () {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             },
             success: function(data) {
+                let categories = $('#categorySelection');
                 $('.sun-editor-editable').html(data.content);
-                //document.getElementById('description').value = description.getContents();
                 document.getElementById('itemEditor').value = data.content;
-                console.log(data.file);
                 let filesPreview = $('#filesPreview');
                 filesPreview.empty();
                 $.each(data.file, function (i, val) {
                     showItemFiles(filesPreview, val);
                 });
+                console.log(data.category);
+                let selectedCategories = [];
+                $.each(data.category, function (i, val) {
+                    selectedCategories.push(val.id);
+                });
+                categories.val(selectedCategories);
+                categories.trigger('change');
+                console.log(selectedCategories);
                 let itemTags = $('#allTags');
                 itemTags.empty();
                 $.each(data.tags, function (i, val) {
                     addNewTagToDom(itemTags, val.id, val.title);
                 });
-                console.log(data.tags)
             },
             error: function(data) {}
         })
@@ -643,12 +649,46 @@ $(document).ready(function () {
     let categorySelection = $('#categorySelection');
     categorySelection.select2();
     categorySelection.on('select2:select', function (e) {
-        var data = e.params.data;
-        console.log('selected' + data);
+        let data = e.params.data;
+        let categoryId = data.id;
+        let itemId = $('#selectedList').val();
+        $.ajax({
+            type: "POST",
+            url: "/categories/assign",
+            data: {
+                category : categoryId,
+                item : itemId
+            },
+            dataType: "json",
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            success: function(data) {
+
+            },
+            error: function(data) {}
+        })
     });
     categorySelection.on('select2:unselect', function (e) {
-        var data = e.params.data;
-        console.log('removed' + data);
+        let data = e.params.data;
+        let categoryId = data.id;
+        let itemId = $('#selectedList').val();
+        $.ajax({
+            type: "POST",
+            url: "/categories/remove",
+            data: {
+                category : categoryId,
+                item : itemId
+            },
+            dataType: "json",
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            success: function(data) {
+
+            },
+            error: function(data) {}
+        })
     });
 
     // When the user clicks anywhere outside of the modal, close it

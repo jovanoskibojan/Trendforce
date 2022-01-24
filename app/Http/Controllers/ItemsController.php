@@ -66,7 +66,7 @@ class ItemsController extends Controller
      */
     public function edit($id)
     {
-        $items = Items::where('id', $id)->first();
+        $items = Items::where('id', $id)->with('category')->first();
         $d = $items->tags;
         $p = $items->file;
         return $items->toArray();
