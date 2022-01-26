@@ -10,11 +10,11 @@
                 @foreach($inboxes as $inbox)
                     <div class="accordion-item">
                         <h2 class="accordion-header" id="accordion-{{ $inbox->id }}">
-                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#accordion-collapse-{{ $inbox->id }}" aria-expanded="false" aria-controls="accordion-collapse-{{ $inbox->id }}">
+                            <button class="accordion-button collapsed accordion-categories" type="button" data-inbox-id="{{ $inbox->id }}" data-bs-toggle="collapse" data-bs-target="#accordion-collapse-{{ $inbox->id }}" aria-expanded="false" aria-controls="accordion-collapse-{{ $inbox->id }}">
                                 {{ $inbox->title }} (<span class="mx-1">{{ $inbox->category->count() }}</span> {{ ($inbox->category->count() == 1) ? ' Category ' : ' Categories ' }})
                             </button>
                         </h2>
-                        <div id="accordion-collapse-{{ $inbox->id }}" data-inbox-id="{{ $inbox->id }}" class="accordion-collapse collapse" aria-labelledby="accordion-{{ $inbox->id }}" data-bs-parent="#accordionExample">
+                        <div id="accordion-collapse-{{ $inbox->id }}" data-inbox-id="{{ $inbox->id }}" class="accordion-collapse collapse" aria-labelledby="accordion-{{ $inbox->id }}" data-bs-parent="#allInboxes">
                             <div class="accordion-body">
                                 <div>
                                     <input id="" type="text" class="form-control mb-3 newCategory" placeholder="New category">
@@ -34,31 +34,7 @@
     </div>
 
     <!-- Item preview -->
-    <div class="offcanvas offcanvas-start" data-bs-scroll="true" data-bs-backdrop="false" tabindex="-1" id="newListItem" aria-labelledby="documentPreviewLabel" style="min-width: 850px">
-        <div class="offcanvas-header">
-            <button id="updateItem" class="btn btn-success" >Save changes</button>
-            <input type="hidden" id="selectedList">
-            <h5 class="offcanvas-title" id="documentPreviewLabel">Colored with scrolling</h5>
-            <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-        </div>
-        <div class="offcanvas-body mt-0">
-            <div id="itemInfo">
-                <form action="/fileUpload" class="dropzone" id="uploadField"></form>
-                <div>
-                    <div id="itemTags">
-                        <input type="text" class="form-control" id="newTag" placeholder="New tag">
-                        <div id="allTags">
-                            <span class="badge rounded-pill bg-secondary">Secondary</span>
-                        </div>
-                    </div>
-                    <select id="categorySelection" class="" name="categories[]" multiple="multiple">
-                    </select>
-                </div>
-            </div>
-            <div id="filesPreview"></div>
-            <textarea id="itemEditor" style="width: 100%"></textarea>
-        </div>
-    </div>
+    @include('item-preview')
 
     <!-- File preview-->
     <div id="filePreview" class="modal">

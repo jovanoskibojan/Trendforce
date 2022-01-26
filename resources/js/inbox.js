@@ -150,9 +150,17 @@ $(document).ready(function () {
         });
     }
 
+    $('.accordion-categories').click(function () {
+        let inboxId = $(this).data('inbox-id');
+       console.log(inboxId);
+       updateCategories(inboxId);
+    });
+
     updateCategories();
-    function updateCategories() {
-        let inboxID = $('.nav-link.active').data('inbox-id')
+    function updateCategories(inboxID = null) {
+        if(inboxID === null) {
+            inboxID = $('.nav-link.active').data('inbox-id');
+        }
         let categoriesWrapper = $('#categorySelection');
         categoriesWrapper.empty();
         $.ajax({
@@ -299,7 +307,7 @@ $(document).ready(function () {
     });
 
     myDropzone.on("sending", function(file, xhr, formData) {
-        let itemId = $('#selectedList').val();
+        let itemId = $('#selectedItem').val();
         formData.append("item_id", itemId);
     });
 
@@ -501,7 +509,7 @@ $(document).ready(function () {
                         </div>
                     </div>
                 `);
-                $('#selectedList').val(data.id);
+                $('#selectedItem').val(data.id);
             },
             error: function(data) {}
         })
@@ -513,7 +521,7 @@ $(document).ready(function () {
         let myOffcanvas = document.getElementById('newListItem');
         let bsOffcanvas = new bootstrap.Offcanvas(myOffcanvas);
         let itemId = $(this).data('item-id');
-        $('#selectedList').val(itemId);
+        $('#selectedItem').val(itemId);
         $.ajax({
             type: "GET",
             url: "/items/" + itemId + "/edit",
@@ -629,7 +637,7 @@ $(document).ready(function () {
 
     $('#updateItem').click(function () {
         let itemValue = $('.sun-editor-editable').html();
-        let itemID = $('#selectedList').val();
+        let itemID = $('#selectedItem').val();
         $.ajax({
             type: "PUT",
             url: "/items/" + itemID,
@@ -651,7 +659,7 @@ $(document).ready(function () {
     categorySelection.on('select2:select', function (e) {
         let data = e.params.data;
         let categoryId = data.id;
-        let itemId = $('#selectedList').val();
+        let itemId = $('#selectedItem').val();
         $.ajax({
             type: "POST",
             url: "/categories/assign",
@@ -672,7 +680,7 @@ $(document).ready(function () {
     categorySelection.on('select2:unselect', function (e) {
         let data = e.params.data;
         let categoryId = data.id;
-        let itemId = $('#selectedList').val();
+        let itemId = $('#selectedItem').val();
         $.ajax({
             type: "POST",
             url: "/categories/remove",
@@ -733,7 +741,7 @@ $(document).ready(function () {
     $('#newTag').on( 'keydown', function(event) {
         let element = $(this);
         let value = element.val()
-        let item_id = $('#selectedList').val()
+        let item_id = $('#selectedItem').val()
         let inbox_id = $('.update-inbox.active').data('inbox-id');
         if(event.which == 13)
             $.ajax({
@@ -760,7 +768,7 @@ $(document).ready(function () {
     $('body').on('click', '.remove-tag', function() {
         let element = $(this);
         let tagId = element.data('tag-id');
-        let itemId = $('#selectedList').val();
+        let itemId = $('#selectedItem').val();
         $.ajax({
             type: "POST",
             url: '/tags/detachTag',

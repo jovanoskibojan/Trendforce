@@ -8871,10 +8871,20 @@ jquery__WEBPACK_IMPORTED_MODULE_0___default()(document).ready(function () {
     });
   }
 
+  jquery__WEBPACK_IMPORTED_MODULE_0___default()('.accordion-categories').click(function () {
+    var inboxId = jquery__WEBPACK_IMPORTED_MODULE_0___default()(this).data('inbox-id');
+    console.log(inboxId);
+    updateCategories(inboxId);
+  });
   updateCategories();
 
   function updateCategories() {
-    var inboxID = jquery__WEBPACK_IMPORTED_MODULE_0___default()('.nav-link.active').data('inbox-id');
+    var inboxID = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : null;
+
+    if (inboxID === null) {
+      inboxID = jquery__WEBPACK_IMPORTED_MODULE_0___default()('.nav-link.active').data('inbox-id');
+    }
+
     var categoriesWrapper = jquery__WEBPACK_IMPORTED_MODULE_0___default()('#categorySelection');
     categoriesWrapper.empty();
     jquery__WEBPACK_IMPORTED_MODULE_0___default().ajax({
@@ -9014,7 +9024,7 @@ jquery__WEBPACK_IMPORTED_MODULE_0___default()(document).ready(function () {
     }
   });
   myDropzone.on("sending", function (file, xhr, formData) {
-    var itemId = jquery__WEBPACK_IMPORTED_MODULE_0___default()('#selectedList').val();
+    var itemId = jquery__WEBPACK_IMPORTED_MODULE_0___default()('#selectedItem').val();
     formData.append("item_id", itemId);
   });
   myDropzone.on("success", function (file, response) {
@@ -9185,7 +9195,7 @@ jquery__WEBPACK_IMPORTED_MODULE_0___default()(document).ready(function () {
       },
       success: function success(data) {
         jquery__WEBPACK_IMPORTED_MODULE_0___default()("div").find("[data-list-id='".concat(data.list_id, "']")).find('div.list').append("\n                    <div class=\"card-wrapper\" draggable=\"false\" data-item-id=\"".concat(data.id, "\">\n                        <div class=\"card inbox\">\n                            <div class=\"card-body\" data-current-icon=\"file-earmark-bar-graph-fill\">\n                            </div>\n                        </div>\n                    </div>\n                "));
-        jquery__WEBPACK_IMPORTED_MODULE_0___default()('#selectedList').val(data.id);
+        jquery__WEBPACK_IMPORTED_MODULE_0___default()('#selectedItem').val(data.id);
       },
       error: function error(data) {}
     });
@@ -9195,7 +9205,7 @@ jquery__WEBPACK_IMPORTED_MODULE_0___default()(document).ready(function () {
     var myOffcanvas = document.getElementById('newListItem');
     var bsOffcanvas = new bootstrap.Offcanvas(myOffcanvas);
     var itemId = jquery__WEBPACK_IMPORTED_MODULE_0___default()(this).data('item-id');
-    jquery__WEBPACK_IMPORTED_MODULE_0___default()('#selectedList').val(itemId);
+    jquery__WEBPACK_IMPORTED_MODULE_0___default()('#selectedItem').val(itemId);
     jquery__WEBPACK_IMPORTED_MODULE_0___default().ajax({
       type: "GET",
       url: "/items/" + itemId + "/edit",
@@ -9279,7 +9289,7 @@ jquery__WEBPACK_IMPORTED_MODULE_0___default()(document).ready(function () {
   loadLists();
   jquery__WEBPACK_IMPORTED_MODULE_0___default()('#updateItem').click(function () {
     var itemValue = jquery__WEBPACK_IMPORTED_MODULE_0___default()('.sun-editor-editable').html();
-    var itemID = jquery__WEBPACK_IMPORTED_MODULE_0___default()('#selectedList').val();
+    var itemID = jquery__WEBPACK_IMPORTED_MODULE_0___default()('#selectedItem').val();
     jquery__WEBPACK_IMPORTED_MODULE_0___default().ajax({
       type: "PUT",
       url: "/items/" + itemID,
@@ -9299,7 +9309,7 @@ jquery__WEBPACK_IMPORTED_MODULE_0___default()(document).ready(function () {
   categorySelection.on('select2:select', function (e) {
     var data = e.params.data;
     var categoryId = data.id;
-    var itemId = jquery__WEBPACK_IMPORTED_MODULE_0___default()('#selectedList').val();
+    var itemId = jquery__WEBPACK_IMPORTED_MODULE_0___default()('#selectedItem').val();
     jquery__WEBPACK_IMPORTED_MODULE_0___default().ajax({
       type: "POST",
       url: "/categories/assign",
@@ -9318,7 +9328,7 @@ jquery__WEBPACK_IMPORTED_MODULE_0___default()(document).ready(function () {
   categorySelection.on('select2:unselect', function (e) {
     var data = e.params.data;
     var categoryId = data.id;
-    var itemId = jquery__WEBPACK_IMPORTED_MODULE_0___default()('#selectedList').val();
+    var itemId = jquery__WEBPACK_IMPORTED_MODULE_0___default()('#selectedItem').val();
     jquery__WEBPACK_IMPORTED_MODULE_0___default().ajax({
       type: "POST",
       url: "/categories/remove",
@@ -9372,7 +9382,7 @@ jquery__WEBPACK_IMPORTED_MODULE_0___default()(document).ready(function () {
   jquery__WEBPACK_IMPORTED_MODULE_0___default()('#newTag').on('keydown', function (event) {
     var element = jquery__WEBPACK_IMPORTED_MODULE_0___default()(this);
     var value = element.val();
-    var item_id = jquery__WEBPACK_IMPORTED_MODULE_0___default()('#selectedList').val();
+    var item_id = jquery__WEBPACK_IMPORTED_MODULE_0___default()('#selectedItem').val();
     var inbox_id = jquery__WEBPACK_IMPORTED_MODULE_0___default()('.update-inbox.active').data('inbox-id');
     if (event.which == 13) jquery__WEBPACK_IMPORTED_MODULE_0___default().ajax({
       type: "POST",
@@ -9397,7 +9407,7 @@ jquery__WEBPACK_IMPORTED_MODULE_0___default()(document).ready(function () {
   jquery__WEBPACK_IMPORTED_MODULE_0___default()('body').on('click', '.remove-tag', function () {
     var element = jquery__WEBPACK_IMPORTED_MODULE_0___default()(this);
     var tagId = element.data('tag-id');
-    var itemId = jquery__WEBPACK_IMPORTED_MODULE_0___default()('#selectedList').val();
+    var itemId = jquery__WEBPACK_IMPORTED_MODULE_0___default()('#selectedItem').val();
     jquery__WEBPACK_IMPORTED_MODULE_0___default().ajax({
       type: "POST",
       url: '/tags/detachTag',
