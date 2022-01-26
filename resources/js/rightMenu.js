@@ -23,11 +23,25 @@ $('body').on('contextmenu', '.folder-node', function(event) {
             left: event.pageX + "px"
         });
 });
+
 $('body').on('contextmenu', '.update-inbox', function(event) {
     id = $(this).data('inbox-id');
     // Avoid the real one
     event.preventDefault();
     $("#custom-menu-inbox").finish().toggle(100).
+
+        // In the right position (the mouse)
+        css({
+            top: event.pageY + "px",
+            left: event.pageX + "px"
+        });
+});
+
+$('body').on('contextmenu', '.card-wrapper', function(event) {
+    id = $(this).data('item-id');
+    // Avoid the real one
+    event.preventDefault();
+    $("#custom-menu-item").finish().toggle(100).
 
         // In the right position (the mouse)
         css({
@@ -47,6 +61,32 @@ $(document).bind("mousedown", function (e) {
     }
 });
 
+
+// If the menu element is clicked
+$("#custom-menu-item li").click(function(){
+    // This is the triggered action name
+    switch($(this).attr('data-action')) {
+        // A case for each action. Your actions here
+        case 'archive':
+            archiveElement(id);
+            break;
+        case 'favourite':
+            favouriteElement(id);
+            break;
+        case 'delete':
+            alert('delete: ' + id);
+            break;
+    }
+
+    // Hide it AFTER the action was triggered
+    $(".custom-menu").hide(100);
+    $('#updateColorNewName').change(function () {
+        let selectedColor = $(this).val();
+        $('#colorExample').removeClass();
+        $('#colorExample').addClass('p-2 my-2 d-block rounded-3 text-center');
+        $('#colorExample').addClass(selectedColor);
+    });
+});
 
 // If the menu element is clicked
 $("#custom-menu-folder li").click(function(){
@@ -87,6 +127,7 @@ $("#custom-menu-folder li").click(function(){
         $('#colorExample').addClass(selectedColor);
     });
 });
+
 // If the menu element is clicked
 $("#custom-menu-inbox li").click(function(){
     // This is the triggered action name
@@ -108,6 +149,51 @@ $("#custom-menu-inbox li").click(function(){
     // Hide it AFTER the action was triggered
     $(".custom-menu").hide(100);
 });
+
+function archiveElement(id) {
+    $.ajax({
+        type: "POST",
+        url: "/items/archive",
+        data: {
+            'id' : id,
+        },
+        dataType: "json",
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        },
+        success: function(data) {
+            $('.card-wrapper[data-item-id="' + id + '"]').fadeOut();
+        },
+        error: function(data) {
+        }
+    });
+}
+function favouriteElement(id) {
+    $.ajax({
+        type: "POST",
+        url: "/items/favourite",
+        data: {
+            'id' : id,
+        },
+        dataType: "json",
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        },
+        success: function(data) {
+            console.log('jeje');
+            console.log(data);
+            if(data === 1)
+                $('.card-wrapper[data-item-id="' + id + '"] .favourite-icon ').show();
+            else {
+                $('.card-wrapper[data-item-id="' + id + '"] .favourite-icon').hide();
+            }
+        },
+        error: function(data) {
+            console.log('err');
+        }
+    });
+}
+
 
 function addNewFolder(id) {
     let inboxID = $('.nav-link.active').data('inbox-id')

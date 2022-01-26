@@ -50,4 +50,5 @@
             <button id="closeFilePreviewButton" type="button" class="btn btn-primary">Close</button>
         </div>
     </div>
+    @include('item-right-click');
 </x-app-layout>

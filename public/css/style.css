@@ -13732,6 +13732,14 @@ textarea.form-control-lg {
   max-height: 150px;
   margin-top: 5px;
   display: inline-block;
+  position: relative;
+}
+.card-wrapper .favourite-icon {
+  color: #daa520;
+  position: absolute;
+  right: 7px;
+  top: 4px;
+  z-index: 9;
 }
 .card-wrapper .inbox {
   height: 100%;

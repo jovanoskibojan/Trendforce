@@ -51,7 +51,7 @@ class ItemsController extends Controller
     public function show($id)
     {
         // TODO: Check if user has option to view this
-        $items = Items::where('folder_id', $id)->get();
+        $items = Items::where('folder_id', $id)->where('is_archived', false)->get();
         foreach ($items as $item) {
             $item->content = strip_tags($item->content);
         }
@@ -95,5 +95,28 @@ class ItemsController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    public function archive(Request $request) {
+        $item = Items::find($request->id);
+        $item->is_archived = !($item->is_archived);
+        return $item->save();
+    }
+
+    /**
+     * Update the favourite state of the element.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return boolean
+     */
+    public function favourite(Request $request) {
+        $item = Items::find($request->id);
+        $newValue = !($item->is_favourite);
+        $item->is_favourite  = $newValue;
+        $item->save();
+        if($newValue)
+            return 1;
+        else
+            return 0;
     }
 }

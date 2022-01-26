@@ -18,6 +18,8 @@ class CreateItemsTable extends Migration
             $table->unsignedBigInteger('folder_id');
             $table->unsignedBigInteger('list_id');
             $table->longText('content')->nullable();
+            $table->boolean('is_archived')->default(false);
+            $table->boolean('is_favourite')->default(false);
             $table->timestamps();
         });
     }

@@ -22,6 +22,14 @@
     max-height: 150px;
     margin-top: 5px;
     display: inline-block;
+    position: relative;
+    .favourite-icon {
+        color: #daa520;
+        position: absolute;
+        right: 7px;
+        top: 4px;
+        z-index: 9;
+    }
     .inbox {
         height: 100%;
         cursor: pointer;

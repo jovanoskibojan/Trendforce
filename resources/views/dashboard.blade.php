@@ -165,5 +165,6 @@
         <li data-action="rename"><i class="bi bi-pencil"></i> Rename</li>
         <li data-action="delete"><i class="bi bi-trash"></i> Delete</li>
     </ul>
+    @include('item-right-click');
 
 </x-app-layout>

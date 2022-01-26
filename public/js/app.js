@@ -8810,6 +8810,7 @@ jquery__WEBPACK_IMPORTED_MODULE_0___default()(document).ready(function () {
     jquery__WEBPACK_IMPORTED_MODULE_0___default()('.folder-node.active').removeClass('active');
     jquery__WEBPACK_IMPORTED_MODULE_0___default()(this).addClass('active');
     var selectedFolderId = jquery__WEBPACK_IMPORTED_MODULE_0___default()(this).attr('id');
+    var favourite = '';
     jquery__WEBPACK_IMPORTED_MODULE_0___default().ajax({
       type: "GET",
       url: "/items/" + selectedFolderId,
@@ -8820,8 +8821,25 @@ jquery__WEBPACK_IMPORTED_MODULE_0___default()(document).ready(function () {
       },
       success: function success(data) {
         jquery__WEBPACK_IMPORTED_MODULE_0___default()('.list').empty();
+        var list;
         jquery__WEBPACK_IMPORTED_MODULE_0___default().each(data, function (i, val) {
-          jquery__WEBPACK_IMPORTED_MODULE_0___default()("div").find("[data-list-id='".concat(val.list_id, "']")).find('div.list').append("\n                        <div class=\"card-wrapper\" draggable=\"false\" data-item-id=\"".concat(val.id, "\">\n                            <div class=\"card inbox\">\n                                <div class=\"card-body\" data-current-icon=\"file-earmark-bar-graph-fill\">\n                                    ").concat(val.content, "\n                                </div>\n                            </div>\n                        </div>\n                    "));
+          favourite = '';
+
+          if (!val.is_favourite) {
+            favourite = 'display: none';
+          }
+
+          list = jquery__WEBPACK_IMPORTED_MODULE_0___default()("div").find("[data-list-id='".concat(val.list_id, "']")).find('div.list');
+          showItem(list, val.id, favourite, val.content); // $("div").find(`[data-list-id='${val.list_id}']`).find('div.list').append(`
+          //     <div class="card-wrapper" draggable="false" data-item-id="${val.id}">
+          //         <i class="bi bi-star-fill favourite-icon" style="${favourite}"></i>
+          //         <div class="card inbox">
+          //             <div class="card-body" data-current-icon="file-earmark-bar-graph-fill">
+          //                 ${val.content}
+          //             </div>
+          //         </div>
+          //     </div>
+          // `);
         });
         updateSortable();
       },
@@ -8901,77 +8919,7 @@ jquery__WEBPACK_IMPORTED_MODULE_0___default()(document).ready(function () {
       },
       error: function error(data) {}
     });
-  } // let listWithHandle1 = document.getElementById('listOne');
-  // let listWithHandle2 = document.getElementById('listTwo');
-  // new Sortable(listWithHandle1, {
-  //     group: {
-  //         name: 'list',
-  //     },
-  //     animation: 150
-  // });
-  //
-  // new Sortable(listWithHandle2, {
-  //     group: {
-  //         name: 'list',
-  //     },
-  //     onEnd: function (/**Event*/evt) {
-  //         console.log(evt.to);    // target list
-  //         console.log(evt.from);  // previous list
-  //         console.log("old index:" + evt.oldIndex);  // element's old index within old parent
-  //         console.log("new index: " + evt.newIndex);  // element's new index within new parent
-  //         console.log("old draggable index: " + evt.oldDraggableIndex); // element's old index within old parent, only counting draggable elements
-  //         console.log("new draggable index: " + evt.newDraggableIndex); // element's new index within new parent, only counting draggable elements
-  //         console.log(evt.clone); // the clone element
-  //         console.log("pullMode: " + evt.pullMode);
-  //     },
-  //     animation: 150
-  // });
-  // Sortable.create(listWithHandle, {
-  //     handle: '.my-handle',
-  //     animation: 150,
-  //     onEnd: function (/**Event*/evt) {
-  //         let movedId = $('.card-wrapper').eq(evt.newDraggableIndex).attr('id');
-  //         let folderId = $('.active.folder-node').attr('id');
-  //         let prevElement;
-  //         if(evt.newDraggableIndex == 0) {
-  //             prevElement = $('.card-wrapper').eq(evt.newDraggableIndex).next().attr('id');
-  //         }
-  //         else {
-  //             prevElement = $('.card-wrapper').eq(evt.newDraggableIndex).prev().attr('id');
-  //         }
-  //         console.log(prevElement);
-  //         $.ajax({
-  //             type: 'POST',
-  //             url: '/fileUpload/reorder',
-  //             data: {
-  //                 'movedId' : movedId,
-  //                 'folderId' : folderId,
-  //                 'prevElement' : prevElement,
-  //                 'newIndex' : evt.newDraggableIndex,
-  //             },
-  //             dataType: "json",
-  //             headers: {
-  //                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-  //             },
-  //             success: function(data) {
-  //             },
-  //             error: function(data) {
-  //             }
-  //             /*
-  //             console.log(draggedElement, replacedElement);
-  //         console.log(evt.to);    // target list
-  //         console.log(evt.from);  // previous list
-  //         console.log("old index:" + evt.oldIndex);  // element's old index within old parent
-  //         console.log("new index: " + evt.newIndex);  // element's new index within new parent
-  //         console.log("old draggable index: " + evt.oldDraggableIndex); // element's old index within old parent, only counting draggable elements
-  //         console.log("new draggable index: " + evt.newDraggableIndex); // element's new index within new parent, only counting draggable elements
-  //         console.log(evt.clone); // the clone element
-  //         console.log("pullMode: " + evt.pullMode);  // when item is in another sortable: `"clone"` if cloning, `true` if moving
-  //              */
-  //         });
-  //     },
-  // });
-
+  }
 
   function updateFolder(folderId, value, update) {
     jquery__WEBPACK_IMPORTED_MODULE_0___default().ajax({
@@ -9045,40 +8993,7 @@ jquery__WEBPACK_IMPORTED_MODULE_0___default()(document).ready(function () {
     } else {
       return 'file-binary-fill';
     }
-  } // Old file preview, should be removed
-  // $('body').on('click', '.card-wrapper', function() {
-  //     let docTitle = $(this).find('.file-name').first().html();
-  //     let fileType = $(this).data('file-type');
-  //     console.log(fileType);
-  //     let fileName = $(this).data('file-name');
-  //     let myOffcanvas = document.getElementById('documentPreview2')
-  //     let bsOffcanvas = new bootstrap.Offcanvas(myOffcanvas);
-  //     $('#documentPreviewLabel').html(docTitle);
-  //     $('.previewArea').hide();
-  //     if (fileType.indexOf('presentation') >= 0) {
-  //         $('#powerpointPreview iframe').attr('src', 'https://view.officeapps.live.com/op/view.aspx?src=' + websiteURL + '/files/' + fileName);
-  //         $('#powerpointPreview').show();
-  //     }
-  //     else if (fileType.indexOf('pdf') >= 0) {
-  //         $('#pdfPreview embed').attr('src', websiteURL + '/files/' + fileName);
-  //         $('#pdfPreview').show();
-  //     }
-  //     else if (fileType.indexOf('customText') >= 0) {
-  //         $('#documentPreview #sample').html('test');
-  //         $('#documentPreview').show();
-  //     }
-  //     else if (fileType.indexOf('image') >= 0) {
-  //         $('#imagePreview img').attr('src', websiteURL + '/files/' + fileName);
-  //         $('#imagePreview').show();
-  //     }
-  //     else {
-  //         $('#noPreview').show();
-  //     }
-  //     $('#downloadDocument').attr('href', websiteURL + '/files/' + fileName);
-  //     $('#downloadDocument').attr('download', docTitle);
-  //     bsOffcanvas.show();
-  // });
-  // Creates a new list in the selected Inbox
+  } // Creates a new list in the selected Inbox
 
 
   jquery__WEBPACK_IMPORTED_MODULE_0___default()('#newList').click(function () {
@@ -9194,7 +9109,17 @@ jquery__WEBPACK_IMPORTED_MODULE_0___default()(document).ready(function () {
         'X-CSRF-TOKEN': jquery__WEBPACK_IMPORTED_MODULE_0___default()('meta[name="csrf-token"]').attr('content')
       },
       success: function success(data) {
-        jquery__WEBPACK_IMPORTED_MODULE_0___default()("div").find("[data-list-id='".concat(data.list_id, "']")).find('div.list').append("\n                    <div class=\"card-wrapper\" draggable=\"false\" data-item-id=\"".concat(data.id, "\">\n                        <div class=\"card inbox\">\n                            <div class=\"card-body\" data-current-icon=\"file-earmark-bar-graph-fill\">\n                            </div>\n                        </div>\n                    </div>\n                "));
+        var itemsWrapper = jquery__WEBPACK_IMPORTED_MODULE_0___default()("div").find("[data-list-id='".concat(data.list_id, "']")).find('div.list');
+        showItem(itemsWrapper, data.id, 'display: none', ''); // $("div").find(`[data-list-id='${data.list_id}']`).find('div.list').append(`
+        //     <div class="card-wrapper" draggable="false" data-item-id="${data.id}">
+        //         <i class="bi bi-star-fill favourite-icon"></i>
+        //         <div class="card inbox">
+        //             <div class="card-body" data-current-icon="file-earmark-bar-graph-fill">
+        //             </div>
+        //         </div>
+        //     </div>
+        // `);
+
         jquery__WEBPACK_IMPORTED_MODULE_0___default()('#selectedItem').val(data.id);
       },
       error: function error(data) {}
@@ -9447,8 +9372,25 @@ jquery__WEBPACK_IMPORTED_MODULE_0___default()(document).ready(function () {
         var itemsWrapper = clickedButton.parent().next();
         var content;
         itemsWrapper.empty();
+        var favourite;
+        var list;
         jquery__WEBPACK_IMPORTED_MODULE_0___default().each(data.items, function (i, val) {
-          itemsWrapper.append("\n                        <div class=\"card-wrapper\" draggable=\"false\" data-item-id=\"".concat(val.id, "\">\n                            <div class=\"card inbox\">\n                                <div class=\"card-body\" data-current-icon=\"file-earmark-bar-graph-fill\">\n                                    ").concat(val.content, "\n                                </div>\n                            </div>\n                        </div>\n                    "));
+          favourite = '';
+
+          if (!val.is_favourite) {
+            favourite = 'display: none';
+          }
+
+          showItem(itemsWrapper, val.id, favourite, val.content); // itemsWrapper.append(`
+          //     <div class="card-wrapper" draggable="false" data-item-id="${val.id}">
+          //         <i class="bi bi-star-fill favourite-icon"></i>
+          //         <div class="card inbox">
+          //             <div class="card-body" data-current-icon="file-earmark-bar-graph-fill">
+          //                 ${val.content}
+          //             </div>
+          //         </div>
+          //     </div>
+          // `);
         });
       },
       error: function error(data) {}
@@ -9471,8 +9413,24 @@ jquery__WEBPACK_IMPORTED_MODULE_0___default()(document).ready(function () {
         var itemsWrapper = clickedButton.parent().parent().next();
         var content;
         itemsWrapper.empty();
+        var favourite;
         jquery__WEBPACK_IMPORTED_MODULE_0___default().each(data.item, function (i, val) {
-          itemsWrapper.append("\n                        <div class=\"card-wrapper\" draggable=\"false\" data-item-id=\"".concat(val.id, "\">\n                            <div class=\"card inbox\">\n                                <div class=\"card-body\" data-current-icon=\"file-earmark-bar-graph-fill\">\n                                    ").concat(val.content, "\n                                </div>\n                            </div>\n                        </div>\n                    "));
+          favourite = '';
+
+          if (!val.is_favourite) {
+            favourite = 'display: none';
+          }
+
+          showItem(itemsWrapper, val.id, favourite, val.content); // itemsWrapper.append(`
+          //     <div class="card-wrapper" draggable="false" data-item-id="${val.id}">
+          //         <i class="bi bi-star-fill favourite-icon"></i>
+          //         <div class="card inbox">
+          //             <div class="card-body" data-current-icon="file-earmark-bar-graph-fill">
+          //                 ${val.content}
+          //             </div>
+          //         </div>
+          //     </div>
+          // `);
         });
       },
       error: function error(data) {}
@@ -9501,6 +9459,10 @@ jquery__WEBPACK_IMPORTED_MODULE_0___default()(document).ready(function () {
       error: function error(data) {}
     });
   });
+
+  function showItem(element, id, favourite, content) {
+    element.append("\n            <div class=\"card-wrapper\" draggable=\"false\" data-item-id=\"".concat(id, "\">\n                <i class=\"bi bi-star-fill favourite-icon\" style=\"").concat(favourite, "\"></i>\n                <div class=\"card inbox\">\n                    <div class=\"card-body\" data-current-icon=\"file-earmark-bar-graph-fill\">\n                        ").concat(content, "\n                    </div>\n                </div>\n            </div>\n        "));
+  }
 });
 
 /***/ }),
@@ -9606,6 +9568,16 @@ jquery__WEBPACK_IMPORTED_MODULE_0___default()('body').on('contextmenu', '.update
     top: event.pageY + "px",
     left: event.pageX + "px"
   });
+});
+jquery__WEBPACK_IMPORTED_MODULE_0___default()('body').on('contextmenu', '.card-wrapper', function (event) {
+  id = jquery__WEBPACK_IMPORTED_MODULE_0___default()(this).data('item-id'); // Avoid the real one
+
+  event.preventDefault();
+  jquery__WEBPACK_IMPORTED_MODULE_0___default()("#custom-menu-item").finish().toggle(100). // In the right position (the mouse)
+  css({
+    top: event.pageY + "px",
+    left: event.pageX + "px"
+  });
 }); // If the document is clicked somewhere
 
 jquery__WEBPACK_IMPORTED_MODULE_0___default()(document).bind("mousedown", function (e) {
@@ -9614,6 +9586,33 @@ jquery__WEBPACK_IMPORTED_MODULE_0___default()(document).bind("mousedown", functi
     // Hide it
     jquery__WEBPACK_IMPORTED_MODULE_0___default()(".custom-menu").hide(100);
   }
+}); // If the menu element is clicked
+
+jquery__WEBPACK_IMPORTED_MODULE_0___default()("#custom-menu-item li").click(function () {
+  // This is the triggered action name
+  switch (jquery__WEBPACK_IMPORTED_MODULE_0___default()(this).attr('data-action')) {
+    // A case for each action. Your actions here
+    case 'archive':
+      archiveElement(id);
+      break;
+
+    case 'favourite':
+      favouriteElement(id);
+      break;
+
+    case 'delete':
+      alert('delete: ' + id);
+      break;
+  } // Hide it AFTER the action was triggered
+
+
+  jquery__WEBPACK_IMPORTED_MODULE_0___default()(".custom-menu").hide(100);
+  jquery__WEBPACK_IMPORTED_MODULE_0___default()('#updateColorNewName').change(function () {
+    var selectedColor = jquery__WEBPACK_IMPORTED_MODULE_0___default()(this).val();
+    jquery__WEBPACK_IMPORTED_MODULE_0___default()('#colorExample').removeClass();
+    jquery__WEBPACK_IMPORTED_MODULE_0___default()('#colorExample').addClass('p-2 my-2 d-block rounded-3 text-center');
+    jquery__WEBPACK_IMPORTED_MODULE_0___default()('#colorExample').addClass(selectedColor);
+  });
 }); // If the menu element is clicked
 
 jquery__WEBPACK_IMPORTED_MODULE_0___default()("#custom-menu-folder li").click(function () {
@@ -9679,6 +9678,48 @@ jquery__WEBPACK_IMPORTED_MODULE_0___default()("#custom-menu-inbox li").click(fun
 
   jquery__WEBPACK_IMPORTED_MODULE_0___default()(".custom-menu").hide(100);
 });
+
+function archiveElement(id) {
+  jquery__WEBPACK_IMPORTED_MODULE_0___default().ajax({
+    type: "POST",
+    url: "/items/archive",
+    data: {
+      'id': id
+    },
+    dataType: "json",
+    headers: {
+      'X-CSRF-TOKEN': jquery__WEBPACK_IMPORTED_MODULE_0___default()('meta[name="csrf-token"]').attr('content')
+    },
+    success: function success(data) {
+      jquery__WEBPACK_IMPORTED_MODULE_0___default()('.card-wrapper[data-item-id="' + id + '"]').fadeOut();
+    },
+    error: function error(data) {}
+  });
+}
+
+function favouriteElement(id) {
+  jquery__WEBPACK_IMPORTED_MODULE_0___default().ajax({
+    type: "POST",
+    url: "/items/favourite",
+    data: {
+      'id': id
+    },
+    dataType: "json",
+    headers: {
+      'X-CSRF-TOKEN': jquery__WEBPACK_IMPORTED_MODULE_0___default()('meta[name="csrf-token"]').attr('content')
+    },
+    success: function success(data) {
+      console.log('jeje');
+      console.log(data);
+      if (data === 1) jquery__WEBPACK_IMPORTED_MODULE_0___default()('.card-wrapper[data-item-id="' + id + '"] .favourite-icon ').show();else {
+        jquery__WEBPACK_IMPORTED_MODULE_0___default()('.card-wrapper[data-item-id="' + id + '"] .favourite-icon').hide();
+      }
+    },
+    error: function error(data) {
+      console.log('err');
+    }
+  });
+}
 
 function addNewFolder(id) {
   var inboxID = jquery__WEBPACK_IMPORTED_MODULE_0___default()('.nav-link.active').data('inbox-id');

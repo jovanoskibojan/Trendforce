@@ -77,6 +77,7 @@ $(document).ready(function () {
         $('.folder-node.active').removeClass('active');
         $(this).addClass('active');
         let selectedFolderId = $(this).attr('id');
+        let favourite = '';
         $.ajax({
             type: "GET",
             url: "/items/" + selectedFolderId,
@@ -87,16 +88,24 @@ $(document).ready(function () {
             },
             success: function(data) {
                 $('.list').empty();
+                let list;
                 $.each(data, function (i, val) {
-                    $("div").find(`[data-list-id='${val.list_id}']`).find('div.list').append(`
-                        <div class="card-wrapper" draggable="false" data-item-id="${val.id}">
-                            <div class="card inbox">
-                                <div class="card-body" data-current-icon="file-earmark-bar-graph-fill">
-                                    ${val.content}
-                                </div>
-                            </div>
-                        </div>
-                    `);
+                    favourite = '';
+                    if(!val.is_favourite) {
+                        favourite = 'display: none';
+                    }
+                    list = $("div").find(`[data-list-id='${val.list_id}']`).find('div.list');
+                    showItem(list, val.id, favourite, val.content);
+                    // $("div").find(`[data-list-id='${val.list_id}']`).find('div.list').append(`
+                    //     <div class="card-wrapper" draggable="false" data-item-id="${val.id}">
+                    //         <i class="bi bi-star-fill favourite-icon" style="${favourite}"></i>
+                    //         <div class="card inbox">
+                    //             <div class="card-body" data-current-icon="file-earmark-bar-graph-fill">
+                    //                 ${val.content}
+                    //             </div>
+                    //         </div>
+                    //     </div>
+                    // `);
                 });
                 updateSortable();
             },
@@ -182,80 +191,6 @@ $(document).ready(function () {
         });
     }
 
-    // let listWithHandle1 = document.getElementById('listOne');
-    // let listWithHandle2 = document.getElementById('listTwo');
-
-    // new Sortable(listWithHandle1, {
-    //     group: {
-    //         name: 'list',
-    //     },
-    //     animation: 150
-    // });
-    //
-    // new Sortable(listWithHandle2, {
-    //     group: {
-    //         name: 'list',
-    //     },
-    //     onEnd: function (/**Event*/evt) {
-    //         console.log(evt.to);    // target list
-    //         console.log(evt.from);  // previous list
-    //         console.log("old index:" + evt.oldIndex);  // element's old index within old parent
-    //         console.log("new index: " + evt.newIndex);  // element's new index within new parent
-    //         console.log("old draggable index: " + evt.oldDraggableIndex); // element's old index within old parent, only counting draggable elements
-    //         console.log("new draggable index: " + evt.newDraggableIndex); // element's new index within new parent, only counting draggable elements
-    //         console.log(evt.clone); // the clone element
-    //         console.log("pullMode: " + evt.pullMode);
-    //     },
-    //     animation: 150
-    // });
-
-
-    // Sortable.create(listWithHandle, {
-    //     handle: '.my-handle',
-    //     animation: 150,
-    //     onEnd: function (/**Event*/evt) {
-    //         let movedId = $('.card-wrapper').eq(evt.newDraggableIndex).attr('id');
-    //         let folderId = $('.active.folder-node').attr('id');
-    //         let prevElement;
-    //         if(evt.newDraggableIndex == 0) {
-    //             prevElement = $('.card-wrapper').eq(evt.newDraggableIndex).next().attr('id');
-    //         }
-    //         else {
-    //             prevElement = $('.card-wrapper').eq(evt.newDraggableIndex).prev().attr('id');
-    //         }
-    //         console.log(prevElement);
-    //         $.ajax({
-    //             type: 'POST',
-    //             url: '/fileUpload/reorder',
-    //             data: {
-    //                 'movedId' : movedId,
-    //                 'folderId' : folderId,
-    //                 'prevElement' : prevElement,
-    //                 'newIndex' : evt.newDraggableIndex,
-    //             },
-    //             dataType: "json",
-    //             headers: {
-    //                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-    //             },
-    //             success: function(data) {
-    //             },
-    //             error: function(data) {
-    //             }
-    //             /*
-    //             console.log(draggedElement, replacedElement);
-    //         console.log(evt.to);    // target list
-    //         console.log(evt.from);  // previous list
-    //         console.log("old index:" + evt.oldIndex);  // element's old index within old parent
-    //         console.log("new index: " + evt.newIndex);  // element's new index within new parent
-    //         console.log("old draggable index: " + evt.oldDraggableIndex); // element's old index within old parent, only counting draggable elements
-    //         console.log("new draggable index: " + evt.newDraggableIndex); // element's new index within new parent, only counting draggable elements
-    //         console.log(evt.clone); // the clone element
-    //         console.log("pullMode: " + evt.pullMode);  // when item is in another sortable: `"clone"` if cloning, `true` if moving
-    //              */
-    //         });
-    //     },
-    // });
-
     function updateFolder(folderId, value, update) {
         $.ajax({
             type: "PUT",
@@ -335,40 +270,6 @@ $(document).ready(function () {
             return 'file-binary-fill';
         }
     }
-
-    // Old file preview, should be removed
-    // $('body').on('click', '.card-wrapper', function() {
-    //     let docTitle = $(this).find('.file-name').first().html();
-    //     let fileType = $(this).data('file-type');
-    //     console.log(fileType);
-    //     let fileName = $(this).data('file-name');
-    //     let myOffcanvas = document.getElementById('documentPreview2')
-    //     let bsOffcanvas = new bootstrap.Offcanvas(myOffcanvas);
-    //     $('#documentPreviewLabel').html(docTitle);
-    //     $('.previewArea').hide();
-    //     if (fileType.indexOf('presentation') >= 0) {
-    //         $('#powerpointPreview iframe').attr('src', 'https://view.officeapps.live.com/op/view.aspx?src=' + websiteURL + '/files/' + fileName);
-    //         $('#powerpointPreview').show();
-    //     }
-    //     else if (fileType.indexOf('pdf') >= 0) {
-    //         $('#pdfPreview embed').attr('src', websiteURL + '/files/' + fileName);
-    //         $('#pdfPreview').show();
-    //     }
-    //     else if (fileType.indexOf('customText') >= 0) {
-    //         $('#documentPreview #sample').html('test');
-    //         $('#documentPreview').show();
-    //     }
-    //     else if (fileType.indexOf('image') >= 0) {
-    //         $('#imagePreview img').attr('src', websiteURL + '/files/' + fileName);
-    //         $('#imagePreview').show();
-    //     }
-    //     else {
-    //         $('#noPreview').show();
-    //     }
-    //     $('#downloadDocument').attr('href', websiteURL + '/files/' + fileName);
-    //     $('#downloadDocument').attr('download', docTitle);
-    //     bsOffcanvas.show();
-    // });
 
     // Creates a new list in the selected Inbox
     $('#newList').click(function () {
@@ -501,14 +402,17 @@ $(document).ready(function () {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             },
             success: function(data) {
-                $("div").find(`[data-list-id='${data.list_id}']`).find('div.list').append(`
-                    <div class="card-wrapper" draggable="false" data-item-id="${data.id}">
-                        <div class="card inbox">
-                            <div class="card-body" data-current-icon="file-earmark-bar-graph-fill">
-                            </div>
-                        </div>
-                    </div>
-                `);
+                let itemsWrapper = $("div").find(`[data-list-id='${data.list_id}']`).find('div.list');
+                showItem(itemsWrapper, data.id, 'display: none', '');
+                // $("div").find(`[data-list-id='${data.list_id}']`).find('div.list').append(`
+                //     <div class="card-wrapper" draggable="false" data-item-id="${data.id}">
+                //         <i class="bi bi-star-fill favourite-icon"></i>
+                //         <div class="card inbox">
+                //             <div class="card-body" data-current-icon="file-earmark-bar-graph-fill">
+                //             </div>
+                //         </div>
+                //     </div>
+                // `);
                 $('#selectedItem').val(data.id);
             },
             error: function(data) {}
@@ -811,16 +715,24 @@ $(document).ready(function () {
                 let itemsWrapper = clickedButton.parent().next();
                 let content;
                 itemsWrapper.empty();
+                let favourite;
+                let list;
                 $.each(data.items, function (i, val) {
-                    itemsWrapper.append(`
-                        <div class="card-wrapper" draggable="false" data-item-id="${val.id}">
-                            <div class="card inbox">
-                                <div class="card-body" data-current-icon="file-earmark-bar-graph-fill">
-                                    ${val.content}
-                                </div>
-                            </div>
-                        </div>
-                    `);
+                    favourite = '';
+                    if(!val.is_favourite) {
+                        favourite = 'display: none';
+                    }
+                    showItem(itemsWrapper, val.id, favourite, val.content);
+                    // itemsWrapper.append(`
+                    //     <div class="card-wrapper" draggable="false" data-item-id="${val.id}">
+                    //         <i class="bi bi-star-fill favourite-icon"></i>
+                    //         <div class="card inbox">
+                    //             <div class="card-body" data-current-icon="file-earmark-bar-graph-fill">
+                    //                 ${val.content}
+                    //             </div>
+                    //         </div>
+                    //     </div>
+                    // `);
                 });
             },
             error: function(data) {
@@ -845,16 +757,23 @@ $(document).ready(function () {
                 let itemsWrapper = clickedButton.parent().parent().next();
                 let content;
                 itemsWrapper.empty();
+                let favourite;
                 $.each(data.item, function (i, val) {
-                    itemsWrapper.append(`
-                        <div class="card-wrapper" draggable="false" data-item-id="${val.id}">
-                            <div class="card inbox">
-                                <div class="card-body" data-current-icon="file-earmark-bar-graph-fill">
-                                    ${val.content}
-                                </div>
-                            </div>
-                        </div>
-                    `);
+                    favourite = '';
+                    if(!val.is_favourite) {
+                        favourite = 'display: none';
+                    }
+                    showItem(itemsWrapper, val.id, favourite, val.content);
+                    // itemsWrapper.append(`
+                    //     <div class="card-wrapper" draggable="false" data-item-id="${val.id}">
+                    //         <i class="bi bi-star-fill favourite-icon"></i>
+                    //         <div class="card inbox">
+                    //             <div class="card-body" data-current-icon="file-earmark-bar-graph-fill">
+                    //                 ${val.content}
+                    //             </div>
+                    //         </div>
+                    //     </div>
+                    // `);
                 });
             },
             error: function(data) {
@@ -886,5 +805,18 @@ $(document).ready(function () {
             }
         })
     });
+
+    function showItem(element, id, favourite, content) {
+        element.append(`
+            <div class="card-wrapper" draggable="false" data-item-id="${id}">
+                <i class="bi bi-star-fill favourite-icon" style="${favourite}"></i>
+                <div class="card inbox">
+                    <div class="card-body" data-current-icon="file-earmark-bar-graph-fill">
+                        ${content}
+                    </div>
+                </div>
+            </div>
+        `);
+    }
 
 });
