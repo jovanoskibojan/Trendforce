@@ -699,6 +699,37 @@ $(document).ready(function () {
         }
     }
 
+    $('.newCategory').on( 'keydown', function(event) {
+        let element = $(this);
+        let value = element.val()
+        let inbox_id = $('.accordion-collapse.collapse.show').data('inbox-id');
+        console.log(inbox_id);
+        if(event.which == 13)
+            $.ajax({
+                type: "POST",
+                url: '/categories',
+                data: {
+                    'category_title' : value,
+                    'inbox_id' : inbox_id
+                },
+                dataType: "json",
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                success: function(data) {
+                    let itemTags = $('#allTags');
+                    element.parent().next().append(`
+                        <span class="badge rounded-pill bg-secondary"><span class="showCategoryItems" data-category-id="${ data.id }">${ data.title }</span> <i class="remove-category bi bi-x-circle-fill"></i></span>
+                    `);
+                    let categoryNumberElement = $('#accordion-' + inbox_id).find('span');
+                    let categoryNumber = categoryNumberElement.html();
+                    categoryNumberElement.html(parseInt(categoryNumber)+1);
+                    element.val('');
+                },
+                error: function(data) {}
+            })
+    })
+
     $('#newTag').on( 'keydown', function(event) {
         let element = $(this);
         let value = element.val()
@@ -729,10 +760,14 @@ $(document).ready(function () {
     $('body').on('click', '.remove-tag', function() {
         let element = $(this);
         let tagId = element.data('tag-id');
+        let itemId = $('#selectedList').val();
         $.ajax({
-            type: "DELETE",
-            url: '/tags/' + tagId,
-            data: {},
+            type: "POST",
+            url: '/tags/detachTag',
+            data: {
+                itemId : itemId,
+                tagId : tagId
+            },
             dataType: "json",
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -754,7 +789,6 @@ $(document).ready(function () {
     $('body').on('click', '.showTagItems', function() {
         let tagId = $(this).data('tag-id');
         let clickedButton = $(this);
-        console.log(tagId);
         $.ajax({
             type: "GET",
             url: "/tags/getItems",
@@ -785,4 +819,64 @@ $(document).ready(function () {
             }
         })
     })
+
+    $('body').on('click', '.showCategoryItems', function() {
+        let categoryId = $(this).data('category-id');
+        let clickedButton = $(this);
+        $.ajax({
+            type: "GET",
+            url: "/categories/getItems",
+            data: {
+                'id' : categoryId
+            },
+            dataType: "json",
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            success: function(data) {
+                let itemsWrapper = clickedButton.parent().parent().next();
+                let content;
+                itemsWrapper.empty();
+                $.each(data.item, function (i, val) {
+                    itemsWrapper.append(`
+                        <div class="card-wrapper" draggable="false" data-item-id="${val.id}">
+                            <div class="card inbox">
+                                <div class="card-body" data-current-icon="file-earmark-bar-graph-fill">
+                                    ${val.content}
+                                </div>
+                            </div>
+                        </div>
+                    `);
+                });
+            },
+            error: function(data) {
+            }
+        })
+    })
+
+    $('body').on('click', '.remove-category', function() {
+        let categoryId = $(this).prev().data('category-id');
+        let clickedButton = $(this);
+        let inbox_id = $('.accordion-collapse.collapse.show').data('inbox-id');
+        $.ajax({
+            type: "DELETE",
+            url: "/categories/" + categoryId,
+            data: {},
+            dataType: "json",
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            success: function(data) {
+                let itemsWrapper = clickedButton.parent().parent().parent().next();
+                clickedButton.parent().remove();
+                itemsWrapper.empty();
+                let categoryNumberElement = $('#accordion-' + inbox_id).find('span');
+                let categoryNumber = categoryNumberElement.html();
+                categoryNumberElement.html(parseInt(categoryNumber)-1);
+            },
+            error: function(data) {
+            }
+        })
+    });
+
 });

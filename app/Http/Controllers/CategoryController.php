@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Categories;
+use App\Models\Inbox;
 use App\Models\Items;
 use Illuminate\Http\Request;
 
@@ -15,7 +16,9 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        //
+        $user = auth()->user();
+        $inboxes = Inbox::where('user_id', $user->id)->get();
+        return view('categories')->with('inboxes', $inboxes);
     }
 
     /**
@@ -36,7 +39,10 @@ class CategoryController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        return $newTag = Categories::create([
+            'inbox_id' => $request->inbox_id,
+            'title' => $request->category_title
+        ]);
     }
 
     /**
@@ -81,7 +87,9 @@ class CategoryController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $categories = Categories::where('id', $id)->first();
+        $categories->item()->detach();
+        return $categories->delete();
     }
 
     public function assign(Request $request)
@@ -95,5 +103,9 @@ class CategoryController extends Controller
     {
         $item = Items::where('id', $request->item)->first();
         $t = $item->category()->detach($request->category);
+    }
+
+    public function getItems(Request $request) {
+        return Categories::with('item')->find($request->id);
     }
 }

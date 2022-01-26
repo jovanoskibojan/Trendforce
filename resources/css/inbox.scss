@@ -218,9 +218,14 @@ nav {
     min-width: 635px;
     margin-left: 10px;
 }
-.showTagItems {
+.showTagItems, .showCategoryItems {
     cursor: pointer;
 }
+.remove-category:hover {
+    color: #313335;
+    cursor: pointer;
+}
+
 #inboxSearch {
     &:hover #searchOptionWrapper {
         display : block;

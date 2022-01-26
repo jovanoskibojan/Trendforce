@@ -18,7 +18,7 @@ class Inbox extends Model
         return $this->belongsTo(User::class);
     }
     public function category() {
-        return $this->belongsTo(Categories::class);
+        return $this->hasMany(Categories::class);
     }
     public function folder() {
         return $this->hasMany(Folder::class);

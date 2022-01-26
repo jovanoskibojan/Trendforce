@@ -1,7 +1,7 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            Tags
+            Categories
         </h2>
     </x-slot>
     <div class="container" >
@@ -11,14 +11,15 @@
                     <div class="accordion-item">
                         <h2 class="accordion-header" id="accordion-{{ $inbox->id }}">
                             <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#accordion-collapse-{{ $inbox->id }}" aria-expanded="false" aria-controls="accordion-collapse-{{ $inbox->id }}">
-                                {{ $inbox->title }} ({{ $inbox->tag->count() }} tags)
+                                {{ $inbox->title }} (<span class="mx-1">{{ $inbox->category->count() }}</span> {{ ($inbox->category->count() == 1) ? ' Category ' : ' Categories ' }})
                             </button>
                         </h2>
-                        <div id="accordion-collapse-{{ $inbox->id }}" class="accordion-collapse collapse" aria-labelledby="accordion-{{ $inbox->id }}" data-bs-parent="#accordionExample">
+                        <div id="accordion-collapse-{{ $inbox->id }}" data-inbox-id="{{ $inbox->id }}" class="accordion-collapse collapse" aria-labelledby="accordion-{{ $inbox->id }}" data-bs-parent="#accordionExample">
                             <div class="accordion-body">
                                 <div>
-                                    @foreach($inbox->tag as $tag)
-                                        <span class="badge rounded-pill bg-secondary showTagItems" data-tag-id="{{ $tag->id }}">{{ $tag->title }} ({{ $tag->items->count() }} items)</span>
+                                    <input id="" type="text" class="form-control mb-3 newCategory" placeholder="New category">
+                                    @foreach($inbox->category as $category)
+                                        <span class="badge rounded-pill bg-secondary"><span class="showCategoryItems" data-category-id="{{ $category->id }}">{{ $category->title }}</span> <i class="remove-category bi bi-x-circle-fill"></i></span>
                                     @endforeach
                                 </div>
                                 <div class="itemTagsWrapper">
@@ -27,6 +28,7 @@
                         </div>
                     </div>
                 @endforeach
+
             </div>
         </div>
     </div>
@@ -50,10 +52,6 @@
                         </div>
                     </div>
                     <select id="categorySelection" class="" name="categories[]" multiple="multiple">
-                        <option value="AL" selected>Alabama</option>
-                        <option value="AL">Alabama</option>
-                        <option value="AL">Alabama</option>
-                        <option value="WY">Wyoming</option>
                     </select>
                 </div>
             </div>

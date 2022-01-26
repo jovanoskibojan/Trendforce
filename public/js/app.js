@@ -9342,6 +9342,33 @@ jquery__WEBPACK_IMPORTED_MODULE_0___default()(document).ready(function () {
     }
   };
 
+  jquery__WEBPACK_IMPORTED_MODULE_0___default()('.newCategory').on('keydown', function (event) {
+    var element = jquery__WEBPACK_IMPORTED_MODULE_0___default()(this);
+    var value = element.val();
+    var inbox_id = jquery__WEBPACK_IMPORTED_MODULE_0___default()('.accordion-collapse.collapse.show').data('inbox-id');
+    console.log(inbox_id);
+    if (event.which == 13) jquery__WEBPACK_IMPORTED_MODULE_0___default().ajax({
+      type: "POST",
+      url: '/categories',
+      data: {
+        'category_title': value,
+        'inbox_id': inbox_id
+      },
+      dataType: "json",
+      headers: {
+        'X-CSRF-TOKEN': jquery__WEBPACK_IMPORTED_MODULE_0___default()('meta[name="csrf-token"]').attr('content')
+      },
+      success: function success(data) {
+        var itemTags = jquery__WEBPACK_IMPORTED_MODULE_0___default()('#allTags');
+        element.parent().next().append("\n                        <span class=\"badge rounded-pill bg-secondary\"><span class=\"showCategoryItems\" data-category-id=\"".concat(data.id, "\">").concat(data.title, "</span> <i class=\"remove-category bi bi-x-circle-fill\"></i></span>\n                    "));
+        var categoryNumberElement = jquery__WEBPACK_IMPORTED_MODULE_0___default()('#accordion-' + inbox_id).find('span');
+        var categoryNumber = categoryNumberElement.html();
+        categoryNumberElement.html(parseInt(categoryNumber) + 1);
+        element.val('');
+      },
+      error: function error(data) {}
+    });
+  });
   jquery__WEBPACK_IMPORTED_MODULE_0___default()('#newTag').on('keydown', function (event) {
     var element = jquery__WEBPACK_IMPORTED_MODULE_0___default()(this);
     var value = element.val();
@@ -9370,10 +9397,14 @@ jquery__WEBPACK_IMPORTED_MODULE_0___default()(document).ready(function () {
   jquery__WEBPACK_IMPORTED_MODULE_0___default()('body').on('click', '.remove-tag', function () {
     var element = jquery__WEBPACK_IMPORTED_MODULE_0___default()(this);
     var tagId = element.data('tag-id');
+    var itemId = jquery__WEBPACK_IMPORTED_MODULE_0___default()('#selectedList').val();
     jquery__WEBPACK_IMPORTED_MODULE_0___default().ajax({
-      type: "DELETE",
-      url: '/tags/' + tagId,
-      data: {},
+      type: "POST",
+      url: '/tags/detachTag',
+      data: {
+        itemId: itemId,
+        tagId: tagId
+      },
       dataType: "json",
       headers: {
         'X-CSRF-TOKEN': jquery__WEBPACK_IMPORTED_MODULE_0___default()('meta[name="csrf-token"]').attr('content')
@@ -9392,7 +9423,6 @@ jquery__WEBPACK_IMPORTED_MODULE_0___default()(document).ready(function () {
   jquery__WEBPACK_IMPORTED_MODULE_0___default()('body').on('click', '.showTagItems', function () {
     var tagId = jquery__WEBPACK_IMPORTED_MODULE_0___default()(this).data('tag-id');
     var clickedButton = jquery__WEBPACK_IMPORTED_MODULE_0___default()(this);
-    console.log(tagId);
     jquery__WEBPACK_IMPORTED_MODULE_0___default().ajax({
       type: "GET",
       url: "/tags/getItems",
@@ -9410,6 +9440,53 @@ jquery__WEBPACK_IMPORTED_MODULE_0___default()(document).ready(function () {
         jquery__WEBPACK_IMPORTED_MODULE_0___default().each(data.items, function (i, val) {
           itemsWrapper.append("\n                        <div class=\"card-wrapper\" draggable=\"false\" data-item-id=\"".concat(val.id, "\">\n                            <div class=\"card inbox\">\n                                <div class=\"card-body\" data-current-icon=\"file-earmark-bar-graph-fill\">\n                                    ").concat(val.content, "\n                                </div>\n                            </div>\n                        </div>\n                    "));
         });
+      },
+      error: function error(data) {}
+    });
+  });
+  jquery__WEBPACK_IMPORTED_MODULE_0___default()('body').on('click', '.showCategoryItems', function () {
+    var categoryId = jquery__WEBPACK_IMPORTED_MODULE_0___default()(this).data('category-id');
+    var clickedButton = jquery__WEBPACK_IMPORTED_MODULE_0___default()(this);
+    jquery__WEBPACK_IMPORTED_MODULE_0___default().ajax({
+      type: "GET",
+      url: "/categories/getItems",
+      data: {
+        'id': categoryId
+      },
+      dataType: "json",
+      headers: {
+        'X-CSRF-TOKEN': jquery__WEBPACK_IMPORTED_MODULE_0___default()('meta[name="csrf-token"]').attr('content')
+      },
+      success: function success(data) {
+        var itemsWrapper = clickedButton.parent().parent().next();
+        var content;
+        itemsWrapper.empty();
+        jquery__WEBPACK_IMPORTED_MODULE_0___default().each(data.item, function (i, val) {
+          itemsWrapper.append("\n                        <div class=\"card-wrapper\" draggable=\"false\" data-item-id=\"".concat(val.id, "\">\n                            <div class=\"card inbox\">\n                                <div class=\"card-body\" data-current-icon=\"file-earmark-bar-graph-fill\">\n                                    ").concat(val.content, "\n                                </div>\n                            </div>\n                        </div>\n                    "));
+        });
+      },
+      error: function error(data) {}
+    });
+  });
+  jquery__WEBPACK_IMPORTED_MODULE_0___default()('body').on('click', '.remove-category', function () {
+    var categoryId = jquery__WEBPACK_IMPORTED_MODULE_0___default()(this).prev().data('category-id');
+    var clickedButton = jquery__WEBPACK_IMPORTED_MODULE_0___default()(this);
+    var inbox_id = jquery__WEBPACK_IMPORTED_MODULE_0___default()('.accordion-collapse.collapse.show').data('inbox-id');
+    jquery__WEBPACK_IMPORTED_MODULE_0___default().ajax({
+      type: "DELETE",
+      url: "/categories/" + categoryId,
+      data: {},
+      dataType: "json",
+      headers: {
+        'X-CSRF-TOKEN': jquery__WEBPACK_IMPORTED_MODULE_0___default()('meta[name="csrf-token"]').attr('content')
+      },
+      success: function success(data) {
+        var itemsWrapper = clickedButton.parent().parent().parent().next();
+        clickedButton.parent().remove();
+        itemsWrapper.empty();
+        var categoryNumberElement = jquery__WEBPACK_IMPORTED_MODULE_0___default()('#accordion-' + inbox_id).find('span');
+        var categoryNumber = categoryNumberElement.html();
+        categoryNumberElement.html(parseInt(categoryNumber) - 1);
       },
       error: function error(data) {}
     });

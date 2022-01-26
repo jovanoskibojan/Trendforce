@@ -103,7 +103,7 @@ class TagController extends Controller
      */
     public function destroy($id)
     {
-        return Tags::where('id', $id)->delete();
+        return Tag::where('id', $id)->delete();
     }
 
     public function getItems(Request $request) {
@@ -112,5 +112,10 @@ class TagController extends Controller
             $t->items[$i]->content = strip_tags($t->items[$i]->content);
         }
         return Tag::with('items')->find($request->id);
+    }
+
+    public function detachTag(Request $request) {
+        $item = Items::where('id', $request->itemId)->first();
+        return $item->tags()->detach($request->tagId);
     }
 }
