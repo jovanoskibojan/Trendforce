@@ -14,6 +14,7 @@ class Items extends Model
         'folder_id',
         'list_id',
         'content',
+        'inbox_id',
     ];
 
 

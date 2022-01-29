@@ -72,6 +72,97 @@ $(document).ready(function () {
         updateFolder(folderId, newColor, 'color');
     });
 
+    $('#showArchived').click(function () {
+        $('.add-list-item').show();
+        $('.folder-node.active').removeClass('active');
+        $(this).addClass('active');
+        let selectedFolderId = $(this).attr('id');
+        let inboxID = $('.nav-link.active').data('inbox-id');
+        let favourite = '';
+        $.ajax({
+            type: "GET",
+            url: "/items/archived/" + inboxID,
+            data: {},
+            dataType: "json",
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            success: function(data) {
+                $('.list').empty();
+                let list;
+                $.each(data, function (i, val) {
+                    favourite = '';
+                    if(!val.is_favourite) {
+                        favourite = 'display: none';
+                    }
+                    list = $("div").find(`[data-list-id='${val.list_id}']`).find('div.list');
+                    showItem(list, val.id, favourite, val.content);
+                    $.each($('.list'), function (i, val) {
+                        new Sortable(val, {
+                            group: {
+                                name: 'list',
+                                filter: '.list-title'
+                            },
+                            animation: 150,
+                            sort: false,
+                        });
+                    });
+
+                });
+                updateSortable();
+            },
+            error: function(data) {
+            }
+        })
+
+    })
+
+    $('#showFavourites').click(function () {
+        $('.add-list-item').show();
+        $('.folder-node.active').removeClass('active');
+        $(this).addClass('active');
+        let selectedFolderId = $(this).attr('id');
+        let inboxID = $('.nav-link.active').data('inbox-id');
+        let favourite = '';
+        $.ajax({
+            type: "GET",
+            url: "/items/favourite/" + inboxID,
+            data: {},
+            dataType: "json",
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            success: function(data) {
+                $('.list').empty();
+                let list;
+                $.each(data, function (i, val) {
+                    favourite = '';
+                    if(!val.is_favourite) {
+                        favourite = 'display: none';
+                    }
+                    list = $("div").find(`[data-list-id='${val.list_id}']`).find('div.list');
+                    showItem(list, val.id, favourite, val.content);
+                    $.each($('.list'), function (i, val) {
+                        new Sortable(val, {
+                            group: {
+                                name: 'list',
+                                filter: '.list-title',
+                                put: false
+                            },
+                            animation: 0,
+                            sort: false,
+                        });
+                        console.log('test');
+                    });
+                });
+                //updateSortable();
+            },
+            error: function(data) {
+            }
+        })
+
+    });
+
     $('body').on('click', '.folder-node', function() {
         $('.add-list-item').show();
         $('.folder-node.active').removeClass('active');
@@ -96,16 +187,6 @@ $(document).ready(function () {
                     }
                     list = $("div").find(`[data-list-id='${val.list_id}']`).find('div.list');
                     showItem(list, val.id, favourite, val.content);
-                    // $("div").find(`[data-list-id='${val.list_id}']`).find('div.list').append(`
-                    //     <div class="card-wrapper" draggable="false" data-item-id="${val.id}">
-                    //         <i class="bi bi-star-fill favourite-icon" style="${favourite}"></i>
-                    //         <div class="card inbox">
-                    //             <div class="card-body" data-current-icon="file-earmark-bar-graph-fill">
-                    //                 ${val.content}
-                    //             </div>
-                    //         </div>
-                    //     </div>
-                    // `);
                 });
                 updateSortable();
             },
@@ -388,6 +469,7 @@ $(document).ready(function () {
     $('body').on('click', '.add-list-item', function() {
         let selectedList = $(this).parent().parent().data('list-id');
         let selectedFolder = $('.folder-node.active').attr('id');
+        let selectedInbox = $('.nav-link.active').data('inbox-id');
         let myOffcanvas = document.getElementById('newListItem');
         let bsOffcanvas = new bootstrap.Offcanvas(myOffcanvas);
         $.ajax({
@@ -395,7 +477,8 @@ $(document).ready(function () {
             url: "/items",
             data: {
                 'listId' : selectedList,
-                'folderId' : selectedFolder
+                'folderId' : selectedFolder,
+                'inboxId' : selectedInbox,
             },
             dataType: "json",
             headers: {
@@ -818,5 +901,9 @@ $(document).ready(function () {
             </div>
         `);
     }
+
+    $('#btnGroupDrop1').click(function () {
+        alert("");
+    });
 
 });

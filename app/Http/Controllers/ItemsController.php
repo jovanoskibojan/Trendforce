@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Inbox;
 use Illuminate\Http\Request;
 use App\Models\Items;
 
@@ -39,6 +40,7 @@ class ItemsController extends Controller
         return Items::create([
             'folder_id' => $request->folderId,
             'list_id' => $request->listId,
+            'inbox_id' => $request->inboxId,
         ]);
     }
 
@@ -118,5 +120,23 @@ class ItemsController extends Controller
             return 1;
         else
             return 0;
+    }
+
+    function getFavourite($id) {
+        // TODO: Check if user has option to view this
+        $items = Items::where('folder_id', $id)->where('is_archived', false)->where('is_favourite', true)->get();
+        foreach ($items as $item) {
+            $item->content = strip_tags($item->content);
+        }
+        return $items;
+    }
+
+    function getArchived($id) {
+        // TODO: Check if user has option to view this
+        $items = Items::where('folder_id', $id)->where('is_archived', true)->get();
+        foreach ($items as $item) {
+            $item->content = strip_tags($item->content);
+        }
+        return $items;
     }
 }

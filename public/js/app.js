@@ -8805,6 +8805,93 @@ jquery__WEBPACK_IMPORTED_MODULE_0___default()(document).ready(function () {
     var newColor = jquery__WEBPACK_IMPORTED_MODULE_0___default()('#updateColorNewName').val();
     updateFolder(folderId, newColor, 'color');
   });
+  jquery__WEBPACK_IMPORTED_MODULE_0___default()('#showArchived').click(function () {
+    jquery__WEBPACK_IMPORTED_MODULE_0___default()('.add-list-item').show();
+    jquery__WEBPACK_IMPORTED_MODULE_0___default()('.folder-node.active').removeClass('active');
+    jquery__WEBPACK_IMPORTED_MODULE_0___default()(this).addClass('active');
+    var selectedFolderId = jquery__WEBPACK_IMPORTED_MODULE_0___default()(this).attr('id');
+    var inboxID = jquery__WEBPACK_IMPORTED_MODULE_0___default()('.nav-link.active').data('inbox-id');
+    var favourite = '';
+    jquery__WEBPACK_IMPORTED_MODULE_0___default().ajax({
+      type: "GET",
+      url: "/items/archived/" + inboxID,
+      data: {},
+      dataType: "json",
+      headers: {
+        'X-CSRF-TOKEN': jquery__WEBPACK_IMPORTED_MODULE_0___default()('meta[name="csrf-token"]').attr('content')
+      },
+      success: function success(data) {
+        jquery__WEBPACK_IMPORTED_MODULE_0___default()('.list').empty();
+        var list;
+        jquery__WEBPACK_IMPORTED_MODULE_0___default().each(data, function (i, val) {
+          favourite = '';
+
+          if (!val.is_favourite) {
+            favourite = 'display: none';
+          }
+
+          list = jquery__WEBPACK_IMPORTED_MODULE_0___default()("div").find("[data-list-id='".concat(val.list_id, "']")).find('div.list');
+          showItem(list, val.id, favourite, val.content);
+          jquery__WEBPACK_IMPORTED_MODULE_0___default().each(jquery__WEBPACK_IMPORTED_MODULE_0___default()('.list'), function (i, val) {
+            new Sortable(val, {
+              group: {
+                name: 'list',
+                filter: '.list-title'
+              },
+              animation: 150,
+              sort: false
+            });
+          });
+        });
+        updateSortable();
+      },
+      error: function error(data) {}
+    });
+  });
+  jquery__WEBPACK_IMPORTED_MODULE_0___default()('#showFavourites').click(function () {
+    jquery__WEBPACK_IMPORTED_MODULE_0___default()('.add-list-item').show();
+    jquery__WEBPACK_IMPORTED_MODULE_0___default()('.folder-node.active').removeClass('active');
+    jquery__WEBPACK_IMPORTED_MODULE_0___default()(this).addClass('active');
+    var selectedFolderId = jquery__WEBPACK_IMPORTED_MODULE_0___default()(this).attr('id');
+    var inboxID = jquery__WEBPACK_IMPORTED_MODULE_0___default()('.nav-link.active').data('inbox-id');
+    var favourite = '';
+    jquery__WEBPACK_IMPORTED_MODULE_0___default().ajax({
+      type: "GET",
+      url: "/items/favourite/" + inboxID,
+      data: {},
+      dataType: "json",
+      headers: {
+        'X-CSRF-TOKEN': jquery__WEBPACK_IMPORTED_MODULE_0___default()('meta[name="csrf-token"]').attr('content')
+      },
+      success: function success(data) {
+        jquery__WEBPACK_IMPORTED_MODULE_0___default()('.list').empty();
+        var list;
+        jquery__WEBPACK_IMPORTED_MODULE_0___default().each(data, function (i, val) {
+          favourite = '';
+
+          if (!val.is_favourite) {
+            favourite = 'display: none';
+          }
+
+          list = jquery__WEBPACK_IMPORTED_MODULE_0___default()("div").find("[data-list-id='".concat(val.list_id, "']")).find('div.list');
+          showItem(list, val.id, favourite, val.content);
+          jquery__WEBPACK_IMPORTED_MODULE_0___default().each(jquery__WEBPACK_IMPORTED_MODULE_0___default()('.list'), function (i, val) {
+            new Sortable(val, {
+              group: {
+                name: 'list',
+                filter: '.list-title',
+                put: false
+              },
+              animation: 0,
+              sort: false
+            });
+            console.log('test');
+          });
+        }); //updateSortable();
+      },
+      error: function error(data) {}
+    });
+  });
   jquery__WEBPACK_IMPORTED_MODULE_0___default()('body').on('click', '.folder-node', function () {
     jquery__WEBPACK_IMPORTED_MODULE_0___default()('.add-list-item').show();
     jquery__WEBPACK_IMPORTED_MODULE_0___default()('.folder-node.active').removeClass('active');
@@ -8830,16 +8917,7 @@ jquery__WEBPACK_IMPORTED_MODULE_0___default()(document).ready(function () {
           }
 
           list = jquery__WEBPACK_IMPORTED_MODULE_0___default()("div").find("[data-list-id='".concat(val.list_id, "']")).find('div.list');
-          showItem(list, val.id, favourite, val.content); // $("div").find(`[data-list-id='${val.list_id}']`).find('div.list').append(`
-          //     <div class="card-wrapper" draggable="false" data-item-id="${val.id}">
-          //         <i class="bi bi-star-fill favourite-icon" style="${favourite}"></i>
-          //         <div class="card inbox">
-          //             <div class="card-body" data-current-icon="file-earmark-bar-graph-fill">
-          //                 ${val.content}
-          //             </div>
-          //         </div>
-          //     </div>
-          // `);
+          showItem(list, val.id, favourite, val.content);
         });
         updateSortable();
       },
@@ -9095,6 +9173,7 @@ jquery__WEBPACK_IMPORTED_MODULE_0___default()(document).ready(function () {
   jquery__WEBPACK_IMPORTED_MODULE_0___default()('body').on('click', '.add-list-item', function () {
     var selectedList = jquery__WEBPACK_IMPORTED_MODULE_0___default()(this).parent().parent().data('list-id');
     var selectedFolder = jquery__WEBPACK_IMPORTED_MODULE_0___default()('.folder-node.active').attr('id');
+    var selectedInbox = jquery__WEBPACK_IMPORTED_MODULE_0___default()('.nav-link.active').data('inbox-id');
     var myOffcanvas = document.getElementById('newListItem');
     var bsOffcanvas = new bootstrap.Offcanvas(myOffcanvas);
     jquery__WEBPACK_IMPORTED_MODULE_0___default().ajax({
@@ -9102,7 +9181,8 @@ jquery__WEBPACK_IMPORTED_MODULE_0___default()(document).ready(function () {
       url: "/items",
       data: {
         'listId': selectedList,
-        'folderId': selectedFolder
+        'folderId': selectedFolder,
+        'inboxId': selectedInbox
       },
       dataType: "json",
       headers: {
@@ -9463,6 +9543,10 @@ jquery__WEBPACK_IMPORTED_MODULE_0___default()(document).ready(function () {
   function showItem(element, id, favourite, content) {
     element.append("\n            <div class=\"card-wrapper\" draggable=\"false\" data-item-id=\"".concat(id, "\">\n                <i class=\"bi bi-star-fill favourite-icon\" style=\"").concat(favourite, "\"></i>\n                <div class=\"card inbox\">\n                    <div class=\"card-body\" data-current-icon=\"file-earmark-bar-graph-fill\">\n                        ").concat(content, "\n                    </div>\n                </div>\n            </div>\n        "));
   }
+
+  jquery__WEBPACK_IMPORTED_MODULE_0___default()('#btnGroupDrop1').click(function () {
+    alert("");
+  });
 });
 
 /***/ }),

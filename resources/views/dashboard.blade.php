@@ -46,6 +46,18 @@
                             </div>
                             <div class="col-3">
                                 <button id="newList" type="button" class="btn btn-primary">New list</button>
+                                <div class="btn-group" role="group" aria-label="Button group with nested dropdown">
+
+                                    <div class="btn-group" role="group">
+                                        <button id="btnGroupDrop10" type="button" class="btn btn-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                                            Options
+                                        </button>
+                                        <ul class="dropdown-menu" aria-labelledby="btnGroupDrop1">
+                                            <li><a id="showFavourites" class="dropdown-item" href="#">Show favourites</a></li>
+                                            <li><a id="showArchived" class="dropdown-item" href="#">Show archived</a></li>
+                                        </ul>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     <div id="allLists">
