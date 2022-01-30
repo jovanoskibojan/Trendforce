@@ -33,6 +33,7 @@ Route::post('items/archive', [ItemsController::class, 'archive']);
 Route::post('items/favourite', [ItemsController::class, 'favourite']);
 Route::get('items/favourite/{id}', [ItemsController::class, 'getFavourite']);
 Route::get('items/archived/{id}', [ItemsController::class, 'getArchived']);
+Route::post('items/updateLocation', [ItemsController::class, 'updateItemLocation']);
 Route::resource('items', 'App\Http\Controllers\ItemsController');
 Route::get('tags/getItems', [TagController::class, 'getItems']);
 Route::post('tags/detachTag', [TagController::class, 'detachTag']);

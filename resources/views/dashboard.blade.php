@@ -131,16 +131,18 @@
                 </div>
                 <div class="modal-body">
                     <select id="updateColorNewName" type="text" class="form-control">
-                        <option value="bg-primary text-white">Blue</option>
-                        <option value="bg-secondary text-white">Gray</option>
-                        <option value="bg-success text-white">Green</option>
-                        <option value="bg-danger text-white">Red</option>
-                        <option value="bg-warning text-dark">Yellow</option>
-                        <option value="bg-info text-dark">Cyan</option>
-                        <option value="bg-light text-dark" selected>White</option>
-                        <option value="bg-dark text-white">Black</option>
+                        <option value="black">Black</option>
+                        <option value="blue">Blue</option>
+                        <option value="indigo">Indigo</option>
+                        <option value="purple">Purple</option>
+                        <option value="pink">Pink</option>
+                        <option value="red">Red</option>
+                        <option value="orange">Orange</option>
+                        <option value="yellow">Yellow</option>
+                        <option value="green">Green</option>
+                        <option value="teal">Teal</option>
+                        <option value="cyan">Cyan</option>
                     </select>
-                    <span id="colorExample" class="p-2 my-2 d-block rounded-3 text-center bg-light text-dark">Example</span>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>

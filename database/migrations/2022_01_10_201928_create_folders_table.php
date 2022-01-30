@@ -17,7 +17,7 @@ class CreateFoldersTable extends Migration
             $table->id();
             $table->unsignedBigInteger('inbox_id');
             $table->string('title');
-            $table->string('color')->default('bg-light text-dark');
+            $table->string('color')->default('black');
             $table->integer('child_of');
             $table->timestamps();
 

@@ -19,6 +19,7 @@ class CreateItemsTable extends Migration
             $table->unsignedBigInteger('list_id');
             $table->unsignedBigInteger('inbox_id');
             $table->longText('content')->nullable();
+            $table->float('order', '10', '10')->autoIncrement();
             $table->boolean('is_archived')->default(false);
             $table->boolean('is_favourite')->default(false);
             $table->timestamps();

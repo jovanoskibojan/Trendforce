@@ -62,7 +62,11 @@ class ListsController extends Controller
     public function show($id)
     {
         $user = auth()->user();
-        return $lists = Lists::where('inbox_id', $id)->get();
+        $lists = Lists::where('inbox_id', $id)->get();
+//        foreach ($lists as $list) {
+//            $list->count = $list->item->count();
+//        }
+        return $lists;
 
     }
 

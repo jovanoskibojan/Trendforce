@@ -80,12 +80,6 @@ $("#custom-menu-item li").click(function(){
 
     // Hide it AFTER the action was triggered
     $(".custom-menu").hide(100);
-    $('#updateColorNewName').change(function () {
-        let selectedColor = $(this).val();
-        $('#colorExample').removeClass();
-        $('#colorExample').addClass('p-2 my-2 d-block rounded-3 text-center');
-        $('#colorExample').addClass(selectedColor);
-    });
 });
 
 // If the menu element is clicked
@@ -120,12 +114,6 @@ $("#custom-menu-folder li").click(function(){
 
     // Hide it AFTER the action was triggered
     $(".custom-menu").hide(100);
-    $('#updateColorNewName').change(function () {
-        let selectedColor = $(this).val();
-        $('#colorExample').removeClass();
-        $('#colorExample').addClass('p-2 my-2 d-block rounded-3 text-center');
-        $('#colorExample').addClass(selectedColor);
-    });
 });
 
 // If the menu element is clicked

@@ -13721,6 +13721,40 @@ textarea.form-control-lg {
   font-weight: 700;
 }
 
+.folder-node.color-black {
+  color: #000000 !important;
+}
+.folder-node.color-blue {
+  color: #0d6efd !important;
+}
+.folder-node.color-indigo {
+  color: #6610f2 !important;
+}
+.folder-node.color-purple {
+  color: #6f42c1 !important;
+}
+.folder-node.color-pink {
+  color: #d63384 !important;
+}
+.folder-node.color-red {
+  color: #dc3545 !important;
+}
+.folder-node.color-orange {
+  color: #fd7e14 !important;
+}
+.folder-node.color-yellow {
+  color: #ffc107 !important;
+}
+.folder-node.color-green {
+  color: #198754 !important;
+}
+.folder-node.color-teal {
+  color: #20c997 !important;
+}
+.folder-node.color-cyan {
+  color: #0dcaf0 !important;
+}
+
 .list-group-item:hover {
   border-radius: 0 !important;
 }

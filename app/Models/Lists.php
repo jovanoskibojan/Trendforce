@@ -14,4 +14,8 @@ class Lists extends Model
         'user_id',
         'title',
     ];
+
+    public function item() {
+        return $this->hasMany(Items::class, 'list_id');
+    }
 }

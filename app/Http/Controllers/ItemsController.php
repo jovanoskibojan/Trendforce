@@ -37,10 +37,19 @@ class ItemsController extends Controller
     public function store(Request $request)
     {
         // TODO: Security check, if the user can save here
+        $prevItem = Items::latest('id')->first();
+        if(is_null($prevItem)) {
+            $itemOrder = 1;
+        }
+        else {
+            $itemOrder = $prevItem->order + 1;
+        }
+        //$newId = $prevItem->
         return Items::create([
             'folder_id' => $request->folderId,
             'list_id' => $request->listId,
             'inbox_id' => $request->inboxId,
+            'order' => $itemOrder,
         ]);
     }
 
@@ -53,7 +62,7 @@ class ItemsController extends Controller
     public function show($id)
     {
         // TODO: Check if user has option to view this
-        $items = Items::where('folder_id', $id)->where('is_archived', false)->get();
+        $items = Items::where('folder_id', $id)->where('is_archived', false)->orderBy('order')->get();
         foreach ($items as $item) {
             $item->content = strip_tags($item->content);
         }
@@ -138,5 +147,30 @@ class ItemsController extends Controller
             $item->content = strip_tags($item->content);
         }
         return $items;
+    }
+
+    public function updateItemLocation(Request $request) {
+        $currentItem = Items::where('id', $request->currentId)->first();
+        if($request->nextId == 0 && $request->prevId == 0) {
+            $currentNewOrder = 1;
+        }
+        else if($request->prevId == 0) {
+            $nextItem = Items::where('id', $request->nextId)->first();
+            $nextOrder = $nextItem->order;
+            $currentNewOrder = $nextOrder/2;
+        }
+        else if($request->nextId == 0) {
+            $prevItem = Items::where('id', $request->prevId)->first();
+            $prevOrder = $prevItem->order;
+            $currentNewOrder = floor($prevOrder+1);
+        }
+        else {
+            $nextItem = Items::where('id', $request->nextId)->first();
+            $prevItem = Items::where('id', $request->prevId)->first();
+            $currentNewOrder = (($nextItem->order) + ($prevItem->order))/2;
+        }
+        $currentItem->order = $currentNewOrder;
+        $currentItem->list_id = $request->listId;
+        $currentItem->save();
     }
 }

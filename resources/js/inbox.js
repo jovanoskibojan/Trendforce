@@ -88,7 +88,8 @@ $(document).ready(function () {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             },
             success: function(data) {
-                $('.list').empty();
+                let listWrapper = $('.list');
+                listWrapper.empty();
                 let list;
                 $.each(data, function (i, val) {
                     favourite = '';
@@ -97,7 +98,7 @@ $(document).ready(function () {
                     }
                     list = $("div").find(`[data-list-id='${val.list_id}']`).find('div.list');
                     showItem(list, val.id, favourite, val.content);
-                    $.each($('.list'), function (i, val) {
+                    $.each(listWrapper, function (i, val) {
                         new Sortable(val, {
                             group: {
                                 name: 'list',
@@ -106,6 +107,13 @@ $(document).ready(function () {
                             animation: 150,
                             sort: false,
                         });
+                    });
+                    $.each(listWrapper, function (i, val) {
+                        let listWrapper = $(this);
+                        let elementsCount;
+                        elementsCount = listWrapper.children('div').length;
+                        listWrapper.prev().find('.totalCount').children().first().html(elementsCount);
+                        listWrapper.prev().find('.totalCount').show();
                     });
 
                 });
@@ -133,7 +141,8 @@ $(document).ready(function () {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             },
             success: function(data) {
-                $('.list').empty();
+                let listWrapper = $('.list');
+                listWrapper.empty();
                 let list;
                 $.each(data, function (i, val) {
                     favourite = '';
@@ -142,7 +151,7 @@ $(document).ready(function () {
                     }
                     list = $("div").find(`[data-list-id='${val.list_id}']`).find('div.list');
                     showItem(list, val.id, favourite, val.content);
-                    $.each($('.list'), function (i, val) {
+                    $.each(listWrapper, function (i, val) {
                         new Sortable(val, {
                             group: {
                                 name: 'list',
@@ -153,6 +162,13 @@ $(document).ready(function () {
                             sort: false,
                         });
                         console.log('test');
+                    });
+                    $.each(listWrapper, function (i, val) {
+                        let listWrapper = $(this);
+                        let elementsCount;
+                        elementsCount = listWrapper.children('div').length;
+                        listWrapper.prev().find('.totalCount').children().first().html(elementsCount);
+                        listWrapper.prev().find('.totalCount').show();
                     });
                 });
                 //updateSortable();
@@ -188,7 +204,15 @@ $(document).ready(function () {
                     list = $("div").find(`[data-list-id='${val.list_id}']`).find('div.list');
                     showItem(list, val.id, favourite, val.content);
                 });
+                list = $('.list');
                 updateSortable();
+                $.each(list, function (i, val) {
+                    let listWrapper = $(this);
+                    let elementsCount;
+                    elementsCount = listWrapper.children('div').length;
+                    listWrapper.prev().find('.totalCount').children().first().html(elementsCount);
+                    listWrapper.prev().find('.totalCount').show();
+                });
             },
             error: function(data) {
             }
@@ -418,14 +442,54 @@ $(document).ready(function () {
     });
 
     // Initializes sortable lists
-    function updateSortable() {
+    function updateSortable(listWrapper) {
         $.each($('.list'), function (i, val) {
             new Sortable(val, {
                 group: {
                     name: 'list',
-                    filter: '.list-title'
                 },
-                animation: 150
+                animation: 150,
+                onEnd: function (/**Event*/evt) {
+                    let prevSibling = evt.item.previousElementSibling;
+                    let nextSibling = evt.item.nextElementSibling;
+                    let list = evt.to.parentElement;
+                    let listId = list.getAttribute('data-list-id');
+                    let prevSiblingId;
+                    let nextSiblingId;
+                    let currentElementId = evt.item.getAttribute('data-item-id');
+                    if (prevSibling === undefined || prevSibling === null) {
+                        prevSiblingId = 0;
+                    }
+                    else {
+                        prevSiblingId = prevSibling.getAttribute('data-item-id');
+                    }
+                    if (nextSibling === undefined || nextSibling === null) {
+                        nextSiblingId = 0;
+                    }
+                    else {
+                        nextSiblingId = nextSibling.getAttribute('data-item-id');
+                    }
+                    $.ajax({
+                        type: "POST",
+                        url: "items/updateLocation",
+                        data: {
+                            'currentId' : currentElementId,
+                            'listId' : listId,
+                            'prevId' : prevSiblingId,
+                            'nextId' : nextSiblingId,
+                        },
+                        dataType: "json",
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                        },
+                        success: function(data) {
+                            oldTitleElement.html(currentTitle);
+                            currentTitleElement.hide();
+                            oldTitleElement.show();
+                        },
+                        error: function(data) {}
+                    })
+                },
             });
         });
     }
@@ -450,9 +514,10 @@ $(document).ready(function () {
 
                 $.each(data, function(key,value) {
                     allLists.append(`
-                        <div class="listWrapper" data-list-id="${value.id}">
+                        <div class="listWrapper" id="${value.id}" data-list-id="${value.id}">
                             <div class="list-title">
                                 <button type="button" class="btn btn-success btn-sm add-list-item" style="display: none"><i class="bi bi-file-earmark-plus"></i></button>
+                                <p class="totalCount" style="display: none;">Total items: <span></span></p>
                                 <p class="update-list-name">${value.title}</p>
                                 <input style="display: none;" type="text" class="form-control new-list-title-input">
                             </div>
@@ -487,15 +552,6 @@ $(document).ready(function () {
             success: function(data) {
                 let itemsWrapper = $("div").find(`[data-list-id='${data.list_id}']`).find('div.list');
                 showItem(itemsWrapper, data.id, 'display: none', '');
-                // $("div").find(`[data-list-id='${data.list_id}']`).find('div.list').append(`
-                //     <div class="card-wrapper" draggable="false" data-item-id="${data.id}">
-                //         <i class="bi bi-star-fill favourite-icon"></i>
-                //         <div class="card inbox">
-                //             <div class="card-body" data-current-icon="file-earmark-bar-graph-fill">
-                //             </div>
-                //         </div>
-                //     </div>
-                // `);
                 $('#selectedItem').val(data.id);
             },
             error: function(data) {}
@@ -806,16 +862,6 @@ $(document).ready(function () {
                         favourite = 'display: none';
                     }
                     showItem(itemsWrapper, val.id, favourite, val.content);
-                    // itemsWrapper.append(`
-                    //     <div class="card-wrapper" draggable="false" data-item-id="${val.id}">
-                    //         <i class="bi bi-star-fill favourite-icon"></i>
-                    //         <div class="card inbox">
-                    //             <div class="card-body" data-current-icon="file-earmark-bar-graph-fill">
-                    //                 ${val.content}
-                    //             </div>
-                    //         </div>
-                    //     </div>
-                    // `);
                 });
             },
             error: function(data) {
@@ -847,16 +893,6 @@ $(document).ready(function () {
                         favourite = 'display: none';
                     }
                     showItem(itemsWrapper, val.id, favourite, val.content);
-                    // itemsWrapper.append(`
-                    //     <div class="card-wrapper" draggable="false" data-item-id="${val.id}">
-                    //         <i class="bi bi-star-fill favourite-icon"></i>
-                    //         <div class="card inbox">
-                    //             <div class="card-body" data-current-icon="file-earmark-bar-graph-fill">
-                    //                 ${val.content}
-                    //             </div>
-                    //         </div>
-                    //     </div>
-                    // `);
                 });
             },
             error: function(data) {

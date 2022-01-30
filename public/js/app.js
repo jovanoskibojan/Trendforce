@@ -8821,7 +8821,8 @@ jquery__WEBPACK_IMPORTED_MODULE_0___default()(document).ready(function () {
         'X-CSRF-TOKEN': jquery__WEBPACK_IMPORTED_MODULE_0___default()('meta[name="csrf-token"]').attr('content')
       },
       success: function success(data) {
-        jquery__WEBPACK_IMPORTED_MODULE_0___default()('.list').empty();
+        var listWrapper = jquery__WEBPACK_IMPORTED_MODULE_0___default()('.list');
+        listWrapper.empty();
         var list;
         jquery__WEBPACK_IMPORTED_MODULE_0___default().each(data, function (i, val) {
           favourite = '';
@@ -8832,7 +8833,7 @@ jquery__WEBPACK_IMPORTED_MODULE_0___default()(document).ready(function () {
 
           list = jquery__WEBPACK_IMPORTED_MODULE_0___default()("div").find("[data-list-id='".concat(val.list_id, "']")).find('div.list');
           showItem(list, val.id, favourite, val.content);
-          jquery__WEBPACK_IMPORTED_MODULE_0___default().each(jquery__WEBPACK_IMPORTED_MODULE_0___default()('.list'), function (i, val) {
+          jquery__WEBPACK_IMPORTED_MODULE_0___default().each(listWrapper, function (i, val) {
             new Sortable(val, {
               group: {
                 name: 'list',
@@ -8841,6 +8842,13 @@ jquery__WEBPACK_IMPORTED_MODULE_0___default()(document).ready(function () {
               animation: 150,
               sort: false
             });
+          });
+          jquery__WEBPACK_IMPORTED_MODULE_0___default().each(listWrapper, function (i, val) {
+            var listWrapper = jquery__WEBPACK_IMPORTED_MODULE_0___default()(this);
+            var elementsCount;
+            elementsCount = listWrapper.children('div').length;
+            listWrapper.prev().find('.totalCount').children().first().html(elementsCount);
+            listWrapper.prev().find('.totalCount').show();
           });
         });
         updateSortable();
@@ -8864,7 +8872,8 @@ jquery__WEBPACK_IMPORTED_MODULE_0___default()(document).ready(function () {
         'X-CSRF-TOKEN': jquery__WEBPACK_IMPORTED_MODULE_0___default()('meta[name="csrf-token"]').attr('content')
       },
       success: function success(data) {
-        jquery__WEBPACK_IMPORTED_MODULE_0___default()('.list').empty();
+        var listWrapper = jquery__WEBPACK_IMPORTED_MODULE_0___default()('.list');
+        listWrapper.empty();
         var list;
         jquery__WEBPACK_IMPORTED_MODULE_0___default().each(data, function (i, val) {
           favourite = '';
@@ -8875,7 +8884,7 @@ jquery__WEBPACK_IMPORTED_MODULE_0___default()(document).ready(function () {
 
           list = jquery__WEBPACK_IMPORTED_MODULE_0___default()("div").find("[data-list-id='".concat(val.list_id, "']")).find('div.list');
           showItem(list, val.id, favourite, val.content);
-          jquery__WEBPACK_IMPORTED_MODULE_0___default().each(jquery__WEBPACK_IMPORTED_MODULE_0___default()('.list'), function (i, val) {
+          jquery__WEBPACK_IMPORTED_MODULE_0___default().each(listWrapper, function (i, val) {
             new Sortable(val, {
               group: {
                 name: 'list',
@@ -8886,6 +8895,13 @@ jquery__WEBPACK_IMPORTED_MODULE_0___default()(document).ready(function () {
               sort: false
             });
             console.log('test');
+          });
+          jquery__WEBPACK_IMPORTED_MODULE_0___default().each(listWrapper, function (i, val) {
+            var listWrapper = jquery__WEBPACK_IMPORTED_MODULE_0___default()(this);
+            var elementsCount;
+            elementsCount = listWrapper.children('div').length;
+            listWrapper.prev().find('.totalCount').children().first().html(elementsCount);
+            listWrapper.prev().find('.totalCount').show();
           });
         }); //updateSortable();
       },
@@ -8919,7 +8935,15 @@ jquery__WEBPACK_IMPORTED_MODULE_0___default()(document).ready(function () {
           list = jquery__WEBPACK_IMPORTED_MODULE_0___default()("div").find("[data-list-id='".concat(val.list_id, "']")).find('div.list');
           showItem(list, val.id, favourite, val.content);
         });
+        list = jquery__WEBPACK_IMPORTED_MODULE_0___default()('.list');
         updateSortable();
+        jquery__WEBPACK_IMPORTED_MODULE_0___default().each(list, function (i, val) {
+          var listWrapper = jquery__WEBPACK_IMPORTED_MODULE_0___default()(this);
+          var elementsCount;
+          elementsCount = listWrapper.children('div').length;
+          listWrapper.prev().find('.totalCount').children().first().html(elementsCount);
+          listWrapper.prev().find('.totalCount').show();
+        });
       },
       error: function error(data) {}
     });
@@ -9130,14 +9154,57 @@ jquery__WEBPACK_IMPORTED_MODULE_0___default()(document).ready(function () {
     });
   }); // Initializes sortable lists
 
-  function updateSortable() {
+  function updateSortable(listWrapper) {
     jquery__WEBPACK_IMPORTED_MODULE_0___default().each(jquery__WEBPACK_IMPORTED_MODULE_0___default()('.list'), function (i, val) {
       new Sortable(val, {
         group: {
-          name: 'list',
-          filter: '.list-title'
+          name: 'list'
         },
-        animation: 150
+        animation: 150,
+        onEnd: function onEnd(
+        /**Event*/
+        evt) {
+          var prevSibling = evt.item.previousElementSibling;
+          var nextSibling = evt.item.nextElementSibling;
+          var list = evt.to.parentElement;
+          var listId = list.getAttribute('data-list-id');
+          var prevSiblingId;
+          var nextSiblingId;
+          var currentElementId = evt.item.getAttribute('data-item-id');
+
+          if (prevSibling === undefined || prevSibling === null) {
+            prevSiblingId = 0;
+          } else {
+            prevSiblingId = prevSibling.getAttribute('data-item-id');
+          }
+
+          if (nextSibling === undefined || nextSibling === null) {
+            nextSiblingId = 0;
+          } else {
+            nextSiblingId = nextSibling.getAttribute('data-item-id');
+          }
+
+          jquery__WEBPACK_IMPORTED_MODULE_0___default().ajax({
+            type: "POST",
+            url: "items/updateLocation",
+            data: {
+              'currentId': currentElementId,
+              'listId': listId,
+              'prevId': prevSiblingId,
+              'nextId': nextSiblingId
+            },
+            dataType: "json",
+            headers: {
+              'X-CSRF-TOKEN': jquery__WEBPACK_IMPORTED_MODULE_0___default()('meta[name="csrf-token"]').attr('content')
+            },
+            success: function success(data) {
+              oldTitleElement.html(currentTitle);
+              currentTitleElement.hide();
+              oldTitleElement.show();
+            },
+            error: function error(data) {}
+          });
+        }
       });
     });
   }
@@ -9163,7 +9230,7 @@ jquery__WEBPACK_IMPORTED_MODULE_0___default()(document).ready(function () {
       },
       success: function success(data) {
         jquery__WEBPACK_IMPORTED_MODULE_0___default().each(data, function (key, value) {
-          allLists.append("\n                        <div class=\"listWrapper\" data-list-id=\"".concat(value.id, "\">\n                            <div class=\"list-title\">\n                                <button type=\"button\" class=\"btn btn-success btn-sm add-list-item\" style=\"display: none\"><i class=\"bi bi-file-earmark-plus\"></i></button>\n                                <p class=\"update-list-name\">").concat(value.title, "</p>\n                                <input style=\"display: none;\" type=\"text\" class=\"form-control new-list-title-input\">\n                            </div>\n                            <div class=\"list\">\n                            </div>\n                        </div>\n                    "));
+          allLists.append("\n                        <div class=\"listWrapper\" id=\"".concat(value.id, "\" data-list-id=\"").concat(value.id, "\">\n                            <div class=\"list-title\">\n                                <button type=\"button\" class=\"btn btn-success btn-sm add-list-item\" style=\"display: none\"><i class=\"bi bi-file-earmark-plus\"></i></button>\n                                <p class=\"totalCount\" style=\"display: none;\">Total items: <span></span></p>\n                                <p class=\"update-list-name\">").concat(value.title, "</p>\n                                <input style=\"display: none;\" type=\"text\" class=\"form-control new-list-title-input\">\n                            </div>\n                            <div class=\"list\">\n                            </div>\n                        </div>\n                    "));
         });
       },
       error: function error(data) {}
@@ -9190,16 +9257,7 @@ jquery__WEBPACK_IMPORTED_MODULE_0___default()(document).ready(function () {
       },
       success: function success(data) {
         var itemsWrapper = jquery__WEBPACK_IMPORTED_MODULE_0___default()("div").find("[data-list-id='".concat(data.list_id, "']")).find('div.list');
-        showItem(itemsWrapper, data.id, 'display: none', ''); // $("div").find(`[data-list-id='${data.list_id}']`).find('div.list').append(`
-        //     <div class="card-wrapper" draggable="false" data-item-id="${data.id}">
-        //         <i class="bi bi-star-fill favourite-icon"></i>
-        //         <div class="card inbox">
-        //             <div class="card-body" data-current-icon="file-earmark-bar-graph-fill">
-        //             </div>
-        //         </div>
-        //     </div>
-        // `);
-
+        showItem(itemsWrapper, data.id, 'display: none', '');
         jquery__WEBPACK_IMPORTED_MODULE_0___default()('#selectedItem').val(data.id);
       },
       error: function error(data) {}
@@ -9461,16 +9519,7 @@ jquery__WEBPACK_IMPORTED_MODULE_0___default()(document).ready(function () {
             favourite = 'display: none';
           }
 
-          showItem(itemsWrapper, val.id, favourite, val.content); // itemsWrapper.append(`
-          //     <div class="card-wrapper" draggable="false" data-item-id="${val.id}">
-          //         <i class="bi bi-star-fill favourite-icon"></i>
-          //         <div class="card inbox">
-          //             <div class="card-body" data-current-icon="file-earmark-bar-graph-fill">
-          //                 ${val.content}
-          //             </div>
-          //         </div>
-          //     </div>
-          // `);
+          showItem(itemsWrapper, val.id, favourite, val.content);
         });
       },
       error: function error(data) {}
@@ -9501,16 +9550,7 @@ jquery__WEBPACK_IMPORTED_MODULE_0___default()(document).ready(function () {
             favourite = 'display: none';
           }
 
-          showItem(itemsWrapper, val.id, favourite, val.content); // itemsWrapper.append(`
-          //     <div class="card-wrapper" draggable="false" data-item-id="${val.id}">
-          //         <i class="bi bi-star-fill favourite-icon"></i>
-          //         <div class="card inbox">
-          //             <div class="card-body" data-current-icon="file-earmark-bar-graph-fill">
-          //                 ${val.content}
-          //             </div>
-          //         </div>
-          //     </div>
-          // `);
+          showItem(itemsWrapper, val.id, favourite, val.content);
         });
       },
       error: function error(data) {}
@@ -9691,12 +9731,6 @@ jquery__WEBPACK_IMPORTED_MODULE_0___default()("#custom-menu-item li").click(func
 
 
   jquery__WEBPACK_IMPORTED_MODULE_0___default()(".custom-menu").hide(100);
-  jquery__WEBPACK_IMPORTED_MODULE_0___default()('#updateColorNewName').change(function () {
-    var selectedColor = jquery__WEBPACK_IMPORTED_MODULE_0___default()(this).val();
-    jquery__WEBPACK_IMPORTED_MODULE_0___default()('#colorExample').removeClass();
-    jquery__WEBPACK_IMPORTED_MODULE_0___default()('#colorExample').addClass('p-2 my-2 d-block rounded-3 text-center');
-    jquery__WEBPACK_IMPORTED_MODULE_0___default()('#colorExample').addClass(selectedColor);
-  });
 }); // If the menu element is clicked
 
 jquery__WEBPACK_IMPORTED_MODULE_0___default()("#custom-menu-folder li").click(function () {
@@ -9733,12 +9767,6 @@ jquery__WEBPACK_IMPORTED_MODULE_0___default()("#custom-menu-folder li").click(fu
 
 
   jquery__WEBPACK_IMPORTED_MODULE_0___default()(".custom-menu").hide(100);
-  jquery__WEBPACK_IMPORTED_MODULE_0___default()('#updateColorNewName').change(function () {
-    var selectedColor = jquery__WEBPACK_IMPORTED_MODULE_0___default()(this).val();
-    jquery__WEBPACK_IMPORTED_MODULE_0___default()('#colorExample').removeClass();
-    jquery__WEBPACK_IMPORTED_MODULE_0___default()('#colorExample').addClass('p-2 my-2 d-block rounded-3 text-center');
-    jquery__WEBPACK_IMPORTED_MODULE_0___default()('#colorExample').addClass(selectedColor);
-  });
 }); // If the menu element is clicked
 
 jquery__WEBPACK_IMPORTED_MODULE_0___default()("#custom-menu-inbox li").click(function () {

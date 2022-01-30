@@ -58,7 +58,7 @@ class FolderController extends Controller
                 $folderData = [];
                 $folderData[$current_id]['id'] = $data[$current_id]['id'];
                 $folderData[$current_id]['text'] = $data[$current_id]['title'];
-                $folderData[$current_id]['class'] = 'folder-node ' . $data[$current_id]['color'];
+                $folderData[$current_id]['class'] = 'folder-node bg-light text-dark color-' . $data[$current_id]['color'];
                 for ($i = 0; $i < (count($data)); $i++) {
                     if($data[$current_id]['id'] == $data[$i]['child_of']) {
                         $tmp = getFolderData($data, $i);

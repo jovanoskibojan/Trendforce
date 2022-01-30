@@ -15,6 +15,7 @@ class Items extends Model
         'list_id',
         'content',
         'inbox_id',
+        'order'
     ];
 
 
@@ -26,5 +27,8 @@ class Items extends Model
     }
     public function category() {
         return $this->belongsToMany(Categories::class, 'category_item')->withTimestamps();
+    }
+    public function list() {
+        return $this->belongsToMany(Lists::class);
     }
 }
