@@ -161,7 +161,6 @@ $(document).ready(function () {
                             animation: 0,
                             sort: false,
                         });
-                        console.log('test');
                     });
                     $.each(listWrapper, function (i, val) {
                         let listWrapper = $(this);
@@ -266,7 +265,6 @@ $(document).ready(function () {
 
     $('.accordion-categories').click(function () {
         let inboxId = $(this).data('inbox-id');
-       console.log(inboxId);
        updateCategories(inboxId);
     });
 
@@ -353,8 +351,7 @@ $(document).ready(function () {
 
     myDropzone.on("success", function(file, response) {
         let filesPreview = $('#filesPreview');
-        showItemFiles(filesPreview, response)
-        console.log(response);
+        showItemFiles(filesPreview, response);
     });
 
 
@@ -392,7 +389,7 @@ $(document).ready(function () {
                 allLists.append(`
                     <div class="listWrapper" data-list-id="${data.id}">
                         <div class="list-title">
-                                <button type="button" class="btn btn-success btn-sm add-list-item" style="display: none"><i class="bi bi-file-earmark-plus"></i></button>
+                            <button type="button" class="add-list-item" style="display: none"><i class="bi bi-file-earmark-plus"></i></button>
                             <p class="update-list-name">Untitled list</p>
                             <input style="display: none;" type="text" class="form-control new-list-title-input">
                         </div>
@@ -516,10 +513,10 @@ $(document).ready(function () {
                     allLists.append(`
                         <div class="listWrapper" id="${value.id}" data-list-id="${value.id}">
                             <div class="list-title">
-                                <button type="button" class="btn btn-success btn-sm add-list-item" style="display: none"><i class="bi bi-file-earmark-plus"></i></button>
-                                <p class="totalCount" style="display: none;">Total items: <span></span></p>
                                 <p class="update-list-name">${value.title}</p>
                                 <input style="display: none;" type="text" class="form-control new-list-title-input">
+                                <button type="button" class="add-list-item" style="display: none"><i class="bi bi-plus-lg"></i></button>
+                                <p class="totalCount" style="display: none;">Total items: <span></span></p>
                             </div>
                             <div class="list">
                             </div>
@@ -532,7 +529,8 @@ $(document).ready(function () {
     }
 
     $('body').on('click', '.add-list-item', function() {
-        let selectedList = $(this).parent().parent().data('list-id');
+        let clickedElement = $(this);
+        let selectedList = clickedElement.parent().parent().data('list-id');
         let selectedFolder = $('.folder-node.active').attr('id');
         let selectedInbox = $('.nav-link.active').data('inbox-id');
         let myOffcanvas = document.getElementById('newListItem');
@@ -553,6 +551,10 @@ $(document).ready(function () {
                 let itemsWrapper = $("div").find(`[data-list-id='${data.list_id}']`).find('div.list');
                 showItem(itemsWrapper, data.id, 'display: none', '');
                 $('#selectedItem').val(data.id);
+                let currentCountElement = clickedElement.next().find('span');
+                let currentCount = parseInt(currentCountElement.html());
+                currentCount++;
+                currentCountElement.html(currentCount);
             },
             error: function(data) {}
         })
@@ -582,14 +584,12 @@ $(document).ready(function () {
                 $.each(data.file, function (i, val) {
                     showItemFiles(filesPreview, val);
                 });
-                console.log(data.category);
                 let selectedCategories = [];
                 $.each(data.category, function (i, val) {
                     selectedCategories.push(val.id);
                 });
                 categories.val(selectedCategories);
                 categories.trigger('change');
-                console.log(selectedCategories);
                 let itemTags = $('#allTags');
                 itemTags.empty();
                 $.each(data.tags, function (i, val) {
@@ -632,7 +632,7 @@ $(document).ready(function () {
                 <p>No preview available</p>
             `);
         }
-        modal.style.display = "block";
+        modal.style.display = "flex";
     });
 
     $('body').on('click', '#closeFilePreview, #closeFilePreviewButton', function() {
@@ -754,7 +754,6 @@ $(document).ready(function () {
         let element = $(this);
         let value = element.val()
         let inbox_id = $('.accordion-collapse.collapse.show').data('inbox-id');
-        console.log(inbox_id);
         if(event.which == 13)
             $.ajax({
                 type: "POST",
@@ -938,8 +937,64 @@ $(document).ready(function () {
         `);
     }
 
-    $('#btnGroupDrop1').click(function () {
-        alert("");
+    $('#deleteElement').click(function () {
+        let itemId = $(this).data('item-id');
+        console.log(itemId);
+        $.ajax({
+            type: "DELETE",
+            url: "/items/" + itemId,
+            data: {},
+            dataType: "text",
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            success: function(data) {
+                $('.card-wrapper[data-item-id="' + itemId + '"]').slideUp();
+            },
+            error: function(data) {
+            }
+        })
+    });
+
+    let _changeInterval  = null;
+    $('#searchInput').keyup(function() {
+        clearInterval(_changeInterval)
+        _changeInterval = setInterval(function() {
+            let searchTerm = $('#searchInput').val();
+            let searchPlace = $('input[type="radio"][name="search"]:checked').val();
+            let searchPlaceId;
+            if(searchPlace == 'inbox_id') {
+                searchPlaceId = $('.nav-link.active').data('inbox-id');
+            }
+            if(searchPlace == 'folder_id') {
+                searchPlaceId = $('.folder-node.active').attr('id');
+            }
+            $.ajax({
+                type: "POST",
+                url: "/items/search",
+                data: {
+                    'searchTerm' : searchTerm,
+                    'searchPlace' : searchPlace,
+                    'searchPlaceId' : searchPlaceId,
+                },
+                dataType: "json",
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                success: function(data) {
+                    let list;
+                    $('.list').empty();
+                    $.each(data, function (i, val) {
+                        list = $("div").find(`[data-list-id='${val.list_id}']`).find('div.list');
+                        showItem(list, val.list_id, val.favourite, val.content);
+                    });
+                },
+                error: function(data) {
+                }
+            })
+            clearInterval(_changeInterval)
+        }, 1500);
+
     });
 
 });

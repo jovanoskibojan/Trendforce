@@ -8894,7 +8894,6 @@ jquery__WEBPACK_IMPORTED_MODULE_0___default()(document).ready(function () {
               animation: 0,
               sort: false
             });
-            console.log('test');
           });
           jquery__WEBPACK_IMPORTED_MODULE_0___default().each(listWrapper, function (i, val) {
             var listWrapper = jquery__WEBPACK_IMPORTED_MODULE_0___default()(this);
@@ -8993,7 +8992,6 @@ jquery__WEBPACK_IMPORTED_MODULE_0___default()(document).ready(function () {
 
   jquery__WEBPACK_IMPORTED_MODULE_0___default()('.accordion-categories').click(function () {
     var inboxId = jquery__WEBPACK_IMPORTED_MODULE_0___default()(this).data('inbox-id');
-    console.log(inboxId);
     updateCategories(inboxId);
   });
   updateCategories();
@@ -9080,7 +9078,6 @@ jquery__WEBPACK_IMPORTED_MODULE_0___default()(document).ready(function () {
   myDropzone.on("success", function (file, response) {
     var filesPreview = jquery__WEBPACK_IMPORTED_MODULE_0___default()('#filesPreview');
     showItemFiles(filesPreview, response);
-    console.log(response);
   });
 
   function getFileIcon(fileType) {
@@ -9112,7 +9109,7 @@ jquery__WEBPACK_IMPORTED_MODULE_0___default()(document).ready(function () {
         'X-CSRF-TOKEN': jquery__WEBPACK_IMPORTED_MODULE_0___default()('meta[name="csrf-token"]').attr('content')
       },
       success: function success(data) {
-        allLists.append("\n                    <div class=\"listWrapper\" data-list-id=\"".concat(data.id, "\">\n                        <div class=\"list-title\">\n                                <button type=\"button\" class=\"btn btn-success btn-sm add-list-item\" style=\"display: none\"><i class=\"bi bi-file-earmark-plus\"></i></button>\n                            <p class=\"update-list-name\">Untitled list</p>\n                            <input style=\"display: none;\" type=\"text\" class=\"form-control new-list-title-input\">\n                        </div>\n                        <div class=\"list\">\n                        </div>\n                    </div>\n                "));
+        allLists.append("\n                    <div class=\"listWrapper\" data-list-id=\"".concat(data.id, "\">\n                        <div class=\"list-title\">\n                            <button type=\"button\" class=\"add-list-item\" style=\"display: none\"><i class=\"bi bi-file-earmark-plus\"></i></button>\n                            <p class=\"update-list-name\">Untitled list</p>\n                            <input style=\"display: none;\" type=\"text\" class=\"form-control new-list-title-input\">\n                        </div>\n                        <div class=\"list\">\n                        </div>\n                    </div>\n                "));
         updateSortable();
       },
       error: function error(data) {}
@@ -9230,7 +9227,7 @@ jquery__WEBPACK_IMPORTED_MODULE_0___default()(document).ready(function () {
       },
       success: function success(data) {
         jquery__WEBPACK_IMPORTED_MODULE_0___default().each(data, function (key, value) {
-          allLists.append("\n                        <div class=\"listWrapper\" id=\"".concat(value.id, "\" data-list-id=\"").concat(value.id, "\">\n                            <div class=\"list-title\">\n                                <button type=\"button\" class=\"btn btn-success btn-sm add-list-item\" style=\"display: none\"><i class=\"bi bi-file-earmark-plus\"></i></button>\n                                <p class=\"totalCount\" style=\"display: none;\">Total items: <span></span></p>\n                                <p class=\"update-list-name\">").concat(value.title, "</p>\n                                <input style=\"display: none;\" type=\"text\" class=\"form-control new-list-title-input\">\n                            </div>\n                            <div class=\"list\">\n                            </div>\n                        </div>\n                    "));
+          allLists.append("\n                        <div class=\"listWrapper\" id=\"".concat(value.id, "\" data-list-id=\"").concat(value.id, "\">\n                            <div class=\"list-title\">\n                                <p class=\"update-list-name\">").concat(value.title, "</p>\n                                <input style=\"display: none;\" type=\"text\" class=\"form-control new-list-title-input\">\n                                <button type=\"button\" class=\"add-list-item\" style=\"display: none\"><i class=\"bi bi-plus-lg\"></i></button>\n                                <p class=\"totalCount\" style=\"display: none;\">Total items: <span></span></p>\n                            </div>\n                            <div class=\"list\">\n                            </div>\n                        </div>\n                    "));
         });
       },
       error: function error(data) {}
@@ -9238,7 +9235,8 @@ jquery__WEBPACK_IMPORTED_MODULE_0___default()(document).ready(function () {
   }
 
   jquery__WEBPACK_IMPORTED_MODULE_0___default()('body').on('click', '.add-list-item', function () {
-    var selectedList = jquery__WEBPACK_IMPORTED_MODULE_0___default()(this).parent().parent().data('list-id');
+    var clickedElement = jquery__WEBPACK_IMPORTED_MODULE_0___default()(this);
+    var selectedList = clickedElement.parent().parent().data('list-id');
     var selectedFolder = jquery__WEBPACK_IMPORTED_MODULE_0___default()('.folder-node.active').attr('id');
     var selectedInbox = jquery__WEBPACK_IMPORTED_MODULE_0___default()('.nav-link.active').data('inbox-id');
     var myOffcanvas = document.getElementById('newListItem');
@@ -9259,6 +9257,10 @@ jquery__WEBPACK_IMPORTED_MODULE_0___default()(document).ready(function () {
         var itemsWrapper = jquery__WEBPACK_IMPORTED_MODULE_0___default()("div").find("[data-list-id='".concat(data.list_id, "']")).find('div.list');
         showItem(itemsWrapper, data.id, 'display: none', '');
         jquery__WEBPACK_IMPORTED_MODULE_0___default()('#selectedItem').val(data.id);
+        var currentCountElement = clickedElement.next().find('span');
+        var currentCount = parseInt(currentCountElement.html());
+        currentCount++;
+        currentCountElement.html(currentCount);
       },
       error: function error(data) {}
     });
@@ -9286,14 +9288,12 @@ jquery__WEBPACK_IMPORTED_MODULE_0___default()(document).ready(function () {
         jquery__WEBPACK_IMPORTED_MODULE_0___default().each(data.file, function (i, val) {
           showItemFiles(filesPreview, val);
         });
-        console.log(data.category);
         var selectedCategories = [];
         jquery__WEBPACK_IMPORTED_MODULE_0___default().each(data.category, function (i, val) {
           selectedCategories.push(val.id);
         });
         categories.val(selectedCategories);
         categories.trigger('change');
-        console.log(selectedCategories);
         var itemTags = jquery__WEBPACK_IMPORTED_MODULE_0___default()('#allTags');
         itemTags.empty();
         jquery__WEBPACK_IMPORTED_MODULE_0___default().each(data.tags, function (i, val) {
@@ -9325,7 +9325,7 @@ jquery__WEBPACK_IMPORTED_MODULE_0___default()(document).ready(function () {
       fileModalPreview.html("\n                <p>No preview available</p>\n            ");
     }
 
-    modal.style.display = "block";
+    modal.style.display = "flex";
   });
   jquery__WEBPACK_IMPORTED_MODULE_0___default()('body').on('click', '#closeFilePreview, #closeFilePreviewButton', function () {
     var modal = document.getElementById("filePreview");
@@ -9419,7 +9419,6 @@ jquery__WEBPACK_IMPORTED_MODULE_0___default()(document).ready(function () {
     var element = jquery__WEBPACK_IMPORTED_MODULE_0___default()(this);
     var value = element.val();
     var inbox_id = jquery__WEBPACK_IMPORTED_MODULE_0___default()('.accordion-collapse.collapse.show').data('inbox-id');
-    console.log(inbox_id);
     if (event.which == 13) jquery__WEBPACK_IMPORTED_MODULE_0___default().ajax({
       type: "POST",
       url: '/categories',
@@ -9584,8 +9583,63 @@ jquery__WEBPACK_IMPORTED_MODULE_0___default()(document).ready(function () {
     element.append("\n            <div class=\"card-wrapper\" draggable=\"false\" data-item-id=\"".concat(id, "\">\n                <i class=\"bi bi-star-fill favourite-icon\" style=\"").concat(favourite, "\"></i>\n                <div class=\"card inbox\">\n                    <div class=\"card-body\" data-current-icon=\"file-earmark-bar-graph-fill\">\n                        ").concat(content, "\n                    </div>\n                </div>\n            </div>\n        "));
   }
 
-  jquery__WEBPACK_IMPORTED_MODULE_0___default()('#btnGroupDrop1').click(function () {
-    alert("");
+  jquery__WEBPACK_IMPORTED_MODULE_0___default()('#deleteElement').click(function () {
+    var itemId = jquery__WEBPACK_IMPORTED_MODULE_0___default()(this).data('item-id');
+    console.log(itemId);
+    jquery__WEBPACK_IMPORTED_MODULE_0___default().ajax({
+      type: "DELETE",
+      url: "/items/" + itemId,
+      data: {},
+      dataType: "text",
+      headers: {
+        'X-CSRF-TOKEN': jquery__WEBPACK_IMPORTED_MODULE_0___default()('meta[name="csrf-token"]').attr('content')
+      },
+      success: function success(data) {
+        jquery__WEBPACK_IMPORTED_MODULE_0___default()('.card-wrapper[data-item-id="' + itemId + '"]').slideUp();
+      },
+      error: function error(data) {}
+    });
+  });
+  var _changeInterval = null;
+  jquery__WEBPACK_IMPORTED_MODULE_0___default()('#searchInput').keyup(function () {
+    clearInterval(_changeInterval);
+    _changeInterval = setInterval(function () {
+      var searchTerm = jquery__WEBPACK_IMPORTED_MODULE_0___default()('#searchInput').val();
+      var searchPlace = jquery__WEBPACK_IMPORTED_MODULE_0___default()('input[type="radio"][name="search"]:checked').val();
+      var searchPlaceId;
+
+      if (searchPlace == 'inbox_id') {
+        searchPlaceId = jquery__WEBPACK_IMPORTED_MODULE_0___default()('.nav-link.active').data('inbox-id');
+      }
+
+      if (searchPlace == 'folder_id') {
+        searchPlaceId = jquery__WEBPACK_IMPORTED_MODULE_0___default()('.folder-node.active').attr('id');
+      }
+
+      jquery__WEBPACK_IMPORTED_MODULE_0___default().ajax({
+        type: "POST",
+        url: "/items/search",
+        data: {
+          'searchTerm': searchTerm,
+          'searchPlace': searchPlace,
+          'searchPlaceId': searchPlaceId
+        },
+        dataType: "json",
+        headers: {
+          'X-CSRF-TOKEN': jquery__WEBPACK_IMPORTED_MODULE_0___default()('meta[name="csrf-token"]').attr('content')
+        },
+        success: function success(data) {
+          var list;
+          jquery__WEBPACK_IMPORTED_MODULE_0___default()('.list').empty();
+          jquery__WEBPACK_IMPORTED_MODULE_0___default().each(data, function (i, val) {
+            list = jquery__WEBPACK_IMPORTED_MODULE_0___default()("div").find("[data-list-id='".concat(val.list_id, "']")).find('div.list');
+            showItem(list, val.list_id, val.favourite, val.content);
+          });
+        },
+        error: function error(data) {}
+      });
+      clearInterval(_changeInterval);
+    }, 1500);
   });
 });
 
@@ -9725,7 +9779,9 @@ jquery__WEBPACK_IMPORTED_MODULE_0___default()("#custom-menu-item li").click(func
       break;
 
     case 'delete':
-      alert('delete: ' + id);
+      var modalDelete = new bootstrap.Modal(document.getElementById('deleteItem'));
+      jquery__WEBPACK_IMPORTED_MODULE_0___default()('#deleteElement').data('item-id', id);
+      modalDelete.show();
       break;
   } // Hide it AFTER the action was triggered
 
@@ -9748,7 +9804,6 @@ jquery__WEBPACK_IMPORTED_MODULE_0___default()("#custom-menu-folder li").click(fu
     case "rename":
       var modalRename = new bootstrap.Modal(document.getElementById('renameFolder'));
       var currentTitle = jquery__WEBPACK_IMPORTED_MODULE_0___default()("#" + id).html();
-      console.log(currentTitle);
       jquery__WEBPACK_IMPORTED_MODULE_0___default()('#renameFolderSave').data('folder-ID', id);
       jquery__WEBPACK_IMPORTED_MODULE_0___default()("#renameFolderNewName").val(currentTitle);
       jquery__WEBPACK_IMPORTED_MODULE_0___default()("#renameFolderNameTitle").html(currentTitle);

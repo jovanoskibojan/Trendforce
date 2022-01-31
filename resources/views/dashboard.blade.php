@@ -30,14 +30,14 @@
                         <div class="row mt-3">
                             <div class="col-9">
                                 <div class="input-group mb-3">
-                                    <input type="text" class="form-control" placeholder="Type to search" aria-label="Type to search" aria-describedby="basic-addon2">
+                                    <input id="searchInput" type="text" class="form-control" placeholder="Type to search" aria-label="Type to search" aria-describedby="basic-addon2">
                                     <span id="inboxSearch" class="input-group-text" >
                                             Search options
                                             <div id="searchOptionWrapper">
                                                 <div id="searchOptions">
                                                     <form>
-                                                        <input id="searchInbox" type="radio" name="search"> <label for="searchInbox">Search complete inbox</label><br>
-                                                        <input id="searchFolder" type="radio" name="search"> <label for="searchFolder">Search selected folder</label>
+                                                        <input id="searchInbox" type="radio" name="search" value="inbox_id" checked> <label for="searchInbox">Search complete inbox</label><br>
+                                                        <input id="searchFolder" type="radio" name="search" value="folder_id"> <label for="searchFolder">Search selected folder</label>
                                                     </form>
                                                 </div>
                                             </div>
@@ -103,6 +103,27 @@
             </div>
         </div>
     </div>
+
+
+    <!-- Delete item folder -->
+    <div class="modal fade" id="deleteItem" tabindex="-1" aria-labelledby="renameFolder" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="renameTitle">Delete element</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    Are you sure you wish to remove this item? This will also permanetly delete all uploaded files related to it!
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-danger" id="deleteElement" data-item-ID="">Delete element</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Rename inbox -->
     <div class="modal fade" id="renameInbox" tabindex="-1" aria-labelledby="renameInbox" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
@@ -155,7 +176,7 @@
     @include('item-preview')
 
     <!-- File preview-->
-    <div id="filePreview" class="modal">
+    <div id="filePreview" class="fileModal" style="display: none">
 
         <!-- Modal content -->
         <div class="modal-content">

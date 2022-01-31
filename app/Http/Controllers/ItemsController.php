@@ -105,7 +105,17 @@ class ItemsController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $item = Items::where('id', $id)->first();
+        foreach ($item->file as $file) {
+            if (file_exists('files/' . $file['title'])) {
+                unlink('files/' . $file['title']);
+            }
+            else {
+                dd('files/' . $file['title']);
+            }
+        }
+
+        $item->delete();
     }
 
     public function archive(Request $request) {
@@ -172,5 +182,9 @@ class ItemsController extends Controller
         $currentItem->order = $currentNewOrder;
         $currentItem->list_id = $request->listId;
         $currentItem->save();
+    }
+
+    public function search(Request $request) {
+        return Items::where('content', 'LIKE', '%' . $request->searchTerm . '%')->where($request->searchPlace, $request->searchPlaceId)->get();
     }
 }

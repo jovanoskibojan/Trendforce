@@ -163,7 +163,11 @@ nav {
         padding-left: 15px;
         text-align: left;
         font-weight: 700;
-        font-size: 1.25rem
+        font-size: 1.25rem;
+        &.totalCount {
+            font-size: 12px;
+            padding-top: 5px;
+        }
     }
     input {
         margin: 5px;
@@ -201,8 +205,24 @@ nav {
     }
 }
 
-.modal {
-    display: none;
+.add-list-item {
+    background: #d9d9d9;
+    padding: 5px 8px;
+    border-radius: 7px;
+    cursor: pointer;
+    font-size: 11px;
+    font-weight: 700;
+    float: right;
+    margin-right: 8px;
+    padding-top: 6px;
+}
+
+.fileModal {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    align-content: center;
+    justify-content: center;
     position: fixed;
     z-index: 9999;
     left: 0;

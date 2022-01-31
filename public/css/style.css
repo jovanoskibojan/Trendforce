@@ -13870,6 +13870,10 @@ nav a {
   font-weight: 700;
   font-size: 1.25rem;
 }
+.listWrapper p.totalCount {
+  font-size: 12px;
+  padding-top: 5px;
+}
 .listWrapper input {
   margin: 5px;
   width: 95%;
@@ -13905,8 +13909,24 @@ nav a {
   font-size: 32px;
 }
 
-.modal {
-  display: none;
+.add-list-item {
+  background: #d9d9d9;
+  padding: 5px 8px;
+  border-radius: 7px;
+  cursor: pointer;
+  font-size: 11px;
+  font-weight: 700;
+  float: right;
+  margin-right: 8px;
+  padding-top: 6px;
+}
+
+.fileModal {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  align-content: center;
+  justify-content: center;
   position: fixed;
   z-index: 9999;
   left: 0;
@@ -13917,7 +13937,7 @@ nav a {
   background-color: black;
   background-color: rgba(0, 0, 0, 0.4);
 }
-.modal .modal-content {
+.fileModal .modal-content {
   background-color: #fefefe;
   margin: 15% auto;
   padding: 20px;
@@ -13925,14 +13945,14 @@ nav a {
   width: 80%;
   align-items: center;
 }
-.modal .modal-content .modal-header {
+.fileModal .modal-content .modal-header {
   width: 100%;
 }
-.modal .modal-content #fileModalPreview {
+.fileModal .modal-content #fileModalPreview {
   width: 100%;
   height: 470px;
 }
-.modal .modal-content #closeFilePreview {
+.fileModal .modal-content #closeFilePreview {
   color: #aaa;
   float: right;
   font-size: 28px;
@@ -13941,7 +13961,7 @@ nav a {
   position: absolute;
   right: 11px;
 }
-.modal .modal-content #closeFilePreview:hover, .modal .modal-content #closeFilePreview:focus {
+.fileModal .modal-content #closeFilePreview:hover, .fileModal .modal-content #closeFilePreview:focus {
   color: black;
   text-decoration: none;
   cursor: pointer;

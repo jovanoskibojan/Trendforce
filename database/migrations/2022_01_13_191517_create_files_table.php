@@ -22,7 +22,7 @@ class CreateFilesTable extends Migration
             $table->string('size');
             $table->timestamps();
 
-            $table->foreign('item_id')->references('id')->on('items');
+            $table->foreign('item_id')->references('id')->on('items')->onDelete('cascade');
         });
     }
 

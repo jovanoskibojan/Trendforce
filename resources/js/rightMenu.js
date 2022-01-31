@@ -74,7 +74,9 @@ $("#custom-menu-item li").click(function(){
             favouriteElement(id);
             break;
         case 'delete':
-            alert('delete: ' + id);
+            let modalDelete = new bootstrap.Modal(document.getElementById('deleteItem'));
+            $('#deleteElement').data('item-id', id);
+            modalDelete.show();
             break;
     }
 
@@ -96,7 +98,6 @@ $("#custom-menu-folder li").click(function(){
         case "rename":
             let modalRename = new bootstrap.Modal(document.getElementById('renameFolder'));
             let currentTitle = $("#" + id).html();
-            console.log(currentTitle);
             $('#renameFolderSave').data('folder-ID', id);
             $("#renameFolderNewName").val(currentTitle);
             $("#renameFolderNameTitle").html(currentTitle);
